@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Care Connect - Blog</title>
+    <link rel="stylesheet" href="styles.css" />
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: #f4f4f4;
+      }
+      header,
+      footer {
+        background-color: #007bff;
+        color: #fff;
+        padding: 20px;
+        text-align: center;
+      }
+      header h1 {
+        margin: 0;
+      }
+      nav a {
+        color: #fff;
+        text-decoration: none;
+        margin: 0 15px;
+      }
+      .container {
+        padding: 40px;
+        max-width: 1200px;
+        margin: 0 auto;
+      }
+      .section {
+        margin: 40px 0;
+      }
+      .section h2 {
+        font-size: 2.5em;
+        margin-bottom: 20px;
+        color: #007bff;
+      }
+      .post-item {
+        background-color: #fff;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        padding: 20px;
+        margin: 20px 0;
+        transition: transform 0.3s ease;
+      }
+      .post-item:hover {
+        transform: translateY(-5px);
+      }
+      .post-item img {
+        max-width: 100%;
+        height: auto;
+        border-radius: 8px;
+        margin-bottom: 15px;
+      }
+      .post-item h3 {
+        font-size: 1.8em;
+        margin-bottom: 15px;
+      }
+      .post-item p {
+        font-size: 1.2em;
+        line-height: 1.6;
+        color: #555;
+        margin-bottom: 20px;
+      }
+      .post-item a {
+        display: inline-block;
+        padding: 10px 20px;
+        background-color: #007bff;
+        color: #fff;
+        text-decoration: none;
+        border-radius: 5px;
+        font-size: 1em;
+      }
+      .post-item a:hover {
+        background-color: #0056b3;
+      }
+      .newsletter {
+        background-color: #fff;
+        border-radius: 8px;
+        padding: 20px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        text-align: center;
+      }
+      .newsletter h3 {
+        margin-bottom: 15px;
+      }
+      .newsletter form input[type="email"] {
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        width: 80%;
+        margin-bottom: 10px;
+      }
+      .newsletter form button {
+        padding: 10px 20px;
+        background-color: #007bff;
+        color: #fff;
+        border: none;
+        border-radius: 5px;
+        font-size: 1em;
+      }
+      .newsletter form button:hover {
+        background-color: #0056b3;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Header Section -->
+    <header>
+      <h1>Care Connect</h1>
+      <nav>
+        <a href="index.html">Home</a>
+        <a href="aboutus.html">About Us</a>
+        <a href="ehrsystem.html">EHR Services</a>
+        <a href="resources.html">Resources</a>
+        <a href="case-studies.html">Case Studies</a>
+        <a href="blog.html">Blog</a>
+        <a href="contact.html">Contact</a>
+      </nav>
+    </header>
+
+    <!-- Main Content Section -->
+    <div class="container">
+      <!-- Featured Posts Section -->
+      <section class="section">
+        <h2>Featured Posts</h2>
+        <div class="post-item">
+          <img src="featured-post1.jpg" alt="Featured Post 1" />
+          <h3>Innovative Trends in Healthcare Technology</h3>
+          <p>
+            Explore the latest trends in healthcare technology and how they are
+            transforming patient care and clinical workflows.
+          </p>
+          <a href="featured-post1.html">Read More</a>
+        </div>
+        <div class="post-item">
+          <img src="featured-post2.jpg" alt="Featured Post 2" />
+          <h3>How EHR Systems are Enhancing Patient Outcomes</h3>
+          <p>
+            Learn about the impact of EHR systems on patient outcomes and how
+            they are improving healthcare delivery.
+          </p>
+          <a href="featured-post2.html">Read More</a>
+        </div>
+      </section>
+
+      <!-- Recent Posts Section -->
+      <section class="section">
+        <h2>Recent Posts</h2>
+        <div class="post-item">
+          <img src="recent-post1.jpg" alt="Recent Post 1" />
+          <h3>5 Tips for Effective EHR Implementation</h3>
+          <p>
+            Discover essential tips for a successful EHR implementation and how
+            to overcome common challenges.
+          </p>
+          <a href="recent-post1.html">Read More</a>
+        </div>
+        <div class="post-item">
+          <img src="recent-post2.jpg" alt="Recent Post 2" />
+          <h3>Understanding the Benefits of Cloud-Based EHR Systems</h3>
+          <p>
+            Find out how cloud-based EHR systems offer flexibility, scalability,
+            and cost savings for healthcare providers.
+          </p>
+          <a href="recent-post2.html">Read More</a>
+        </div>
+      </section>
+
+      <!-- Newsletter Signup Section -->
+      <section class="section newsletter">
+        <h3>Subscribe to Our Newsletter</h3>
+        <p>
+          Stay updated with the latest news, insights, and tips from Care
+          Connect by subscribing to our newsletter.
+        </p>
+        <form>
+          <input type="email" placeholder="Your email..." required />
+          <button type="submit">Subscribe</button>
+        </form>
+      </section>
+    </div>
+
+    <!-- Footer Section -->
+    <footer>
+      <p>&copy; 2024 Care Connect</p>
+      <p>
+        Contact us: (123) 456-7890 | Email:
+        <a href="info@careconnect.com">info@careconnect.com</a>
+      </p>
+    </footer>
+  </body>
+</html>

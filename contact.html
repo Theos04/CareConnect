@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Care Connect - Contact Us</title>
+    <link rel="stylesheet" href="styles.css" />
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: #f4f4f4;
+      }
+      header,
+      footer {
+        background-color: #007bff;
+        color: #fff;
+        padding: 20px;
+        text-align: center;
+      }
+      header h1 {
+        margin: 0;
+      }
+      nav a {
+        color: #fff;
+        text-decoration: none;
+        margin: 0 15px;
+      }
+      .container {
+        padding: 40px;
+        max-width: 1200px;
+        margin: 0 auto;
+      }
+      .section {
+        margin: 40px 0;
+      }
+      .section h2 {
+        font-size: 2.5em;
+        margin-bottom: 20px;
+        color: #007bff;
+      }
+      .team-member {
+        display: flex;
+        align-items: center;
+        background-color: #fff;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        padding: 20px;
+        margin: 20px 0;
+      }
+      .team-member img {
+        border-radius: 50%;
+        width: 120px;
+        height: 120px;
+        margin-right: 20px;
+      }
+      .team-member h3 {
+        margin: 0;
+        font-size: 1.8em;
+      }
+      .team-member p {
+        font-size: 1.2em;
+        color: #555;
+      }
+      .contact-form {
+        background-color: #fff;
+        border-radius: 8px;
+        padding: 20px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      }
+      .contact-form input,
+      .contact-form textarea {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        margin-bottom: 10px;
+        font-size: 1em;
+      }
+      .contact-form button {
+        padding: 10px 20px;
+        background-color: #007bff;
+        color: #fff;
+        border: none;
+        border-radius: 5px;
+        font-size: 1.2em;
+        cursor: pointer;
+      }
+      .contact-form button:hover {
+        background-color: #0056b3;
+      }
+      .vision {
+        background-color: #e6f7ff;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      }
+      .vision h3 {
+        margin-top: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Header Section -->
+    <header>
+      <h1>Care Connect</h1>
+      <nav>
+        <a href="index.html">Home</a>
+        <a href="aboutus.html">About Us</a>
+        <a href="ehrsystem.html">EHR Services</a>
+        <a href="resources.html">Resources</a>
+        <a href="case-studies.html">Case Studies</a>
+        <a href="blog.html">Blog</a>
+        <a href="contact.html">Contact</a>
+      </nav>
+    </header>
+
+    <!-- Main Content Section -->
+    <div class="container">
+      <!-- Team Introduction Section -->
+      <section class="section">
+        <h2>Meet Our Team</h2>
+        <div class="team-member">
+          <img src="team-member1.jpg" alt="Team Member 1" />
+          <div>
+            <h3>Dr. Jane Smith</h3>
+            <p>Chief Medical Officer</p>
+            <p>
+              Dr. Jane Smith brings over 20 years of experience in healthcare to
+              Care Connect. Her expertise in clinical operations and patient
+              care drives our mission to deliver innovative EHR solutions.
+            </p>
+          </div>
+        </div>
+        <div class="team-member">
+          <img src="team-member2.jpg" alt="Team Member 2" />
+          <div>
+            <h3>John Doe</h3>
+            <p>Lead EHR Developer</p>
+            <p>
+              John Doe is our Lead EHR Developer with a background in software
+              engineering and health informatics. He leads our development team
+              in creating cutting-edge solutions for seamless healthcare
+              management.
+            </p>
+          </div>
+        </div>
+        <!-- Add more team members as needed -->
+      </section>
+
+      <!-- Vision Section -->
+      <section class="section vision">
+        <h2>Our Vision</h2>
+        <h3>Empowering Healthcare Through Innovation</h3>
+        <p>
+          At Care Connect, our vision is to revolutionize healthcare by
+          providing advanced, paperless EHR solutions that empower practitioners
+          and enhance patient outcomes. We strive to create a future where
+          technology seamlessly integrates into healthcare processes, improving
+          efficiency, accessibility, and quality of care.
+        </p>
+      </section>
+
+      <!-- Contact Form Section -->
+      <section class="section">
+        <h2>Contact Us</h2>
+        <div class="contact-form">
+          <form action="submit_form.php" method="post">
+            <input type="text" name="name" placeholder="Your Name" required />
+            <input
+              type="email"
+              name="email"
+              placeholder="Your Email"
+              required
+            />
+            <input type="text" name="subject" placeholder="Subject" required />
+            <textarea
+              name="message"
+              rows="6"
+              placeholder="Your Message"
+              required
+            ></textarea>
+            <button type="submit">Send Message</button>
+          </form>
+        </div>
+      </section>
+    </div>
+
+    <!-- Footer Section -->
+    <footer>
+      <p>&copy; 2024 Care Connect</p>
+      <p>
+        Contact us: (123) 456-7890 | Email:
+        <a href="info@careconnect.com">info@careconnect.com</a>
+      </p>
+    </footer>
+  </body>
+</html>
