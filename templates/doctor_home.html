@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block title %}Doctor Home | CareConnect{% endblock %}
+
+{% block content %}
+<div class="max-w-5xl mx-auto">
+
+  <h1 class="text-3xl font-bold text-gray-800 mb-2">
+    Welcome, Dr. {{ user.name }}!
+  </h1>
+  <p class="text-gray-600 mb-8">Here’s your dashboard for today.</p>
+
+  <!-- Quick stats -->
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+    <div class="bg-white p-6 rounded-lg shadow">
+      <h3 class="text-lg font-semibold text-indigo-600">Patients in Queue</h3>
+      <p class="text-3xl font-bold mt-2">12</p>
+    </div>
+    <div class="bg-white p-6 rounded-lg shadow">
+      <h3 class="text-lg font-semibold text-green-600">Appointments Today</h3>
+      <p class="text-3xl font-bold mt-2">8</p>
+    </div>
+    <div class="bg-white p-6 rounded-lg shadow">
+      <h3 class="text-lg font-semibold text-amber-600">Pending Reports</h3>
+      <p class="text-3xl font-bold mt-2">3</p>
+    </div>
+  </div>
+
+  <!-- Action buttons -->
+  <div class="flex flex-wrap gap-4">
+    <a href="{{ url_for('queue_dashboard') }}"
+       class="bg-indigo-600 text-white px-5 py-3 rounded hover:bg-indigo-700">
+      View Queue
+    </a>
+    <a href="{{ url_for('workspace') }}"
+       class="bg-gray-700 text-white px-5 py-3 rounded hover:bg-gray-800">
+      Open Workspace
+    </a>
+    <a href="#"
+       class="bg-green-600 text-white px-5 py-3 rounded hover:bg-green-700">
+      New Prescription
+    </a>
+  </div>
+
+</div>
+{% endblock %}

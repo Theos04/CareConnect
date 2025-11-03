@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block title %}Queue Dashboard | CareConnect{% endblock %}
+
+{% block content %}
+<h2 class="text-3xl font-semibold mb-4">Queue Dashboard</h2>
+<p class="text-gray-700 mb-4">Real-time overview of patients in queue.</p>
+
+<table class="min-w-full border-collapse border border-gray-300">
+  <thead class="bg-gray-100">
+    <tr>
+      <th class="border px-4 py-2">Patient</th>
+      <th class="border px-4 py-2">Doctor</th>
+      <th class="border px-4 py-2">Status</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td class="border px-4 py-2">John Doe</td>
+      <td class="border px-4 py-2">Dr. Mehta</td>
+      <td class="border px-4 py-2 text-green-600 font-semibold">Consulting</td>
+    </tr>
+    <tr>
+      <td class="border px-4 py-2">Priya Singh</td>
+      <td class="border px-4 py-2">Dr. Patil</td>
+      <td class="border px-4 py-2 text-yellow-600 font-semibold">Waiting</td>
+    </tr>
+  </tbody>
+</table>
+{% endblock %}

@@ -1,0 +1,70 @@
+{% macro kpi_card(title, value, color_class='text-indigo-600') %}
+<div class="bg-white p-6 rounded-lg shadow">
+  <h3 class="text-lg font-semibold {{ color_class }}">{{ title }}</h3>
+  <p class="text-3xl font-bold mt-2">{{ value }}</p>
+</div>
+{% endmacro %}
+
+{% macro prescription_table(prescriptions, role) %}
+<table class="min-w-full border-collapse border border-gray-300 mt-8">
+  <thead class="bg-gray-100">
+    <tr>
+      <th class="border px-4 py-2">ID</th>
+      {% if role != 'Patient' %}
+        <th class="border px-4 py-2">Patient</th>
+      {% endif %}
+      {% if role != 'Doctor' %}
+        <th class="border px-4 py-2">Doctor</th>
+      {% endif %}
+      <th class="border px-4 py-2">Medication</th>
+      <th class="border px-4 py-2">Dosage</th>
+      <th class="border px-4 py-2">Duration</th>
+      <th class="border px-4 py-2">Status</th>
+      <th class="border px-4 py-2">Date</th>
+      {% if role == 'Doctor' or role == 'Clinic / Hospital' %}
+        <th class="border px-4 py-2">Actions</th>
+      {% endif %}
+    </tr>
+  </thead>
+  <tbody>
+    {% for p in prescriptions %}
+      <tr>
+        <td class="border px-4 py-2">{{ p.id }}</td>
+        {% if role != 'Patient' %}
+          <td class="border px-4 py-2">{{ p.patient_name }}</td>
+        {% endif %}
+        {% if role != 'Doctor' %}
+          <td class="border px-4 py-2">{{ p.doctor_name }}</td>
+        {% endif %}
+        <td class="border px-4 py-2">{{ p.medication }}</td>
+        <td class="border px-4 py-2">{{ p.dosage }}</td>
+        <td class="border px-4 py-2">{{ p.duration }}</td>
+        <td class="border px-4 py-2 {% if p.status == 'Pending' %}text-yellow-600{% elif p.status == 'Filled' %}text-green-600{% else %}text-blue-600{% endif %} font-semibold">{{ p.status }}</td>
+        <td class="border px-4 py-2">{{ p.date }}</td>
+        {% if role == 'Doctor' or role == 'Clinic / Hospital' %}
+          <td class="border px-4 py-2">
+            {% if role == 'Doctor' %}
+              <a href="#" class="text-blue-600 hover:underline">Edit</a> |
+              <a href="#" class="text-red-600 hover:underline">Cancel</a>
+            {% elif role == 'Clinic / Hospital' %}
+              <a href="#" class="text-green-600 hover:underline">Fill</a> |
+              <a href="#" class="text-blue-600 hover:underline">View Details</a>
+            {% endif %}
+          </td>
+        {% endif %}
+      </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endmacro %}
+
+{% macro prescription_details(p) %}
+<div class="bg-gray-100 p-4 rounded mt-4">
+  <h4 class="font-semibold">Prescription Details (ID: {{ p.id }})</h4>
+  <p><strong>Medication:</strong> {{ p.medication }}</p>
+  <p><strong>Dosage:</strong> {{ p.dosage }}</p>
+  <p><strong>Duration:</strong> {{ p.duration }}</p>
+  <p><strong>Status:</strong> {{ p.status }}</p>
+  <p><strong>Date:</strong> {{ p.date }}</p>
+</div>
+{% endmacro %}

@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block title %}Create Profile | CareConnect{% endblock %}
+
+{% block content %}
+<h2 class="text-3xl font-semibold mb-4">Create Your Profile</h2>
+<form action="/create-profile" method="post" class="space-y-4 max-w-md">
+  <input type="text" name="name" placeholder="Full Name" class="w-full border p-2 rounded">
+  <input type="email" name="email" placeholder="Email" class="w-full border p-2 rounded">
+  <select name="role" class="w-full border p-2 rounded">
+    <option>Patient</option>
+    <option>Doctor</option>
+    <option>Clinic / Hospital</option>
+  </select>
+  <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded">Create Profile</button>
+</form>
+{% endblock %}
