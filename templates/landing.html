@@ -1,312 +1,421 @@
 {% extends "base.html" %}
-{% block title %}CareConnect | Home{% endblock %}
+{% block title %}CareConnect | The Elite Healthcare Ecosystem{% endblock %}
 
 {% block content %}
-<section class="relative bg-gradient-to-br from-blue-50 via-white to-indigo-50 min-h-screen flex items-center py-12 px-6">
-  <div class="max-w-7xl mx-auto w-full">
-    <div class="flex flex-col-reverse lg:flex-row items-center justify-between gap-12 lg:gap-16">
-      
-      <!-- Text Content -->
-      <div class="flex-1 max-w-2xl">
-        <div class="inline-block mb-4 px-4 py-2 bg-blue-100 text-blue-700 rounded-full text-sm font-semibold">
-          🏥 Premium Healthcare Platform
-        </div>
-        
-        <h1 class="text-5xl sm:text-6xl lg:text-7xl font-extrabold text-gray-900 leading-tight mb-6">
-          Health, Care, Transparency — 
-          <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600">
-            All in One Place
+<!-- Elite Hero Section -->
+<section class="relative min-h-screen flex items-center pt-32 pb-20 overflow-hidden bg-background">
+  <!-- Interactive Branding Element -->
+  <div
+    class="absolute -top-20 -right-20 w-[600px] h-[600px] bg-indigo-500/5 rounded-full blur-[120px] branding-parallax"
+    data-depth="0.1"></div>
+  <div class="absolute top-1/4 left-10 w-32 h-32 border border-primary/10 rounded-full branding-parallax"
+    data-depth="0.2"></div>
+
+  <div class="container-wide px-8 relative z-10">
+    <div class="grid lg:grid-cols-2 gap-12 items-center">
+      <div class="max-w-4xl">
+        <div
+          class="inline-flex items-center gap-2 px-3 py-1 bg-indigo-50 text-indigo-700 rounded-full text-xs font-bold uppercase tracking-widest mb-8 opacity-0 hero-fade">
+          <span class="relative flex h-2 w-2">
+            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-indigo-400 opacity-75"></span>
+            <span class="relative inline-flex rounded-full h-2 w-2 bg-indigo-600"></span>
           </span>
+          The New Standard of Care
+        </div>
+
+        <h1 class="text-6xl md:text-8xl font-display font-extrabold leading-[0.9] tracking-tighter text-secondary mb-8">
+          <span class="reveal-text"><span>A Unified Ecosystem for</span></span>
+          <span class="reveal-text text-primary"><span>Hyper-Connected Health.</span></span>
         </h1>
-        
-        <p class="text-lg sm:text-xl text-gray-600 mb-8 leading-relaxed">
-          Access the premium healthcare platform that connects patients, doctors, and hospitals seamlessly. 
-          Built with blockchain transparency, AI/ML diagnostics, and integrated care coordination.
+
+        <p class="text-xl md:text-2xl text-text-muted font-medium max-w-2xl leading-relaxed mb-12 opacity-0 hero-fade">
+          CareConnect is a decentralized infrastructure uniting patients, providers, and labs through elite intelligence
+          and seamless connectivity.
         </p>
-        
-        <div class="flex flex-col sm:flex-row gap-4">
-          <a href="/getting-started" class="inline-flex items-center justify-center px-8 py-4 bg-blue-600 text-white font-semibold rounded-xl shadow-lg hover:bg-blue-700 hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200">
-            Get Started
-            <svg class="ml-2 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
+
+        <div class="flex flex-wrap gap-4 opacity-0 hero-fade">
+          <a href="/getting-started" class="btn-premium btn-primary">
+            Join the Network
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
             </svg>
           </a>
-          
-          <a href="/learn-more" class="inline-flex items-center justify-center px-8 py-4 bg-white text-blue-600 font-semibold rounded-xl shadow-md hover:shadow-lg border-2 border-blue-600 transform hover:-translate-y-0.5 transition-all duration-200">
-            Learn More
+          <a href="#concept" class="btn-premium bg-white text-secondary border-contrast border font-bold">
+            Explore Concept
           </a>
-        </div>
-        
-        <!-- Trust Indicators -->
-        <div class="mt-12 flex flex-wrap items-center gap-6 text-sm text-gray-500">
-          <div class="flex items-center gap-2">
-            <svg class="w-5 h-5 text-green-500" fill="currentColor" viewBox="0 0 20 20">
-              <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
-            </svg>
-            <span>Blockchain Verified</span>
-          </div>
-          <div class="flex items-center gap-2">
-            <svg class="w-5 h-5 text-green-500" fill="currentColor" viewBox="0 0 20 20">
-              <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
-            </svg>
-            <span>HIPAA Compliant</span>
-          </div>
-          <div class="flex items-center gap-2">
-            <svg class="w-5 h-5 text-green-500" fill="currentColor" viewBox="0 0 20 20">
-              <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
-            </svg>
-            <span>AI-Powered</span>
-          </div>
         </div>
       </div>
 
-      <!-- Hero Image -->
-      <div class="flex-1 flex justify-center lg:justify-end w-full">
-        <div class="relative w-full">
-          <!-- Decorative background elements -->
-          <div class="absolute -top-4 -left-4 w-72 h-72 bg-blue-200 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob"></div>
-          <div class="absolute -bottom-8 -right-4 w-72 h-72 bg-indigo-200 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-2000"></div>
-          
-          <img 
-            src="{{ url_for('static', filename='images/doctor-landing-page.png') }}" 
-            alt="Healthcare Professional" 
-            class="relative rounded-2xl shadow-2xl w-full h-auto object-cover transform hover:scale-105 transition-transform duration-300"
-          >
+      <!-- Hero Image Integration -->
+      <div class="relative opacity-0 hero-fade lg:block hidden">
+        <div class="absolute inset-0 bg-indigo-500/10 blur-[120px] rounded-full translate-x-12 translate-y-12"></div>
+        <div class="glass-premium p-4 rounded-[4rem] border border-white/50 shadow-2xl relative overflow-hidden group">
+          <img src="{{ url_for('static', filename='images/hero_image.png') }}" alt="CareConnect Elite Vision"
+            class="w-full h-auto rounded-[3rem] object-cover shadow-inner group-hover:scale-105 transition-transform duration-1000">
+          <div class="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent pointer-events-none"></div>
         </div>
       </div>
+    </div>
 
+    <!-- Hero Stats -->
+    <div class="mt-24 grid grid-cols-2 md:grid-cols-4 gap-12 opacity-0 hero-fade">
+      <div>
+        <div class="text-5xl font-display font-extrabold text-secondary tracking-tighter stat-num">10k+</div>
+        <div class="text-xs font-bold uppercase tracking-widest text-text-label mt-2">Verified Doctors</div>
+      </div>
+      <div>
+        <div class="text-5xl font-display font-extrabold text-secondary tracking-tighter stat-num">2M+</div>
+        <div class="text-xs font-bold uppercase tracking-widest text-text-label mt-2">Patient Records</div>
+      </div>
+      <div>
+        <div class="text-5xl font-display font-extrabold text-secondary tracking-tighter stat-num">99.9%</div>
+        <div class="text-xs font-bold uppercase tracking-widest text-text-label mt-2">Uptime Reliability</div>
+      </div>
+      <div>
+        <div class="text-5xl font-display font-extrabold text-secondary tracking-tighter stat-num">AES</div>
+        <div class="text-xs font-bold uppercase tracking-widest text-text-label mt-2">Military Encryption</div>
+      </div>
     </div>
   </div>
 </section>
 
-<!-- Add animation keyframes -->
-<style>
-  @keyframes blob {
-    0%, 100% {
-      transform: translate(0, 0) scale(1);
-    }
-    33% {
-      transform: translate(30px, -50px) scale(1.1);
-    }
-    66% {
-      transform: translate(-20px, 20px) scale(0.9);
-    }
-  }
-  
-  .animate-blob {
-    animation: blob 7s infinite;
-  }
-  
-  .animation-delay-2000 {
-    animation-delay: 2s;
-  }
-</style>
-
-<!-- Features Bento Section -->
-<section class="py-24 px-6 bg-gradient-to-b from-white to-blue-50 relative">
-  <div class="max-w-7xl mx-auto text-center mb-16">
-    <h2 class="text-4xl sm:text-5xl font-extrabold text-gray-900 mb-4">
-      The Future of Connected Healthcare
-    </h2>
-    <p class="text-lg text-gray-600 max-w-3xl mx-auto">
-      Explore how CareConnect empowers patients, doctors, and hospitals through transparency, intelligence, and innovation.
-    </p>
+<!-- Dual Journey Section -->
+<section id="concept" class="section-padding bg-secondary text-white overflow-hidden relative">
+  <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-10">
   </div>
-
-  <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-    
-    <!-- Card 1: AI-Powered Health Insights -->
-    <div class="col-span-1 lg:col-span-2 relative overflow-hidden rounded-3xl shadow-xl hover:shadow-2xl transform hover:-translate-y-2 transition-all duration-300 h-80 group">
-      <!-- Background Image with Overlay -->
-      <div class="absolute inset-0 bg-cover bg-center" style="background-image: url('{{ url_for('static', filename='images/ai.jpg') }}');">
-        <div class="absolute inset-0 bg-gradient-to-br from-blue-600/70 to-indigo-600/70 group-hover:from-blue-700/80 group-hover:to-indigo-700/80 transition-all duration-300"></div>
+  <div class="container-wide relative z-10">
+    <div class="grid lg:grid-cols-2 gap-20 items-center">
+      <div>
+        <h2
+          class="text-4xl md:text-7xl font-display font-black tracking-tighter mb-8 reveal-trigger text-secondary-contrast">
+          Two Worlds. <br> One Seamless Flow.
+        </h2>
+        <p class="text-xl text-text-muted max-w-md leading-relaxed reveal-trigger">
+          Whether you're seeking care or providing it, CareConnect streamlines every interaction with professional
+          precision.
+        </p>
       </div>
-      
-      <!-- Content -->
-      <div class="relative h-full p-8 flex flex-col justify-between text-white">
-        <div>
-          <div class="inline-block mb-3 px-3 py-1 bg-white/20 backdrop-blur-sm rounded-full text-xs font-semibold">
-            🤖 AI Technology
+
+      <div class="grid sm:grid-cols-2 gap-6">
+        <!-- Patient Card -->
+        <div onclick="window.location.href='{{ url_for('patient_prescriptions') }}';"
+          class="glass-dark p-12 rounded-[3.5rem] border-white/10 hover:border-white/30 transition-all group reveal-trigger cursor-pointer relative overflow-hidden">
+          <div class="absolute inset-0 bg-white/5 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+          <div class="relative z-10 h-full flex flex-col">
+            <div
+              class="w-16 h-16 bg-white/10 rounded-2xl flex items-center justify-center text-3xl mb-8 group-hover:scale-110 transition-transform">
+              🤝</div>
+            <h3 class="text-3xl font-bold mb-4 font-display text-white">Patient Path</h3>
+            <p class="text-gray-100 mb-8 leading-relaxed text-lg">Own your health data. Find experts instantly. Access a
+              global marketplace of wellness.</p>
+            <div
+              class="mt-auto text-sm font-bold uppercase tracking-widest flex items-center gap-2 group-hover:gap-4 transition-all text-white">
+              Enter Hub <span>→</span>
+            </div>
           </div>
-          <h3 class="text-3xl font-bold mb-3">AI-Powered Health Insights</h3>
-          <p class="text-blue-100 text-lg leading-relaxed">
-            Get real-time diagnostics and recommendations using cutting-edge AI trained on comprehensive medical data.
-          </p>
         </div>
-        <a href="#" class="inline-flex items-center text-white font-semibold hover:gap-3 transition-all duration-200">
-          Learn More 
-          <svg class="ml-2 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
-          </svg>
-        </a>
+
+        <!-- Doctor Card -->
+        <div onclick="window.location.href='{{ url_for('providers_info') }}';"
+          class="glass-dark p-12 rounded-[3.5rem] border-indigo-500/20 hover:border-indigo-500/50 transition-all group reveal-trigger cursor-pointer relative overflow-hidden">
+          <div class="absolute inset-0 bg-indigo-500/5 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+          <div class="relative z-10 h-full flex flex-col">
+            <div
+              class="w-16 h-16 bg-indigo-500/20 rounded-2xl flex items-center justify-center text-3xl mb-8 group-hover:scale-110 transition-transform">
+              🩺</div>
+            <h3 class="text-3xl font-bold mb-4 font-display text-white">Provider Hub</h3>
+            <p class="text-gray-100 mb-8 leading-relaxed text-lg">Next-gen practice management. Lab integration.
+              Automated secure billing.</p>
+            <div
+              class="mt-auto text-sm font-bold uppercase tracking-widest flex items-center gap-2 group-hover:gap-4 transition-all text-indigo-400">
+              Join Network <span>→</span>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
-
-    <!-- Card 2: E-Prescription System -->
-    <div class="relative overflow-hidden rounded-3xl shadow-lg hover:shadow-2xl transform hover:-translate-y-2 transition-all duration-300 h-80 group">
-      <!-- Background Image with Overlay -->
-      <div class="absolute inset-0 bg-cover bg-center" style="background-image: url('{{ url_for('static', filename='images/medication.jpg') }}');">
-        <div class="absolute inset-0 bg-gradient-to-br from-blue-500/70 to-blue-600/70 group-hover:from-blue-600/80 group-hover:to-blue-700/80 transition-all duration-300"></div>
-      </div>
-      
-      <!-- Content -->
-      <div class="relative h-full p-8 flex flex-col justify-between text-white">
-        <div>
-          <div class="inline-block mb-3 px-3 py-1 bg-white/20 backdrop-blur-sm rounded-full text-xs font-semibold">
-            💊 Smart Prescriptions
-          </div>
-          <h3 class="text-2xl font-bold mb-3">E-Prescription System</h3>
-          <p class="text-blue-100 leading-relaxed">
-            Generate, verify, and share prescriptions securely on blockchain for maximum authenticity.
-          </p>
-        </div>
-        <a href="#" class="inline-flex items-center text-white font-semibold hover:gap-3 transition-all duration-200">
-          Explore 
-          <svg class="ml-2 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
-          </svg>
-        </a>
-      </div>
-    </div>
-
-    <!-- Card 3: Doctor & Patient Network -->
-    <div class="relative overflow-hidden rounded-3xl shadow-lg hover:shadow-2xl transform hover:-translate-y-2 transition-all duration-300 h-80 group">
-      <!-- Background Image with Overlay -->
-      <div class="absolute inset-0 bg-cover bg-center" style="background-image: url('{{ url_for('static', filename='images/patrientrelation.jpg') }}');">
-        <div class="absolute inset-0 bg-gradient-to-br from-indigo-500/70 to-purple-600/70 group-hover:from-indigo-600/80 group-hover:to-purple-700/80 transition-all duration-300"></div>
-      </div>
-      
-      <!-- Content -->
-      <div class="relative h-full p-8 flex flex-col justify-between text-white">
-        <div>
-          <div class="inline-block mb-3 px-3 py-1 bg-white/20 backdrop-blur-sm rounded-full text-xs font-semibold">
-            👥 Network
-          </div>
-          <h3 class="text-2xl font-bold mb-3">Doctor & Patient Network</h3>
-          <p class="text-indigo-100 leading-relaxed">
-            Connect instantly with verified professionals and manage appointments seamlessly.
-          </p>
-        </div>
-        <a href="#" class="inline-flex items-center text-white font-semibold hover:gap-3 transition-all duration-200">
-          Connect Now 
-          <svg class="ml-2 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
-          </svg>
-        </a>
-      </div>
-    </div>
-
-    <!-- Card 4: Blockchain Security -->
-    <div class="col-span-1 lg:col-span-2 relative overflow-hidden rounded-3xl shadow-xl hover:shadow-2xl transform hover:-translate-y-2 transition-all duration-300 h-80 group">
-      <!-- Background Image with Overlay -->
-      <div class="absolute inset-0 bg-cover bg-center" style="background-image: url('{{ url_for('static', filename='images/blockchain.jpg') }}');">
-        <div class="absolute inset-0 bg-gradient-to-r from-emerald-600/70 to-green-600/70 group-hover:from-emerald-700/80 group-hover:to-green-700/80 transition-all duration-300"></div>
-      </div>
-      
-      <!-- Content -->
-      <div class="relative h-full p-8 flex flex-col justify-between text-white">
-        <div>
-          <div class="inline-block mb-3 px-3 py-1 bg-white/20 backdrop-blur-sm rounded-full text-xs font-semibold">
-            🔒 Security First
-          </div>
-          <h3 class="text-3xl font-bold mb-3">Blockchain Security</h3>
-          <p class="text-emerald-100 text-lg leading-relaxed max-w-2xl">
-            Every record is encrypted and verified on blockchain — ensuring complete transparency and tamper-proof medical history for ultimate patient privacy.
-          </p>
-        </div>
-        <a href="#" class="inline-flex items-center text-white font-semibold hover:gap-3 transition-all duration-200">
-          View Security Details 
-          <svg class="ml-2 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
-          </svg>
-        </a>
-      </div>
-    </div>
-
   </div>
 </section>
 
-<!-- Bento Grid Section -->
-<div class="bg-gradient-to-b from-blue-50 to-white py-24 sm:py-32">
-  <div class="mx-auto max-w-2xl px-6 lg:max-w-7xl lg:px-8">
-    <h2 class="text-center text-base/7 font-semibold text-blue-600">Complete Healthcare Suite</h2>
-    <p class="mx-auto mt-2 max-w-lg text-center text-4xl font-semibold tracking-tight text-balance text-gray-900 sm:text-5xl">Everything you need to manage your health</p>
-    <div class="mt-10 grid gap-4 sm:mt-16 lg:grid-cols-3 lg:grid-rows-2">
-      
-      <!-- Mobile App - Large Left Card -->
-      <div class="relative lg:row-span-2">
-        <div class="absolute inset-px rounded-lg bg-white lg:rounded-l-[2rem]"></div>
-        <div class="relative flex h-full flex-col overflow-hidden rounded-[calc(theme(borderRadius.lg)+1px)] lg:rounded-l-[calc(2rem+1px)] border border-gray-200">
-          <div class="px-8 pt-8 pb-3 sm:px-10 sm:pt-10 sm:pb-0">
-            <p class="mt-2 text-lg font-medium tracking-tight text-gray-900 max-lg:text-center">Mobile Health App</p>
-            <p class="mt-2 max-w-lg text-sm/6 text-gray-600 max-lg:text-center">Access your complete health dashboard on-the-go. Book appointments, view reports, and consult doctors from anywhere.</p>
+<!-- Detailed Infrastructure Section (ENRICHED) -->
+<section class="section-padding bg-surface relative overflow-hidden">
+  <div class="container-wide">
+    <div class="max-w-3xl mb-24 reveal-trigger">
+      <div class="text-xs font-bold uppercase tracking-[0.4em] text-primary mb-6">Technological Core</div>
+      <h2 class="text-4xl md:text-7xl font-display font-extrabold tracking-tighter mb-8 text-secondary">Architectural
+        Integrity.</h2>
+      <p class="text-xl text-text-muted leading-relaxed">A detailed look into the decentralized infrastructure that
+        powers the CareConnect ecosystem, ensuring absolute security and zero friction.</p>
+    </div>
+
+    <div class="grid lg:grid-cols-3 gap-8">
+      <!-- Detailed Div 1 -->
+      <div class="card-premium reveal-trigger">
+        <div class="flex flex-col h-full">
+          <div class="mb-10 p-4 bg-indigo-50 w-fit rounded-2xl">
+            <svg class="w-8 h-8 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z">
+              </path>
+            </svg>
           </div>
-          <div class="relative min-h-[30rem] w-full grow max-lg:mx-auto max-lg:max-w-sm">
-            <div class="absolute inset-x-10 top-10 bottom-0 overflow-hidden rounded-t-[3rem] border-x-8 border-t-8 border-gray-300 bg-gray-50 shadow-2xl">
-              <img src="{{ url_for('static', filename='images/mobileapp.png') }}" alt="Mobile Health App" class="size-full object-cover object-top" />
+          <h3 class="text-2xl font-display font-bold mb-4">Decentralized Security</h3>
+          <p class="text-text-muted leading-relaxed mb-8">We utilize a distributed ledger protocol to ensure that
+            patient records are immutable and only decipherable by authorized nodes. No single point of failure.</p>
+          <div class="mt-auto pt-8 border-t border-border">
+            <div class="flex justify-between items-center text-xs font-bold uppercase tracking-widest text-secondary">
+              <span>Status</span>
+              <span class="text-green-500">Active</span>
             </div>
           </div>
         </div>
-        <div class="pointer-events-none absolute inset-px rounded-lg shadow-lg ring-1 ring-black/5 lg:rounded-l-[2rem]"></div>
       </div>
-      
-      <!-- Health Analytics - Top Right Card -->
-      <div class="relative max-lg:row-start-1">
-        <div class="absolute inset-px rounded-lg bg-white max-lg:rounded-t-[2rem]"></div>
-        <div class="relative flex h-full flex-col overflow-hidden rounded-[calc(theme(borderRadius.lg)+1px)] max-lg:rounded-t-[calc(2rem+1px)] border border-gray-200">
-          <div class="px-8 pt-8 sm:px-10 sm:pt-10">
-            <p class="mt-2 text-lg font-medium tracking-tight text-gray-900 max-lg:text-center">Health Analytics</p>
-            <p class="mt-2 max-w-lg text-sm/6 text-gray-600 max-lg:text-center">Track your vitals, medications, and health trends with intelligent insights and personalized recommendations.</p>
+
+      <!-- Detailed Div 2 -->
+      <div class="card-premium reveal-trigger" style="transition-delay: 0.1s">
+        <div class="flex flex-col h-full">
+          <div class="mb-10 p-4 bg-rose-50 w-fit rounded-2xl">
+            <svg class="w-8 h-8 text-rose-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z">
+              </path>
+            </svg>
           </div>
-          <div class="flex flex-1 items-center justify-center px-8 max-lg:pt-10 max-lg:pb-12 sm:px-10 lg:pb-2">
-            <img src="{{ url_for('static', filename='images/vitals.jpg') }}" alt="Health Analytics Dashboard" class="w-full max-lg:max-w-xs rounded-lg shadow-md" />
-          </div>
-        </div>
-        <div class="pointer-events-none absolute inset-px rounded-lg shadow-lg ring-1 ring-black/5 max-lg:rounded-t-[2rem]"></div>
-      </div>
-      
-      <!-- Secure Records - Middle Right Card -->
-      <div class="relative max-lg:row-start-3 lg:col-start-2 lg:row-start-2">
-        <div class="absolute inset-px rounded-lg bg-white"></div>
-        <div class="relative flex h-full flex-col overflow-hidden rounded-[calc(theme(borderRadius.lg)+1px)] border border-gray-200">
-          <div class="px-8 pt-8 sm:px-10 sm:pt-10">
-            <p class="mt-2 text-lg font-medium tracking-tight text-gray-900 max-lg:text-center">Secure Health Records</p>
-            <p class="mt-2 max-w-lg text-sm/6 text-gray-600 max-lg:text-center">All your medical records encrypted and stored securely with blockchain verification for complete privacy.</p>
-          </div>
-          <div class="flex flex-1 items-center max-lg:py-6 lg:pb-2 px-8">
-            <img src="{{ url_for('static', filename='images/security.jpg') }}" alt="Secure Health Records" class="h-full max-h-40 object-contain mx-auto" />
-          </div>
-        </div>
-        <div class="pointer-events-none absolute inset-px rounded-lg shadow-lg ring-1 ring-black/5"></div>
-      </div>
-      
-      <!-- Telemedicine - Large Right Card -->
-      <div class="relative lg:row-span-2">
-        <div class="absolute inset-px rounded-lg bg-white max-lg:rounded-b-[2rem] lg:rounded-r-[2rem]"></div>
-        <div class="relative flex h-full flex-col overflow-hidden rounded-[calc(theme(borderRadius.lg)+1px)] max-lg:rounded-b-[calc(2rem+1px)] lg:rounded-r-[calc(2rem+1px)] border border-gray-200">
-          <div class="px-8 pt-8 pb-3 sm:px-10 sm:pt-10 sm:pb-0">
-            <p class="mt-2 text-lg font-medium tracking-tight text-gray-900 max-lg:text-center">Video Consultations</p>
-            <p class="mt-2 max-w-lg text-sm/6 text-gray-600 max-lg:text-center">Connect with doctors through HD video calls. Get instant medical advice without leaving your home.</p>
-          </div>
-          <div class="relative min-h-[30rem] w-full grow">
-            <div class="absolute top-10 right-0 bottom-0 left-10 overflow-hidden rounded-tl-xl bg-gradient-to-br from-blue-50 to-indigo-50 shadow-inner border border-gray-200">
-              <div class="flex bg-white border-b border-gray-200">
-                <div class="-mb-px flex text-sm/6 font-medium text-gray-600">
-                  <div class="border-r border-b-2 border-r-gray-200 border-b-blue-500 bg-blue-50 px-4 py-2 text-gray-900 font-semibold">VideoCall.jsx</div>
-                  <div class="border-r border-gray-200 px-4 py-2">Schedule.jsx</div>
-                </div>
-              </div>
-              <div class="p-6">
-                <img src="{{ url_for('static', filename='images/videoconsulation.jpg') }}" alt="Video Consultation Interface" class="w-full rounded-lg shadow-lg" />
-              </div>
+          <h3 class="text-2xl font-display font-bold mb-4">Atomic Connectivity</h3>
+          <p class="text-text-muted leading-relaxed mb-8">CareConnect's API fabric enables sub-100ms data transfers
+            between independent labs and clinic dashboards, ensuring real-time care coordination.</p>
+          <div class="mt-auto pt-8 border-t border-border">
+            <div class="flex justify-between items-center text-xs font-bold uppercase tracking-widest text-secondary">
+              <span>Latency</span>
+              <span class="text-indigo-600">&lt;100ms</span>
             </div>
           </div>
         </div>
-        <div class="pointer-events-none absolute inset-px rounded-lg shadow-lg ring-1 ring-black/5 max-lg:rounded-b-[2rem] lg:rounded-r-[2rem]"></div>
       </div>
-      
+
+      <!-- Detailed Div 3 -->
+      <div class="card-premium reveal-trigger" style="transition-delay: 0.2s">
+        <div class="flex flex-col h-full">
+          <div class="mb-10 p-4 bg-emerald-50 w-fit rounded-2xl">
+            <svg class="w-8 h-8 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z">
+              </path>
+            </svg>
+          </div>
+          <h3 class="text-2xl font-display font-bold mb-4">AI Triage Core</h3>
+          <p class="text-text-muted leading-relaxed mb-8">Integrated large language models assist in report
+            summarization and predictive diagnostics, empowering doctors with augmented intelligence.</p>
+          <div class="mt-auto pt-8 border-t border-border">
+            <div class="flex justify-between items-center text-xs font-bold uppercase tracking-widest text-secondary">
+              <span>Inference</span>
+              <span class="text-emerald-600">RT-Edge</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Security & Cloud Infrastructure Detailed Breakdown (ENRICHMENT) -->
+    <div class="mt-12 grid lg:grid-cols-2 gap-8">
+      <div class="card-premium bg-slate-950 text-white border-white/5 reveal-trigger">
+        <div class="flex flex-col h-full">
+          <div class="mb-10 p-4 bg-white/5 w-fit rounded-2xl">
+            <svg class="w-8 h-8 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M12 15v2m-6-4h12a2 2 0 012 2v6a2 2 0 01-2 2H6a2 2 0 01-2-2v-6a2 2 0 012-2zm10-4V8a4 4 0 00-8 0v3h8z">
+              </path>
+            </svg>
+          </div>
+          <h3 class="text-3xl font-display font-bold mb-6">Quantum-Resistant Vaults</h3>
+          <p class="text-gray-400 leading-relaxed mb-10">Beyond standard AES-256, we employ post-quantum cryptographic
+            wrappers for long-term data sustainability. All "at-rest" data is sharded across multiple regional private
+            clouds.</p>
+          <div class="grid grid-cols-2 gap-6 pt-10 border-t border-white/10">
+            <div>
+              <div class="text-[10px] font-bold uppercase tracking-[0.2em] text-gray-500 mb-2">Encryption</div>
+              <div class="text-sm font-bold text-white tracking-widest">PQ-WRAPPER v2</div>
+            </div>
+            <div>
+              <div class="text-[10px] font-bold uppercase tracking-[0.2em] text-gray-500 mb-2">Compliance</div>
+              <div class="text-sm font-bold text-white tracking-widest">HIPAA / GDPR++</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card-premium bg-slate-900 text-white border-white/5 reveal-trigger" style="transition-delay: 0.1s">
+        <div class="flex flex-col h-full">
+          <div class="mb-10 p-4 bg-white/5 w-fit rounded-2xl">
+            <svg class="w-8 h-8 text-rose-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z">
+              </path>
+            </svg>
+          </div>
+          <h3 class="text-3xl font-display font-bold mb-6">Real-Time Sync Mesh</h3>
+          <p class="text-gray-400 leading-relaxed mb-10">Our proprietary mesh network synchronizes prescription data and
+            lab orders across provider dashboards with zero propagation delay. No more waiting for updates.</p>
+          <div class="grid grid-cols-2 gap-6 pt-10 border-t border-white/10">
+            <div>
+              <div class="text-[10px] font-bold uppercase tracking-[0.2em] text-gray-500 mb-2">Sync Delay</div>
+              <div class="text-sm font-bold text-emerald-400 tracking-widest">0.02ms</div>
+            </div>
+            <div>
+              <div class="text-[10px] font-bold uppercase tracking-[0.2em] text-gray-500 mb-2">Protocol</div>
+              <div class="text-sm font-bold text-white tracking-widest">CareLink P2P</div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
-</div>
+</section>
 
+<!-- Features Bento -->
+<section class="section-padding bg-surface">
+  <div class="container-wide">
+    <div class="max-w-2xl mb-20 reveal-trigger">
+      <h2 class="text-4xl md:text-7xl font-display font-bold tracking-tighter mb-6 text-secondary">Built for Excellence.
+      </h2>
+      <p class="text-xl text-text-muted">A comprehensive suite of tools designed to elevate the healthcare experience
+        for everyone.</p>
+    </div>
+
+    <div class="grid lg:grid-cols-12 grid-rows-2 gap-6 h-[800px]">
+      <div class="lg:col-span-8 glass border-border p-16 rounded-[4rem] relative overflow-hidden group reveal-trigger">
+        <div class="relative z-10 h-full flex flex-col justify-between">
+          <div>
+            <div class="text-xs font-bold uppercase tracking-[0.3em] text-primary mb-6">Infrastructure</div>
+            <h3 class="text-5xl font-display font-extrabold tracking-tighter mb-6">Global Scale. <br> Private Network.
+            </h3>
+            <p class="text-lg text-text-muted max-w-sm">The backbone of CareConnect uses advanced routing to connect you
+              with the right specialist in seconds.</p>
+          </div>
+          <a href="#" class="btn-premium btn-primary inline-flex w-fit">View Technology</a>
+        </div>
+        <div
+          class="absolute -right-20 -bottom-20 w-80 h-80 bg-indigo-500/5 rounded-full group-hover:scale-125 transition-transform duration-1000 -z-0">
+        </div>
+      </div>
+
+      <div class="lg:col-span-4 card-premium reveal-trigger">
+        <div class="h-16 w-16 bg-indigo-50 rounded-2xl flex items-center justify-center mb-10">
+          <svg class="w-8 h-8 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M12 15v2m-6-4h12a2 2 0 012 2v6a2 2 0 01-2 2H6a2 2 0 01-2-2v-6a2 2 0 012-2zm10-4V8a4 4 0 00-8 0v3h8z">
+            </path>
+          </svg>
+        </div>
+        <h3 class="text-2xl font-display font-bold tracking-tight mb-4">Quantum Encryption</h3>
+        <p class="text-text-muted leading-relaxed">Your data is secured with multi-layer encryption protocols that
+          exceed global standards.</p>
+      </div>
+
+      <div class="lg:col-span-4 card-premium reveal-trigger">
+        <div class="h-16 w-16 bg-rose-50 rounded-2xl flex items-center justify-center mb-10">
+          <svg class="w-8 h-8 text-rose-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+          </svg>
+        </div>
+        <h3 class="text-2xl font-display font-bold tracking-tight mb-4">Instant Marketplace</h3>
+        <p class="text-text-muted leading-relaxed">Order tests, buy insurance, or book appointments with a single click.
+          Zero friction.</p>
+      </div>
+
+      <div
+        class="lg:col-span-8 p-16 rounded-[4rem] bg-indigo-600 text-white reveal-trigger relative overflow-hidden group">
+        <div class="relative z-10">
+          <h3 class="text-5xl font-display font-extrabold tracking-tighter mb-6">Global Reach. Local Care.</h3>
+          <p class="text-xl opacity-80 max-w-xl mb-10">We're bridging the gap between world-class medical expertise and
+            your local pharmacy. A truly borderless healthcare system.</p>
+          <div class="flex -space-x-4">
+            <div class="w-14 h-14 rounded-full border-4 border-indigo-600 bg-gray-200"></div>
+            <div class="w-14 h-14 rounded-full border-4 border-indigo-600 bg-gray-300"></div>
+            <div class="w-14 h-14 rounded-full border-4 border-indigo-600 bg-gray-400"></div>
+            <div
+              class="flex items-center justify-center w-14 h-14 rounded-full border-4 border-indigo-600 bg-indigo-800 text-xs font-bold">
+              +10k</div>
+          </div>
+        </div>
+        <div
+          class="absolute top-0 right-0 w-full h-full bg-gradient-to-br from-white/10 to-transparent pointer-events-none">
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  window.addEventListener('load', () => {
+    // Hero Animations
+    const tl = gsap.timeline();
+
+    tl.to('.reveal-text span', {
+      y: 0,
+      duration: 1.4,
+      stagger: 0.1,
+      ease: "expo.out",
+      delay: 0.4
+    })
+      .to('.hero-fade', {
+        opacity: 1,
+        y: -20,
+        duration: 1,
+        stagger: 0.15,
+        ease: "power2.out"
+      }, "-=1");
+
+    // Stat Numbers Stagger
+    gsap.from('.stat-num', {
+      scrollTrigger: {
+        trigger: '.stat-num',
+        start: "top 90%"
+      },
+      y: 30,
+      opacity: 0,
+      duration: 1,
+      stagger: 0.1,
+      ease: "power3.out"
+    });
+
+    // Scroll Revelations with Stagger Support
+    const revealGroups = [
+      '.grid > .reveal-trigger',
+      '.card-premium',
+      '.glass',
+      '#concept .reveal-trigger'
+    ];
+
+    revealGroups.forEach(group => {
+      gsap.utils.toArray(group).forEach((el, i) => {
+        gsap.from(el, {
+          scrollTrigger: {
+            trigger: el,
+            start: "top 90%",
+            toggleActions: "play none none none"
+          },
+          y: 40,
+          opacity: 0,
+          duration: 1.2,
+          delay: (i % 3) * 0.1, // Artificial stagger for grids
+          ease: "power3.out"
+        });
+      });
+    });
+
+    // Branding Mouse Parallax (Refined)
+    document.addEventListener('mousemove', (e) => {
+      const { clientX, clientY } = e;
+      const x = (clientX - window.innerWidth / 2) / window.innerWidth;
+      const y = (clientY - window.innerHeight / 2) / window.innerHeight;
+
+      gsap.to('.branding-parallax', {
+        x: (i, target) => x * 60 * (target.dataset.depth || 0.1),
+        y: (i, target) => y * 60 * (target.dataset.depth || 0.1),
+        duration: 2,
+        ease: "power2.out"
+      });
+    });
+  });
+</script>
 {% endblock %}

@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+{% block title %}Lab dashboard | CareConnect{% endblock %}
+
+{% block content %}
+<div class="max-w-6xl mx-auto">
+  <div class="flex flex-col md:flex-row md:items-start md:justify-between gap-4 mb-8">
+    <div>
+      <p class="text-sm font-semibold text-violet-700 uppercase tracking-wide">Pathology lab</p>
+      <h1 class="text-3xl font-bold text-gray-900">
+        {% if user.organization %}{{ user.organization }}{% else %}Your laboratory{% endif %}
+      </h1>
+      <p class="text-gray-600 mt-1">Requisitions, processing queue, and reports — demo data below.</p>
+    </div>
+    <div class="flex flex-wrap gap-2">
+      <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-800">Network active</span>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-10">
+    <div class="bg-white rounded-xl border border-gray-200 p-5 shadow-sm">
+      <p class="text-sm text-gray-500">Pending intake</p>
+      <p class="text-2xl font-bold text-gray-900 mt-1">7</p>
+    </div>
+    <div class="bg-white rounded-xl border border-gray-200 p-5 shadow-sm">
+      <p class="text-sm text-gray-500">In processing</p>
+      <p class="text-2xl font-bold text-amber-600 mt-1">4</p>
+    </div>
+    <div class="bg-white rounded-xl border border-gray-200 p-5 shadow-sm">
+      <p class="text-sm text-gray-500">Reports today</p>
+      <p class="text-2xl font-bold text-indigo-600 mt-1">12</p>
+    </div>
+    <div class="bg-white rounded-xl border border-gray-200 p-5 shadow-sm">
+      <p class="text-sm text-gray-500">Urgent queue</p>
+      <p class="text-2xl font-bold text-red-600 mt-1">1</p>
+    </div>
+  </div>
+
+  <div class="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
+    <div class="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
+      <h2 class="text-lg font-semibold text-gray-900">Recent requisitions</h2>
+      <span class="text-xs text-gray-500">{{ lab_orders | length }} shown</span>
+    </div>
+    <div class="overflow-x-auto">
+      <table class="min-w-full text-sm">
+        <thead>
+          <tr class="bg-gray-50 text-left text-gray-600">
+            <th class="px-6 py-3 font-medium">ID</th>
+            <th class="px-6 py-3 font-medium">Patient</th>
+            <th class="px-6 py-3 font-medium">Test / panel</th>
+            <th class="px-6 py-3 font-medium">Priority</th>
+            <th class="px-6 py-3 font-medium">Status</th>
+            <th class="px-6 py-3 font-medium">Ordered</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-gray-100">
+          {% for row in lab_orders %}
+          <tr class="hover:bg-gray-50/80">
+            <td class="px-6 py-3 font-mono text-xs text-gray-800">{{ row.id }}</td>
+            <td class="px-6 py-3 text-gray-800">{{ row.patient_name }}</td>
+            <td class="px-6 py-3 text-gray-700">{{ row.test }}</td>
+            <td class="px-6 py-3">
+              {% if row.priority == 'Urgent' %}
+                <span class="text-xs font-semibold px-2 py-0.5 rounded-full bg-red-100 text-red-800">{{ row.priority }}</span>
+              {% else %}
+                <span class="text-xs text-gray-600">{{ row.priority }}</span>
+              {% endif %}
+            </td>
+            <td class="px-6 py-3 text-gray-700">{{ row.status }}</td>
+            <td class="px-6 py-3 text-gray-500">{{ row.ordered_at }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <p class="text-xs text-gray-500 mt-6">Connect LIS / HL7 integrations in production to replace demo rows.</p>
+</div>
+{% endblock %}

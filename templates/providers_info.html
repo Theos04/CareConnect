@@ -1,0 +1,220 @@
+{% extends "base.html" %}
+{% block title %}Providers | The CareConnect Ecosystem{% endblock %}
+
+{% block content %}
+<!-- Elite Header -->
+<section class="relative min-h-[70vh] flex items-center pt-32 pb-20 overflow-hidden bg-background">
+  <div class="container-wide px-8 relative z-10">
+    <div class="max-w-4xl">
+      <div class="inline-flex items-center gap-2 px-3 py-1 bg-indigo-50 text-indigo-700 rounded-full text-xs font-bold uppercase tracking-widest mb-8 opacity-0 hero-fade">
+        <span class="w-2 h-2 bg-indigo-600 rounded-full animate-pulse"></span>
+        Global Provider Network
+      </div>
+      
+      <h1 class="text-6xl md:text-8xl font-display font-extrabold leading-[0.9] tracking-tighter text-secondary mb-8">
+        <span class="reveal-text"><span>Focus on Patient Care,</span></span>
+        <span class="reveal-text text-primary"><span>Eliminate Complexity.</span></span>
+      </h1>
+      
+      <p class="text-xl md:text-2xl text-text-muted font-medium max-w-2xl leading-relaxed mb-12 opacity-0 hero-fade">
+        CareConnect provides the elite digital infrastructure for modern clinics, labs, and hospitals to operate with machine-like precision.
+      </p>
+
+      <div class="flex flex-wrap gap-4 opacity-0 hero-fade">
+        <a href="#solutions" class="btn-premium btn-primary">Our Solutions</a>
+        <a href="#tech" class="btn-premium bg-white text-secondary border border-border">Infrastructure Details</a>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Interactive Branding Element -->
+  <div class="absolute -top-20 -right-20 w-[600px] h-[600px] bg-indigo-500/5 rounded-full blur-[120px] branding-parallax" data-depth="0.15"></div>
+</section>
+
+<!-- Solution Grid -->
+<section id="solutions" class="section-padding bg-secondary text-white relative overflow-hidden">
+  <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-10"></div>
+  <div class="container-wide relative z-10">
+    <div class="grid lg:grid-cols-3 gap-8">
+      <!-- Doctors -->
+      <div class="glass-dark p-12 rounded-[3.5rem] border-white/5 hover:border-indigo-500/30 transition-all group reveal-trigger">
+        <div class="w-16 h-16 bg-white/10 rounded-2xl flex items-center justify-center text-3xl mb-8 group-hover:scale-110 transition-transform">🩺</div>
+        <h3 class="text-3xl font-bold mb-4 font-display italic">Clinics</h3>
+        <p class="text-gray-400 mb-8 leading-relaxed">Unified timelines & smart prescriptions. Reduce administrative lag by 40% using our AI-driven scheduling engine.</p>
+        <div class="space-y-4 mb-8">
+          <div class="flex items-center gap-3 text-sm text-indigo-300 font-bold">
+            <span class="w-1.5 h-1.5 bg-indigo-500 rounded-full"></span> Smart EHR Sync
+          </div>
+          <div class="flex items-center gap-3 text-sm text-indigo-300 font-bold">
+            <span class="w-1.5 h-1.5 bg-indigo-500 rounded-full"></span> Automated Billing
+          </div>
+        </div>
+        <a href="/getting-started?role=doctor" class="btn-premium bg-white/10 text-white border border-white/10 hover:bg-white transition-all hover:text-secondary w-full">Join Network</a>
+      </div>
+
+      <!-- Labs -->
+      <div class="glass-dark p-12 rounded-[3.5rem] border-white/5 hover:border-rose-500/30 transition-all group reveal-trigger" style="transition-delay: 0.1s">
+        <div class="w-16 h-16 bg-white/10 rounded-2xl flex items-center justify-center text-3xl mb-8 group-hover:scale-110 transition-transform">🔬</div>
+        <h3 class="text-3xl font-bold mb-4 font-display italic">Laboratories</h3>
+        <p class="text-gray-400 mb-8 leading-relaxed">Real-time report broadcasting. Secure API channels directly to referring specialists and patient apps.</p>
+        <div class="space-y-4 mb-8">
+          <div class="flex items-center gap-3 text-sm text-rose-300 font-bold">
+            <span class="w-1.5 h-1.5 bg-rose-500 rounded-full"></span> Direct Result API
+          </div>
+          <div class="flex items-center gap-3 text-sm text-rose-300 font-bold">
+            <span class="w-1.5 h-1.5 bg-rose-500 rounded-full"></span> Digital Authorization
+          </div>
+        </div>
+        <a href="/getting-started?role=pathology" class="btn-premium bg-white/10 text-white border border-white/10 hover:bg-white transition-all hover:text-secondary w-full">Sync Lab</a>
+      </div>
+
+      <!-- Hospitals -->
+      <div class="glass-dark p-12 rounded-[3.5rem] border-white/5 hover:border-emerald-500/30 transition-all group reveal-trigger" style="transition-delay: 0.2s">
+        <div class="w-16 h-16 bg-white/10 rounded-2xl flex items-center justify-center text-3xl mb-8 group-hover:scale-110 transition-transform">🏥</div>
+        <h3 class="text-3xl font-bold mb-4 font-display italic">Enterprise</h3>
+        <p class="text-gray-400 mb-8 leading-relaxed">Multi-department coordination. Inventory tracking & ward management with military-grade security.</p>
+        <div class="space-y-4 mb-8">
+          <div class="flex items-center gap-3 text-sm text-emerald-300 font-bold">
+            <span class="w-1.5 h-1.5 bg-emerald-500 rounded-full"></span> Facility Resource ERP
+          </div>
+          <div class="flex items-center gap-3 text-sm text-emerald-300 font-bold">
+            <span class="w-1.5 h-1.5 bg-emerald-500 rounded-full"></span> Custom API Nodes
+          </div>
+        </div>
+        <a href="/getting-started?role=hospital" class="btn-premium bg-white/10 text-white border border-white/10 hover:bg-white transition-all hover:text-secondary w-full">Integrate</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Detailed Tech Breakdown (NEW Detailed Section) -->
+<section id="tech" class="section-padding bg-white relative overflow-hidden">
+  <div class="container-wide">
+    <div class="grid lg:grid-cols-2 gap-24 items-center">
+      <div class="reveal-trigger">
+        <h2 class="text-5xl md:text-7xl font-display font-extrabold tracking-tighter mb-8 text-secondary">
+          High-Detail <br> <span class="text-primary">Integrations.</span>
+        </h2>
+        <p class="text-xl text-text-muted mb-12">CareConnect isn't just a dashboard; it's a deep-layer protocol for the next generation of healthcare.</p>
+        
+        <div class="space-y-12">
+          <!-- Detail Div 1 -->
+          <div class="group border-l-4 border-indigo-100 hover:border-indigo-600 pl-8 transition-all">
+            <h4 class="text-2xl font-bold text-secondary mb-3">Bi-Directional Lab Sync</h4>
+            <p class="text-text-muted leading-relaxed">Automatically pull results into patient charts. Notifications trigger for doctors as soon as reports are signed off by the pathologist.</p>
+          </div>
+          <!-- Detail Div 2 -->
+          <div class="group border-l-4 border-indigo-100 hover:border-indigo-600 pl-8 transition-all">
+            <h4 class="text-2xl font-bold text-secondary mb-3">Smart Prescription Fabric</h4>
+            <p class="text-text-muted leading-relaxed">One-click prescriptions send secure tokens to patient apps and pre-authorized pharmacies, eliminating forgery and errors.</p>
+          </div>
+          <!-- Detail Div 3 -->
+          <div class="group border-l-4 border-indigo-100 hover:border-indigo-600 pl-8 transition-all">
+            <h4 class="text-2xl font-bold text-secondary mb-3">Resource Management (ER-M)</h4>
+            <p class="text-text-muted leading-relaxed">Real-time ward occupancy and surgical schedule optimization using lightweight predictive models.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="relative reveal-trigger">
+        <div class="card-premium glass p-16 relative z-10 h-full">
+          <div class="text-xs font-bold uppercase tracking-[0.4em] text-primary mb-8">Infrastructure Reliability</div>
+          <div class="space-y-8">
+            <div class="flex justify-between items-end border-b border-border pb-4 hover:pb-6 transition-all duration-500">
+              <span class="text-secondary font-bold">API Response Time</span>
+              <span class="text-primary font-bold text-2xl font-display tracking-tighter">42ms</span>
+            </div>
+            <div class="flex justify-between items-end border-b border-border pb-4 hover:pb-6 transition-all duration-500">
+              <span class="text-secondary font-bold">Data Redundancy</span>
+              <span class="text-primary font-bold text-2xl font-display tracking-tighter">Hexa-Sync</span>
+            </div>
+            <div class="flex justify-between items-end border-b border-border pb-4 hover:pb-6 transition-all duration-500">
+              <span class="text-secondary font-bold">Uptime (SLA)</span>
+              <span class="text-primary font-bold text-2xl font-display tracking-tighter">99.999%</span>
+            </div>
+          </div>
+          <div class="mt-16 p-8 bg-indigo-600 rounded-[2rem] text-white">
+            <h5 class="font-bold mb-2">Network Health</h5>
+            <div class="w-full bg-white/20 h-2 rounded-full overflow-hidden">
+                <div class="bg-white h-full w-[95%] animate-[pulse_2s_infinite]"></div>
+            </div>
+          </div>
+        </div>
+        <!-- Decorative -->
+        <div class="absolute -bottom-10 -left-10 w-40 h-40 bg-indigo-500/10 rounded-full blur-2xl -z-0"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Final CTA Card -->
+<section class="section-padding bg-surface pt-0">
+    <div class="container-wide">
+        <div class="card-premium bg-gradient-to-br from-indigo-700 to-indigo-900 border-none p-24 text-center text-white reveal-trigger relative overflow-hidden group">
+            <div class="relative z-10">
+                <h2 class="text-5xl md:text-7xl font-display font-extrabold tracking-tight mb-8">Enter the Elite Network.</h2>
+                <p class="text-xl text-white/70 max-w-2xl mx-auto mb-16">The future of healthcare is unified. Join the professionals already operating at the speed of CareConnect.</p>
+                <div class="flex flex-wrap justify-center gap-6">
+                    <a href="/getting-started?role=doctor&tab=signup" class="btn-premium bg-white text-indigo-700">Practice Registration</a>
+                    <a href="/getting-started?role=pathology&tab=signup" class="btn-premium bg-indigo-600 text-white border border-white/20">Lab Sync Integration</a>
+                </div>
+            </div>
+            <div class="absolute top-0 right-0 w-1/2 h-full bg-white/5 skew-x-[45deg] translate-x-1/2 group-hover:translate-x-0 transition-transform duration-1000"></div>
+        </div>
+    </div>
+</section>
+
+<script>
+  window.addEventListener('load', () => {
+    // Hero Animations
+    const tl = gsap.timeline();
+    
+    tl.to('.reveal-text span', {
+      y: 0,
+      duration: 1.2,
+      stagger: 0.2,
+      ease: "power4.out",
+      delay: 0.5
+    })
+    .to('.hero-fade', {
+      opacity: 1,
+      y: -20,
+      duration: 1,
+      stagger: 0.1,
+      ease: "power2.out"
+    }, "-=0.8");
+
+    // Scroll Revelations
+    gsap.utils.toArray('.reveal-trigger').forEach(el => {
+      gsap.from(el, {
+        scrollTrigger: {
+          trigger: el,
+          start: "top 85%",
+          toggleActions: "play none none none"
+        },
+        y: 40,
+        opacity: 0,
+        duration: 1.2,
+        ease: "power3.out"
+      });
+    });
+
+    // Branding Mouse Parallax
+    document.addEventListener('mousemove', (e) => {
+      const { clientX, clientY } = e;
+      const x = (clientX - window.innerWidth / 2) / window.innerWidth;
+      const y = (clientY - window.innerHeight / 2) / window.innerHeight;
+
+      gsap.utils.toArray('.branding-parallax').forEach(el => {
+        const depth = el.dataset.depth || 0.1;
+        gsap.to(el, {
+          x: x * 80 * depth,
+          y: y * 80 * depth,
+          duration: 1.2,
+          ease: "power2.out"
+        });
+      });
+    });
+  });
+</script>
+{% endblock %}

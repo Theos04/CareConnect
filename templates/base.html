@@ -6,72 +6,206 @@
   <title>{% block title %}CareConnect{% endblock %}</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <!-- Luxury Animation Engines -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+  <script src="https://unpkg.com/lenis@1.1.20/dist/lenis.min.js"></script>
+  {% block extra_head %}{% endblock %}
 </head>
-<body class="bg-gray-50 font-sans">
+<body class="selection:bg-indigo-100 selection:text-indigo-900">
+
+  <!-- Luxury Preloader -->
+  <div class="preloader" id="preloader">
+    <div class="preloader-counter" id="preloaderCounter">0</div>
+    <div class="text-sm tracking-[0.4em] uppercase opacity-50 mt-4">Initializing CareConnect</div>
+  </div>
 
   <!-- Navbar -->
-  <header class="fixed top-0 inset-x-0 z-50 bg-white/80 backdrop-blur-sm border-b border-gray-100 shadow-sm p-4">
-    <nav class="mx-auto max-w-7xl flex justify-between items-center">
-      <a href="/" class="text-lg font-bold text-gray-800">CareConnect</a>
+  <header id="mainNav" class="fixed top-0 inset-x-0 z-50 transition-all duration-500 py-6">
+    <nav class="mx-auto max-w-7xl px-8 flex justify-between items-center glass rounded-full mx-4 md:mx-auto">
+      <a href="/" class="text-2xl font-bold tracking-tight text-gray-900 group flex items-center gap-2">
+        <div class="w-8 h-8 bg-indigo-600 rounded-lg flex items-center justify-center text-white text-sm">C</div>
+        <span>CareConnect</span>
+      </a>
 
-      <div class="flex items-center space-x-4">
-        <a href="/" class="text-gray-700 hover:text-indigo-600">Home</a>
-        <a href="/getting-started" class="text-gray-700 hover:text-indigo-600">Get Started</a>
-        <a href="/create-profile" class="text-gray-700 hover:text-indigo-600">Profile</a>
+      <div class="hidden lg:flex items-center space-x-8">
+        <a href="/" class="{% if request.endpoint == 'landing' %}text-indigo-600{% else %}text-gray-500 hover:text-indigo-600{% endif %} transition-colors font-semibold text-sm uppercase tracking-wider">Concept</a>
 
         {% if g.user %}
-          {% if g.user.role == 'Doctor' %}
-            <a href="{{ url_for('doctor_home') }}" class="text-indigo-600 font-medium">Doctor Home</a>
-            <a href="{{ url_for('doctor_prescriptions') }}" class="text-indigo-600 font-medium">Prescriptions</a>
-          {% elif g.user.role == 'Patient' %}
-            <a href="{{ url_for('patient_prescriptions') }}" class="text-indigo-600 font-medium">My Prescriptions</a>
-          {% elif g.user.role == 'Clinic / Hospital' %}
-            <a href="{{ url_for('pharmacy_prescriptions') }}" class="text-indigo-600 font-medium">Pharmacy Dashboard</a>
+          {% if g.user.role != 'Pending' %}
+          <a href="{{ url_for('marketplace') }}" class="text-gray-500 hover:text-indigo-600 transition-colors font-semibold text-sm uppercase tracking-wider">Marketplace</a>
+          <a href="{{ url_for('doctors') }}" class="text-gray-500 hover:text-indigo-600 transition-colors font-semibold text-sm uppercase tracking-wider">Doctors</a>
           {% endif %}
-          <a href="{{ url_for('logout') }}" class="text-red-600 hover:text-red-800">Logout</a>
+          
+          <div class="h-4 w-px bg-gray-200"></div>
+
+          {% if g.user.role == 'Pending' %}
+            <a href="{{ url_for('oauth_choose_role') }}" class="text-amber-600 font-bold text-sm uppercase tracking-wider">Onboarding</a>
+          {% else %}
+            <span class="text-[10px] font-black uppercase tracking-[0.2em] text-gray-400 bg-gray-100 px-2 py-1 rounded">{{ g.user.role }}</span>
+          {% endif %}
+
+          <a href="{{ url_for('logout') }}" class="btn-premium btn-primary text-sm">
+            Logout
+          </a>
         {% else %}
-          <a href="{{ url_for('login') }}" class="text-indigo-600 font-medium">Login</a>
+          <a href="{{ url_for('patients_info') }}" class="text-gray-500 hover:text-indigo-600 transition-colors font-semibold text-sm uppercase tracking-wider">Patients</a>
+          <a href="{{ url_for('providers_info') }}" class="text-gray-500 hover:text-indigo-600 transition-colors font-semibold text-sm uppercase tracking-wider">Providers</a>
+          
+          <div class="flex items-center space-x-4 ml-4">
+            <a href="{{ url_for('login') }}" class="text-gray-900 font-bold text-sm uppercase tracking-wider hover:opacity-70 transition-opacity">Login</a>
+            <a href="/getting-started" class="btn-premium btn-primary text-sm">
+              Get Started
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
+            </a>
+          </div>
         {% endif %}
       </div>
     </nav>
   </header>
 
-  <!-- Flash messages -->
-  {% with messages = get_flashed_messages(with_categories=true) %}
-    {% if messages %}
-      <div class="mt-20 px-4">
-        {% for category, msg in messages %}
-          <div class="max-w-2xl mx-auto p-3 mb-2 rounded text-sm
-                      {% if category == 'success' %}bg-green-100 text-green-800{% endif %}
-                      {% if category == 'danger' %}bg-red-100 text-red-800{% endif %}
-                      {% if category == 'warning' %}bg-yellow-100 text-yellow-800{% endif %}
-                      {% if category == 'info' %}bg-blue-100 text-blue-800{% endif %}">
-            {{ msg }}
+  <!-- Main content wrapper for Lenis -->
+  <div id="contentWrapper">
+    <!-- Flash messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <div class="fixed top-24 left-1/2 -translate-x-1/2 z-[60] w-full max-w-md px-4">
+          {% for category, msg in messages %}
+            <div class="glass p-4 mb-2 rounded-2xl shadow-2xl border-l-4 
+                        {% if category == 'success' %}border-green-500{% elif category == 'danger' %}border-red-500{% else %}border-indigo-500{% endif %} 
+                        flex items-center gap-3 animate-in fade-in slide-in-from-top-4 duration-500">
+              <div class="flex-1 text-sm font-semibold text-gray-900">{{ msg }}</div>
+              <button onclick="this.parentElement.remove()" class="text-gray-400 hover:text-gray-600">×</button>
+            </div>
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
+
+    <main>
+      {% block content %}{% endblock %}
+    </main>
+
+    <!-- Professional Footer -->
+    <footer class="bg-secondary text-white pt-32 pb-12">
+      <div class="container-wide">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-16 px-8">
+          <div class="lg:col-span-4">
+            <a href="/" class="text-3xl font-display font-bold tracking-tighter">CareConnect</a>
+            <p class="mt-6 text-text-muted max-w-sm leading-relaxed">
+              The elite standard for modern healthcare networking. Secure, scalable, and human-centric technology for the next generation of medicine.
+            </p>
           </div>
-        {% endfor %}
+          <div class="lg:col-span-8 grid grid-cols-2 md:grid-cols-4 gap-8">
+            <div class="space-y-4">
+              <h4 class="font-display font-bold text-xs uppercase tracking-[0.2em] opacity-40">Network</h4>
+              <ul class="space-y-2 text-sm font-medium text-gray-400">
+                <li><a href="#" class="hover:text-white transition-colors">Marketplace</a></li>
+                <li><a href="#" class="hover:text-white transition-colors">Find Doctors</a></li>
+                <li><a href="#" class="hover:text-white transition-colors">Insurance</a></li>
+              </ul>
+            </div>
+            <div class="space-y-4">
+              <h4 class="font-display font-bold text-xs uppercase tracking-[0.2em] opacity-40">Patients</h4>
+              <ul class="space-y-2 text-sm font-medium text-gray-400">
+                <li><a href="#" class="hover:text-white transition-colors">Hub</a></li>
+                <li><a href="#" class="hover:text-white transition-colors">Prescriptions</a></li>
+              </ul>
+            </div>
+            <div class="space-y-4">
+              <h4 class="font-display font-bold text-xs uppercase tracking-[0.2em] opacity-40">Company</h4>
+              <ul class="space-y-2 text-sm font-medium text-gray-400">
+              <h4 class="font-display font-bold text-xs uppercase tracking-[0.2em] text-white">Company</h4>
+              <ul class="space-y-2 text-sm font-medium text-gray-300">
+                <li><a href="#" class="hover:text-white transition-colors">About</a></li>
+                <li><a href="#" class="hover:text-white transition-colors">Legal</a></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="mt-20 pt-8 border-t border-white/5 mx-8 flex flex-col md:flex-row justify-between items-center gap-6">
+          <p class="text-xs font-medium text-gray-400 uppercase tracking-widest leading-none">© 2026 CareConnect Health. Elite Performance.</p>
+          <nav class="hidden md:flex items-center gap-10">
+            <a href="#concept" class="text-sm font-bold uppercase tracking-widest text-white hover:text-indigo-400 transition-all">Concept</a>
+            <a href="/patients-info" class="text-sm font-bold uppercase tracking-widest text-white hover:text-indigo-400 transition-all">Patients</a>
+            <a href="/providers-info" class="text-sm font-bold uppercase tracking-widest text-white hover:text-indigo-400 transition-all">Providers</a>
+            <a href="/login" class="text-sm font-bold uppercase tracking-widest text-white hover:text-indigo-400 transition-all">Login</a>
+          </nav>
+        </div>
       </div>
-    {% endif %}
-  {% endwith %}
+    </footer>
+  </div>
 
-  <!-- Main content -->
-  <main class="pt-24 px-4">
-    {% block content %}{% endblock %}
-  </main>
+  <button id="backToTop" class="fixed bottom-12 right-12 w-12 h-12 bg-white text-secondary rounded-full shadow-2xl flex items-center justify-center transition-all opacity-0 invisible hover:scale-110 active:scale-95 z-50" aria-label="Back to top">
+    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18"></path></svg>
+  </button>
 
-  <!-- Footer -->
-  <footer class="bg-gray-800 text-white py-8 mt-12">
-    <div class="mx-auto max-w-7xl flex flex-col md:flex-row justify-between items-center px-4">
-      <div class="mb-4 md:mb-0">
-        <p class="text-sm">&copy; 2025 CareConnect. All rights reserved.</p>
-      </div>
-      <div class="space-x-4">
-        <a href="/about" class="text-gray-300 hover:text-white">About</a>
-        <a href="/contact" class="text-gray-300 hover:text-white">Contact</a>
-        <a href="/privacy" class="text-gray-300 hover:text-white">Privacy Policy</a>
-        <a href="/terms" class="text-gray-300 hover:text-white">Terms of Service</a>
-      </div>
-    </div>
-  </footer>
+  <script>
+    // Initialize Lenis Smooth Scroll
+    const lenis = new Lenis();
+    function raf(time) {
+      lenis.raf(time);
+      requestAnimationFrame(raf);
+    }
+    requestAnimationFrame(raf);
 
+    // GSAP Preloader Animation
+    const preloader = document.getElementById('preloader');
+    const counterDisplay = document.getElementById('preloaderCounter');
+    const hasVisited = sessionStorage.getItem('hasVisited');
+
+    if (hasVisited) {
+      preloader.style.display = 'none';
+      gsap.set('#mainNav', { opacity: 1, y: 0 }); // Navigation visible immediately
+    } else {
+      let counter = { value: 0 };
+      gsap.to(counter, {
+        value: 100,
+        duration: 2,
+        ease: "power4.inOut",
+        onUpdate: () => {
+          counterDisplay.innerText = Math.round(counter.value);
+        },
+        onComplete: () => {
+          sessionStorage.setItem('hasVisited', 'true');
+          gsap.to('#preloader', {
+            opacity: 0,
+            duration: 1,
+            ease: "power2.inOut",
+            onComplete: () => {
+               preloader.style.display = 'none';
+               // Global Reveal
+               gsap.from('#mainNav', { y: -100, opacity: 0, duration: 1.5, ease: "expo.out" });
+            }
+          });
+        }
+      });
+    }
+
+    // Navbar Scroll Effect
+    window.addEventListener('scroll', () => {
+      const nav = document.getElementById('mainNav');
+      if (window.scrollY > 50) {
+        nav.classList.add('py-4');
+        nav.classList.remove('py-6');
+      } else {
+        nav.classList.remove('py-4');
+        nav.classList.add('py-6');
+      }
+    });
+
+    // Back to Top
+    const backToTopBtn = document.getElementById('backToTop');
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 500) {
+        gsap.to(backToTopBtn, { autoAlpha: 1, duration: 0.5 });
+      } else {
+        gsap.to(backToTopBtn, { autoAlpha: 0, duration: 0.5 });
+      }
+    });
+    backToTopBtn.addEventListener('click', () => {
+      lenis.scrollTo(0);
+    });
+  </script>
 </body>
-</html>
+</html>

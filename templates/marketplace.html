@@ -1,0 +1,851 @@
+{% extends "base.html" %}
+{% block title %}Marketplace | CareConnect{% endblock %}
+
+{% block extra_head %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+  .segment-card { transition: box-shadow 0.2s ease, transform 0.2s ease; }
+  .segment-card:hover { box-shadow: 0 12px 40px -12px rgba(79, 70, 229, 0.15); }
+  .product-card { transition: transform 0.25s ease, box-shadow 0.25s ease; }
+  .product-card:hover { transform: translateY(-5px); box-shadow: 0 24px 48px -12px rgba(79, 70, 229, 0.15); }
+  .nav-pill { transition: all 0.2s ease; }
+  .nav-pill.active {
+    background: linear-gradient(135deg, #4f46e5, #6366f1) !important;
+    color: #fff !important;
+    border-color: transparent !important;
+    box-shadow: 0 4px 14px -4px rgba(79, 70, 229, 0.45);
+  }
+  .cart-drawer { max-height: calc(100vh - 8rem); }
+  .mfr-tag { font-size: 10px; font-weight: 700; letter-spacing: 0.07em; text-transform: uppercase; }
+  .dosage-chip { font-size: 10px; padding: 2px 8px; border-radius: 999px; font-weight: 700; }
+  .stat-pill { backdrop-filter: blur(12px); }
+  .context-card { border-left: 4px solid #4f46e5; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto pt-32 pb-16 px-4">
+  <!-- Hero -->
+  <div class="text-center mb-10 reveal-up">
+    <p class="text-sm font-bold text-indigo-700 uppercase tracking-widest mb-3">Elite Marketplace</p>
+    <h1 class="text-4xl md:text-6xl font-extrabold text-slate-900 mb-4 tracking-tight">
+      Healthcare <span class="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-indigo-900">ecommerce</span> redefined.
+    </h1>
+    <p class="text-slate-600 max-w-2xl mx-auto text-lg mb-8">
+      Browse <strong class="text-slate-800">100+ verified Indian pharmaceuticals</strong>, manage your cart, and secure premium healthcare logistics — powered by our atomic sync engine.
+    </p>
+    <!-- Live Dataset Context Pills -->
+    <div class="flex flex-wrap justify-center gap-3 mb-2">
+      <div class="stat-pill inline-flex items-center gap-2 px-4 py-2 bg-indigo-50 border border-indigo-100 rounded-2xl text-xs font-bold text-indigo-800">
+        <i class="fas fa-database text-indigo-500"></i> AZ Medicine Dataset — India
+      </div>
+      <div class="stat-pill inline-flex items-center gap-2 px-4 py-2 bg-emerald-50 border border-emerald-100 rounded-2xl text-xs font-bold text-emerald-800">
+        <i class="fas fa-shield-alt text-emerald-500"></i> Platform-Verified Items
+      </div>
+      <div class="stat-pill inline-flex items-center gap-2 px-4 py-2 bg-amber-50 border border-amber-100 rounded-2xl text-xs font-bold text-amber-800">
+        <i class="fas fa-flask text-amber-500"></i> Real Manufacturer Data
+      </div>
+      <div class="stat-pill inline-flex items-center gap-2 px-4 py-2 bg-slate-100 border border-slate-200 rounded-2xl text-xs font-bold text-slate-700">
+        <i class="fas fa-rupee-sign text-slate-500"></i> Authentic INR Pricing
+      </div>
+    </div>
+  </div>
+
+  <!-- Dataset Context Block -->
+  <div class="context-card bg-white rounded-3xl p-6 md:p-8 mb-10 shadow-sm reveal-up border border-slate-100">
+    <div class="grid md:grid-cols-4 gap-6">
+      <div class="md:col-span-1 flex flex-col justify-between">
+        <div>
+          <p class="text-xs font-bold text-indigo-600 uppercase tracking-widest mb-2">Data Source</p>
+          <h3 class="text-xl font-extrabold text-slate-900 leading-tight">Kaggle AZ Medicine Dataset</h3>
+          <p class="text-sm text-slate-500 mt-2 leading-relaxed">Curated pharmaceutical index sourced from real Indian medicine manufacturers, covering 250k+ products across therapeutic categories.</p>
+        </div>
+        <div class="mt-4 flex items-center gap-2 text-xs text-slate-400 font-medium">
+          <i class="fas fa-sync-alt text-indigo-400"></i> Last synced: April 2026
+        </div>
+      </div>
+      <div class="md:col-span-3 grid grid-cols-2 sm:grid-cols-3 gap-4">
+        <div class="bg-indigo-50 rounded-2xl p-4 text-center">
+          <div class="text-3xl font-black text-indigo-900">100</div>
+          <div class="text-xs font-bold text-indigo-600 uppercase tracking-wider mt-1">Products Listed</div>
+        </div>
+        <div class="bg-emerald-50 rounded-2xl p-4 text-center">
+          <div class="text-3xl font-black text-emerald-900">~90+</div>
+          <div class="text-xs font-bold text-emerald-600 uppercase tracking-wider mt-1">Manufacturers</div>
+        </div>
+        <div class="bg-rose-50 rounded-2xl p-4 text-center">
+          <div class="text-3xl font-black text-rose-900">₹10–₹1.6k</div>
+          <div class="text-xs font-bold text-rose-600 uppercase tracking-wider mt-1">Price Range</div>
+        </div>
+        <div class="bg-amber-50 rounded-2xl p-4 text-center">
+          <div class="text-3xl font-black text-amber-900">7+</div>
+          <div class="text-xs font-bold text-amber-600 uppercase tracking-wider mt-1">Dosage Forms</div>
+        </div>
+        <div class="bg-sky-50 rounded-2xl p-4 text-center">
+          <div class="text-3xl font-black text-sky-900">0ms</div>
+          <div class="text-xs font-bold text-sky-600 uppercase tracking-wider mt-1">Search Latency</div>
+        </div>
+        <div class="bg-slate-900 rounded-2xl p-4 text-center">
+          <div class="text-3xl font-black text-white">AES‑256</div>
+          <div class="text-xs font-bold text-slate-400 uppercase tracking-wider mt-1">Encrypted Transit</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Search & Segment navigation -->
+  <div class="sticky top-24 z-30 mb-12 reveal-up">
+    <div class="glass-premium rounded-3xl p-4 flex flex-col md:flex-row gap-4 items-center shadow-2xl border border-white/50 backdrop-blur-xl">
+      <!-- Search Bar -->
+      <div class="relative flex-1 w-full">
+        <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
+        <input type="text" id="productSearch" placeholder="Search medicines, manufacturers, or dosage forms..." 
+               class="w-full bg-white/80 border border-slate-200 rounded-2xl py-3 pl-12 pr-4 text-slate-900 placeholder:text-slate-400 focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all outline-none">
+      </div>
+      <!-- Result count -->
+      <div id="searchResultCount" class="text-xs font-bold text-slate-500 whitespace-nowrap hidden"></div>
+      <!-- Nav Pills -->
+      <div class="flex flex-wrap justify-center gap-2 px-2 overflow-x-auto no-scrollbar">
+        <a href="#catalog" class="nav-pill active px-5 py-2.5 rounded-2xl text-sm font-bold text-slate-700 bg-white border border-slate-200 shadow-sm" data-segment="catalog">Catalog</a>
+        <a href="#cart" class="nav-pill px-5 py-2.5 rounded-2xl text-sm font-bold text-slate-700 bg-white border border-slate-200 shadow-sm" data-segment="cart">
+          Cart (<span id="navCartCount">0</span>)
+        </a>
+        <a href="#checkout" class="nav-pill px-5 py-2.5 rounded-2xl text-sm font-bold text-slate-700 bg-white border border-slate-200 shadow-sm" data-segment="checkout">Checkout</a>
+        <a href="#payout" class="nav-pill px-5 py-2.5 rounded-2xl text-sm font-bold text-slate-700 bg-white border border-slate-200 shadow-sm" data-segment="payout">Payouts</a>
+        <a href="#intelligence" class="nav-pill px-5 py-2.5 rounded-2xl text-sm font-bold text-indigo-700 bg-indigo-50 border border-indigo-200 shadow-sm" data-segment="intelligence">
+          <i class="fas fa-dna mr-1.5 text-indigo-500"></i>FDA Intel
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid lg:grid-cols-3 gap-8">
+    <!-- Main column: catalog + checkout + payout -->
+    <div class="lg:col-span-2 space-y-12">
+
+      <!-- 1) Catalog -->
+      <section id="catalog" class="scroll-mt-28">
+        <div class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 mb-6">
+          <div>
+            <h2 class="text-2xl font-extrabold text-slate-900 flex items-center gap-3">
+              <div class="w-9 h-9 bg-indigo-600 rounded-xl flex items-center justify-center">
+                <i class="fas fa-store text-white text-sm"></i>
+              </div>
+              Pharmaceutical Catalog
+            </h2>
+            <p class="text-sm text-slate-500 mt-2 ml-12">100 verified items · Real manufacturer names · Authentic INR pricing · Free-text search</p>
+          </div>
+          <div class="flex flex-wrap gap-2" id="categoryChips"></div>
+        </div>
+        <div id="productGrid" class="grid sm:grid-cols-2 lg:grid-cols-2 gap-6"></div>
+      </section>
+
+      <!-- 2) OpenFDA Intelligence Panel -->
+      <section id="intelligence" class="scroll-mt-28">
+        <div class="bg-gradient-to-br from-slate-900 to-indigo-950 rounded-3xl p-8 text-white relative overflow-hidden">
+          <div class="absolute -top-12 -right-12 w-64 h-64 bg-indigo-500/10 rounded-full blur-3xl pointer-events-none"></div>
+          <div class="relative z-10">
+            <div class="flex items-center gap-3 mb-6">
+              <div class="w-10 h-10 bg-indigo-500/20 rounded-2xl flex items-center justify-center">
+                <i class="fas fa-dna text-indigo-400"></i>
+              </div>
+              <div>
+                <h2 class="text-xl font-extrabold">Pharma Intelligence</h2>
+                <p class="text-xs text-slate-400">Powered by OpenFDA · 418 drug profiles · 5 datasets merged</p>
+              </div>
+              <div class="ml-auto flex items-center gap-2 text-xs font-bold text-emerald-400">
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse inline-block"></span>
+                Live API
+              </div>
+            </div>
+
+            <!-- Search -->
+            <div class="relative mb-6">
+              <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-slate-500"></i>
+              <input type="text" id="fdaSearch" placeholder="Search FDA database — e.g. 'metformin', 'aspirin', 'ibuprofen'"
+                     class="w-full bg-slate-800/60 border border-slate-700 rounded-2xl py-3 pl-12 pr-4 text-white placeholder:text-slate-500 focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all outline-none text-sm">
+            </div>
+
+            <!-- Results -->
+            <div id="fdaResults" class="space-y-4 max-h-[520px] overflow-y-auto pr-1">
+              <p class="text-slate-400 text-sm text-center py-8">Search any drug name to see its complete FDA profile ↑</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="checkout" class="scroll-mt-28">
+        <div class="segment-card bg-white rounded-2xl border border-gray-200 p-6 md:p-8 shadow-sm">
+          <h2 class="text-xl font-bold text-gray-900 flex items-center gap-2 mb-2">
+            <i class="fas fa-clipboard-check text-indigo-500"></i> Place order
+          </h2>
+          <p class="text-sm text-gray-600 mb-6">Delivery and payment details. Orders are confirmed instantly for demo; integrate your PSP later.</p>
+
+          <form id="checkoutForm" class="space-y-5">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Full name</label>
+                <input type="text" name="fullName" required placeholder="Jane Doe" class="w-full rounded-xl border border-gray-200 px-4 py-2.5 text-gray-800 focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Phone</label>
+                <input type="tel" name="phone" placeholder="+1 555 010 2030" class="w-full rounded-xl border border-gray-200 px-4 py-2.5 text-gray-800 focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
+              </div>
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">Street address</label>
+              <input type="text" name="address" required placeholder="123 Wellness Ave" class="w-full rounded-xl border border-gray-200 px-4 py-2.5 text-gray-800 focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div class="md:col-span-1">
+                <label class="block text-sm font-medium text-gray-700 mb-1">City</label>
+                <input type="text" name="city" required class="w-full rounded-xl border border-gray-200 px-4 py-2.5 text-gray-800 focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">ZIP / Postal</label>
+                <input type="text" name="zip" required class="w-full rounded-xl border border-gray-200 px-4 py-2.5 text-gray-800 focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
+              </div>
+              <div>
+                <label class="block text-sm font-bold text-slate-800 mb-1">Country</label>
+                <select name="country" class="w-full rounded-xl border-2 border-slate-300 px-4 py-2.5 text-slate-900 font-semibold focus:ring-2 focus:ring-indigo-500 bg-white cursor-pointer outline-none transition-all">
+                  <option>United States</option>
+                  <option>India</option>
+                  <option>United Kingdom</option>
+                  <option>Canada</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="border-t border-gray-100 pt-5">
+              <p class="text-sm font-semibold text-gray-800 mb-3">Payment</p>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-1">Card number</label>
+                  <input type="text" name="card" autocomplete="cc-number" placeholder="4242 4242 4242 4242" class="w-full rounded-xl border border-gray-200 px-4 py-2.5 text-gray-800 focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                  <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Expiry</label>
+                    <input type="text" name="expiry" placeholder="MM / YY" class="w-full rounded-xl border border-gray-200 px-4 py-2.5 text-gray-800 focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
+                  </div>
+                  <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">CVC</label>
+                    <input type="text" name="cvc" placeholder="123" class="w-full rounded-xl border border-gray-200 px-4 py-2.5 text-gray-800 focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
+                  </div>
+                </div>
+              </div>
+              <p class="text-xs text-gray-500 mt-2">Demo only — no real charges. Connect Stripe or PayPal in production.</p>
+            </div>
+
+            <div class="flex flex-wrap items-center justify-between gap-4 pt-2">
+              <div class="text-sm text-gray-600">
+                Order total: <span id="checkoutTotal" class="font-bold text-gray-900 text-lg">$0.00</span>
+                <span class="text-gray-400 mx-1">·</span>
+                <span id="checkoutItemsSummary">0 items</span>
+              </div>
+              <button type="submit" id="placeOrderBtn" class="px-5 py-2.5 bg-indigo-600 text-white rounded-xl font-semibold hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed shadow-md transition">
+                Place order
+              </button>
+            </div>
+          </form>
+
+          <div id="orderSuccess" class="hidden mt-6 p-4 rounded-xl bg-green-50 border border-green-200 text-green-900">
+            <p class="font-semibold flex items-center gap-2"><i class="fas fa-circle-check"></i> Order placed</p>
+            <p class="text-sm mt-1" id="orderSuccessDetail"></p>
+            <p class="text-xs text-green-800 mt-2">A confirmation email would be sent in production. Cart has been cleared.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- 4) Seller payouts -->
+      <section id="payout" class="scroll-mt-28">
+        <div class="segment-card bg-gradient-to-br from-slate-900 to-slate-800 rounded-2xl p-6 md:p-8 text-white shadow-xl border border-slate-700">
+          <div class="flex flex-col md:flex-row md:items-start md:justify-between gap-6">
+            <div>
+              <h2 class="text-xl font-bold flex items-center gap-2 mb-2">
+                <i class="fas fa-hand-holding-dollar text-emerald-400"></i> Seller payouts
+              </h2>
+              <p class="text-slate-300 text-sm max-w-xl">
+                Settlement overview for marketplace vendors. Platform fee shown; net amount is scheduled to your connected bank account.
+              </p>
+            </div>
+            <button type="button" id="connectBankBtn" class="shrink-0 px-4 py-2.5 bg-white text-slate-900 rounded-xl font-semibold text-sm hover:bg-slate-100 transition">
+              <i class="fas fa-building-columns mr-2"></i> Connect bank
+            </button>
+          </div>
+
+          <div class="grid sm:grid-cols-3 gap-4 mt-8">
+            <div class="bg-white/10 rounded-xl p-4 border border-white/10">
+              <p class="text-slate-400 text-xs uppercase tracking-wide">Available balance</p>
+              <p class="text-2xl font-bold mt-1" id="payoutAvailable">$0.00</p>
+              <p class="text-slate-400 text-xs mt-1">Ready for next payout</p>
+            </div>
+            <div class="bg-white/10 rounded-xl p-4 border border-white/10">
+              <p class="text-slate-400 text-xs uppercase tracking-wide">Pending (14-day hold)</p>
+              <p class="text-2xl font-bold mt-1" id="payoutPending">$0.00</p>
+              <p class="text-slate-400 text-xs mt-1">From recent orders</p>
+            </div>
+            <div class="bg-white/10 rounded-xl p-4 border border-white/10">
+              <p class="text-slate-400 text-xs uppercase tracking-wide">Next transfer</p>
+              <p class="text-lg font-bold mt-1" id="payoutNextDate">—</p>
+              <p class="text-slate-400 text-xs mt-1">ACH · 2 business days</p>
+            </div>
+          </div>
+
+          <div class="mt-8 overflow-x-auto rounded-xl border border-white/10">
+            <table class="w-full text-sm text-left">
+              <thead class="bg-black/20 text-slate-300">
+                <tr>
+                  <th class="px-4 py-3 font-medium">Payout ID</th>
+                  <th class="px-4 py-3 font-medium">Period</th>
+                  <th class="px-4 py-3 font-medium text-right">Gross</th>
+                  <th class="px-4 py-3 font-medium text-right">Platform fee</th>
+                  <th class="px-4 py-3 font-medium text-right">Net</th>
+                  <th class="px-4 py-3 font-medium">Status</th>
+                </tr>
+              </thead>
+              <tbody id="payoutTableBody" class="divide-y divide-white/10"></tbody>
+            </table>
+          </div>
+          <p class="text-xs text-slate-500 mt-4" id="bankStatus">Bank account not connected — click &quot;Connect bank&quot; to enable payouts.</p>
+        </div>
+      </section>
+    </div>
+
+    <!-- Sidebar: Cart -->
+    <aside id="cart" class="lg:col-span-1 scroll-mt-28">
+      <div class="segment-card bg-white rounded-2xl border border-gray-200 shadow-lg sticky top-36 cart-drawer overflow-hidden flex flex-col">
+        <div class="p-5 border-b border-gray-100 bg-gradient-to-r from-indigo-50 to-white">
+          <h2 class="text-lg font-bold text-gray-900 flex items-center gap-2">
+            <i class="fas fa-shopping-cart text-indigo-600"></i> Your cart
+          </h2>
+          <p class="text-xs text-gray-500 mt-1">Saved in this browser</p>
+        </div>
+        <div id="cartLines" class="p-4 flex-1 overflow-y-auto min-h-[120px] max-h-[40vh] lg:max-h-none"></div>
+        <div class="p-4 border-t border-gray-100 bg-gray-50">
+          <div class="flex justify-between text-sm text-gray-600 mb-1">
+            <span>Subtotal</span>
+            <span id="cartSubtotal">$0.00</span>
+          </div>
+          <div class="flex justify-between text-sm text-gray-600 mb-1">
+            <span>Estimated shipping</span>
+            <span id="cartShipping">$0.00</span>
+          </div>
+          <div class="flex justify-between text-sm text-gray-600 mb-3">
+            <span>Est. tax</span>
+            <span id="cartTax">$0.00</span>
+          </div>
+          <div class="flex justify-between font-bold text-gray-900 text-lg pt-2 border-t border-gray-200">
+            <span>Total</span>
+            <span id="cartTotal">$0.00</span>
+          </div>
+          <a href="#checkout" class="mt-4 block w-full text-center py-2.5 bg-indigo-600 text-white rounded-xl font-semibold hover:bg-indigo-700 transition text-sm">
+            Continue to checkout
+          </a>
+          <button type="button" id="clearCartBtn" class="mt-2 w-full py-2 text-sm text-red-600 hover:text-red-700 font-medium">
+            Clear cart
+          </button>
+        </div>
+      </div>
+    </aside>
+  </div>
+</div>
+
+<script>
+  var PRODUCTS = {{ products|tojson }};
+  if (!PRODUCTS || PRODUCTS.length === 0) {
+    PRODUCTS = [
+      { id: 'p1', name: 'Digital BP Monitor', category: 'devices', price: 49.99, icon: '🩺', blurb: 'Bluetooth, clinically validated' },
+      { id: 'p2', name: 'Vitamin D3 1000 IU', category: 'pharmacy', price: 12.49, icon: '💊', blurb: '90 softgels, third-party tested' },
+      { id: 'p3', name: 'Post-Op Care Kit', category: 'packages', price: 89.00, icon: '🧰', blurb: 'Bandages, antiseptic, ice packs' },
+      { id: 'p4', name: 'Glucometer Starter Kit', category: 'devices', price: 34.50, icon: '📟', blurb: 'Strips + lancets included' },
+      { id: 'p5', name: 'Telehealth Consult Credit', category: 'services', price: 75.00, icon: '📹', blurb: '30 min video visit with any GP' },
+      { id: 'p6', name: 'Compression Socks (pair)', category: 'pharmacy', price: 24.99, icon: '🧦', blurb: 'Medical grade, multiple sizes' }
+    ];
+  }
+
+{% raw %}
+(function() {
+  var STORAGE_KEY = 'cc_marketplace_cart_v1';
+  var ORDER_STORAGE = 'cc_marketplace_orders_v1';
+  var PAYOUT_STORAGE = 'cc_marketplace_payout_mock_v1';
+
+  var SHIPPING_FLAT = 5.99;
+  var TAX_RATE = 0.06;
+
+  var cart = [];
+  var activeCategory = 'all';
+
+  function loadCart() {
+    try {
+      var raw = localStorage.getItem(STORAGE_KEY);
+      cart = raw ? JSON.parse(raw) : [];
+    } catch (e) {
+      cart = [];
+    }
+    if (!Array.isArray(cart)) cart = [];
+  }
+
+  function saveCart() {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(cart));
+  }
+
+  function productById(id) {
+    for (var i = 0; i < PRODUCTS.length; i++) {
+      if (PRODUCTS[i].id === id) return PRODUCTS[i];
+    }
+    return null;
+  }
+
+  function cartQty() {
+    var n = 0;
+    cart.forEach(function(line) { n += line.qty; });
+    return n;
+  }
+
+  function cartSubtotal() {
+    var t = 0;
+    cart.forEach(function(line) {
+      var p = productById(line.id);
+      if (p) t += p.price * line.qty;
+    });
+    return t;
+  }
+
+  function money(n) {
+    return '$' + n.toFixed(2);
+  }
+
+  function renderProducts() {
+    var grid = document.getElementById('productGrid');
+    var countEl = document.getElementById('searchResultCount');
+    var list = PRODUCTS.filter(function(p) {
+      var matchesCat = activeCategory === 'all' || p.category === activeCategory;
+      var matchesSearch = !searchQuery || 
+                         p.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
+                         (p.blurb && p.blurb.toLowerCase().includes(searchQuery.toLowerCase()));
+      return matchesCat && matchesSearch;
+    });
+
+    // Update result count
+    if (searchQuery || activeCategory !== 'all') {
+      countEl.textContent = list.length + ' of ' + PRODUCTS.length + ' items';
+      countEl.classList.remove('hidden');
+    } else {
+      countEl.classList.add('hidden');
+    }
+
+    if (list.length === 0) {
+      grid.innerHTML = '<div class="col-span-full py-20 text-center glass-premium rounded-3xl border border-dashed border-slate-300"><div class="text-4xl mb-4">🔍</div><p class="text-slate-700 font-bold text-lg">No medicines found</p><p class="text-slate-400 text-sm mt-1">Try searching "Tablet", "Injection", or a manufacturer name</p></div>';
+      return;
+    }
+
+    grid.innerHTML = list.map(function(p) {
+      // Extract manufacturer from blurb e.g. "Manufactured by XYZ."
+      var mfr = '';
+      var mfrMatch = p.blurb && p.blurb.match(/Manufactured by (.+?)\./);
+      if (mfrMatch) mfr = mfrMatch[1];
+
+      // Extract dosage form from name
+      var dosageForms = ['Tablet', 'Capsule', 'Injection', 'Syrup', 'Cream', 'Gel', 'Drops', 'Inhaler', 'Infusion', 'Lotion', 'Suspension', 'Ointment'];
+      var dosageForm = '';
+      dosageForms.forEach(function(f) { if (p.name.includes(f) && !dosageForm) dosageForm = f; });
+
+      // Colour for dosage chip
+      var chipColors = {
+        'Tablet': 'bg-indigo-100 text-indigo-700',
+        'Capsule': 'bg-violet-100 text-violet-700',
+        'Injection': 'bg-rose-100 text-rose-700',
+        'Infusion': 'bg-red-100 text-red-700',
+        'Syrup': 'bg-amber-100 text-amber-700',
+        'Cream': 'bg-emerald-100 text-emerald-700',
+        'Gel': 'bg-teal-100 text-teal-700',
+        'Lotion': 'bg-green-100 text-green-700',
+        'Inhaler': 'bg-sky-100 text-sky-700',
+        'Suspension': 'bg-orange-100 text-orange-700',
+        'Drops': 'bg-cyan-100 text-cyan-700',
+        'Ointment': 'bg-lime-100 text-lime-700',
+      };
+      var chipClass = (dosageForm && chipColors[dosageForm]) ? chipColors[dosageForm] : 'bg-slate-100 text-slate-500';
+
+      return (
+        '<div class="product-card reveal-card bg-white rounded-3xl border border-slate-100 p-6 flex flex-col shadow-sm">' +
+          '<div class="flex items-start justify-between mb-3">' +
+            '<div class="text-4xl">' + p.icon + '</div>' +
+            '<div class="flex flex-col items-end gap-1.5">' +
+              (dosageForm ? '<span class="dosage-chip ' + chipClass + '">' + dosageForm + '</span>' : '') +
+              '<span class="text-[9px] font-bold uppercase tracking-widest px-2 py-0.5 bg-emerald-50 text-emerald-700 rounded-full">✓ Verified</span>' +
+            '</div>' +
+          '</div>' +
+          '<h3 class="font-extrabold text-slate-900 text-base leading-tight mb-1">' + p.name + '</h3>' +
+          (mfr ? '<div class="flex items-center gap-1.5 mb-3"><span class="w-1.5 h-1.5 rounded-full bg-indigo-400 inline-block"></span><span class="mfr-tag text-indigo-600">' + mfr + '</span></div>' : '') +
+          '<p class="text-xs text-slate-400 mt-1 flex-1 leading-relaxed line-clamp-2">' + p.blurb.replace('Premium verification applied.', '').trim() + '</p>' +
+          '<div class="mt-5 pt-4 border-t border-slate-50 flex items-center justify-between">' +
+            '<div class="flex flex-col">' +
+              '<span class="text-[10px] text-slate-400 font-bold uppercase tracking-wider">INR Price</span>' +
+              '<span class="text-2xl font-black text-slate-900">₹' + p.price.toFixed(0) + '</span>' +
+              '<span class="text-[10px] text-slate-400">≈ ' + money(p.price / 83) + ' USD</span>' +
+            '</div>' +
+            '<button type="button" class="add-btn h-11 px-5 bg-indigo-600 text-white text-sm font-bold rounded-2xl hover:bg-indigo-700 hover:scale-105 active:scale-95 transition-all shadow-lg shadow-indigo-200" data-id="' + p.id + '">' +
+              '<i class="fas fa-cart-plus mr-1.5"></i> Add' +
+            '</button>' +
+          '</div>' +
+        '</div>'
+      );
+    }).join('');
+
+    // GSAP Stagger for cards
+    if (typeof gsap !== 'undefined') {
+      gsap.fromTo("#productGrid .reveal-card",
+        { opacity: 0, y: 30 },
+        { opacity: 1, y: 0, duration: 0.5, stagger: 0.04, ease: "expo.out", clearProps: "all" }
+      );
+    }
+
+    grid.querySelectorAll('.add-btn').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        addToCart(btn.getAttribute('data-id'));
+      });
+    });
+  }
+
+  function renderCategoryChips() {
+    var cats = ['all', 'pharmacy', 'devices', 'packages', 'services'];
+    var labels = { all: 'All Items', pharmacy: 'Pharmacy', devices: 'Devices', packages: 'Care packages', services: 'Services' };
+    var el = document.getElementById('categoryChips');
+    el.innerHTML = cats.map(function(c) {
+      var active = c === activeCategory ? ' bg-slate-900 text-white border-slate-900 shadow-lg scale-105' : ' bg-white text-slate-600 border-slate-200 hover:border-indigo-400 hover:text-indigo-600';
+      return '<button type="button" class="px-5 py-2 rounded-2xl text-xs font-bold border transition-all duration-300' + active + '" data-cat="' + c + '">' + labels[c] + '</button>';
+    }).join('');
+
+    el.querySelectorAll('button').forEach(function(b) {
+      b.addEventListener('click', function() {
+        activeCategory = b.getAttribute('data-cat');
+        renderCategoryChips();
+        renderProducts();
+      });
+    });
+  }
+
+  function addToCart(id) {
+    var found = false;
+    cart.forEach(function(line) {
+      if (line.id === id) {
+        line.qty += 1;
+        found = true;
+      }
+    });
+    if (!found) cart.push({ id: id, qty: 1 });
+    saveCart();
+    renderCart();
+    renderCheckoutSummary();
+    updatePayoutPreview();
+  }
+
+  function setQty(id, qty) {
+    qty = parseInt(qty, 10);
+    if (isNaN(qty) || qty < 1) qty = 1;
+    cart = cart.map(function(line) {
+      if (line.id === id) return { id: line.id, qty: qty };
+      return line;
+    });
+    saveCart();
+    renderCart();
+    renderCheckoutSummary();
+    updatePayoutPreview();
+  }
+
+  function removeLine(id) {
+    cart = cart.filter(function(line) { return line.id !== id; });
+    saveCart();
+    renderCart();
+    renderCheckoutSummary();
+    updatePayoutPreview();
+  }
+
+  function clearCart() {
+    cart = [];
+    saveCart();
+    renderCart();
+    renderCheckoutSummary();
+    updatePayoutPreview();
+  }
+
+  function renderCart() {
+    var linesEl = document.getElementById('cartLines');
+    var countEl = document.getElementById('navCartCount');
+    countEl.textContent = cartQty();
+
+    if (cart.length === 0) {
+      linesEl.innerHTML = '<p class="text-sm text-gray-500 text-center py-8">Your cart is empty. Add products from the catalog.</p>';
+    } else {
+      linesEl.innerHTML = cart.map(function(line) {
+        var p = productById(line.id);
+        if (!p) return '';
+        var lineTotal = p.price * line.qty;
+        return (
+          '<div class="flex gap-3 py-3 border-b border-gray-100 last:border-0">' +
+            '<div class="text-2xl">' + p.icon + '</div>' +
+            '<div class="flex-1 min-w-0">' +
+              '<p class="font-semibold text-gray-900 text-sm truncate">' + p.name + '</p>' +
+              '<p class="text-xs text-gray-500">' + money(p.price) + ' × ' +
+                '<input type="number" min="1" max="99" class="qty-input w-12 ml-1 border border-gray-200 rounded px-1 text-center" data-id="' + line.id + '" value="' + line.qty + '">' +
+              '</p>' +
+              '<button type="button" class="remove-line text-xs text-red-600 hover:underline mt-1" data-id="' + line.id + '">Remove</button>' +
+            '</div>' +
+            '<div class="text-sm font-bold text-gray-800">' + money(lineTotal) + '</div>' +
+          '</div>'
+        );
+      }).join('');
+
+      linesEl.querySelectorAll('.qty-input').forEach(function(inp) {
+        inp.addEventListener('change', function() {
+          setQty(inp.getAttribute('data-id'), inp.value);
+        });
+      });
+      linesEl.querySelectorAll('.remove-line').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+          removeLine(btn.getAttribute('data-id'));
+        });
+      });
+    }
+
+    var sub = cartSubtotal();
+    var ship = cart.length ? SHIPPING_FLAT : 0;
+    var tax = sub * TAX_RATE;
+    var total = sub + ship + tax;
+
+    document.getElementById('cartSubtotal').textContent = money(sub);
+    document.getElementById('cartShipping').textContent = cart.length ? money(ship) : money(0);
+    document.getElementById('cartTax').textContent = money(tax);
+    document.getElementById('cartTotal').textContent = money(total);
+
+    document.getElementById('placeOrderBtn').disabled = cart.length === 0;
+  }
+
+  function renderCheckoutSummary() {
+    var sub = cartSubtotal();
+    var ship = cart.length ? SHIPPING_FLAT : 0;
+    var tax = sub * TAX_RATE;
+    var total = sub + ship + tax;
+    document.getElementById('checkoutTotal').textContent = money(total);
+    document.getElementById('checkoutItemsSummary').textContent = cartQty() + ' item' + (cartQty() === 1 ? '' : 's');
+  }
+
+  function updatePayoutPreview() {
+    var sub = cartSubtotal();
+    var sellerGross = sub * 0.85;
+    var pending = sellerGross * 0.4;
+    var available = Math.max(0, sellerGross * 0.35);
+    document.getElementById('payoutAvailable').textContent = money(available);
+    document.getElementById('payoutPending').textContent = money(pending);
+    var d = new Date();
+    d.setDate(d.getDate() + 3);
+    document.getElementById('payoutNextDate').textContent = d.toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric' });
+  }
+
+  function loadPayoutHistory() {
+    var rows = [
+      { id: 'PO-1042', period: 'Mar 1–7, 2026', gross: 1240.00, fee: 99.20, net: 1140.80, status: 'Paid' },
+      { id: 'PO-1038', period: 'Feb 22–28, 2026', gross: 980.50, fee: 78.44, net: 902.06, status: 'Paid' },
+      { id: 'PO-1031', period: 'Feb 15–21, 2026', gross: 2105.00, fee: 168.40, net: 1936.60, status: 'In transit' }
+    ];
+    try {
+      var extra = localStorage.getItem(PAYOUT_STORAGE);
+      if (extra) rows = JSON.parse(extra);
+    } catch (e) {}
+    var tbody = document.getElementById('payoutTableBody');
+    tbody.innerHTML = rows.map(function(r) {
+      var st = r.status === 'Paid' ? 'text-emerald-400' : 'text-amber-300';
+      return (
+        '<tr class="bg-white/5">' +
+          '<td class="px-4 py-3 font-mono text-xs">' + r.id + '</td>' +
+          '<td class="px-4 py-3 text-slate-300">' + r.period + '</td>' +
+          '<td class="px-4 py-3 text-right">' + money(r.gross) + '</td>' +
+          '<td class="px-4 py-3 text-right text-slate-400">-' + money(r.fee) + '</td>' +
+          '<td class="px-4 py-3 text-right font-semibold">' + money(r.net) + '</td>' +
+          '<td class="px-4 py-3"><span class="' + st + '">' + r.status + '</span></td>' +
+        '</tr>'
+      );
+    }).join('');
+  }
+
+  document.getElementById('checkoutForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    if (cart.length === 0) {
+      alert('Your cart is empty.');
+      return;
+    }
+    var sub = cartSubtotal();
+    var ship = SHIPPING_FLAT;
+    var tax = sub * TAX_RATE;
+    var total = sub + ship + tax;
+    var orderId = 'CC-' + Date.now().toString(36).toUpperCase();
+    var orders = [];
+    try {
+      orders = JSON.parse(localStorage.getItem(ORDER_STORAGE) || '[]');
+    } catch (err) {}
+    orders.push({ id: orderId, at: new Date().toISOString(), total: total, lines: cart.slice() });
+    localStorage.setItem(ORDER_STORAGE, JSON.stringify(orders));
+
+    document.getElementById('orderSuccess').classList.remove('hidden');
+    document.getElementById('orderSuccessDetail').textContent =
+      'Order ' + orderId + ' for ' + money(total) + ' has been recorded.';
+
+    clearCart();
+    document.getElementById('checkoutForm').reset();
+  });
+
+  document.getElementById('clearCartBtn').addEventListener('click', function() {
+    if (cart.length && confirm('Remove all items from your cart?')) clearCart();
+  });
+
+  document.getElementById('connectBankBtn').addEventListener('click', function() {
+    document.getElementById('bankStatus').textContent =
+      'Bank connection simulated — in production, redirect to Stripe Connect or your onboarding flow.';
+    document.getElementById('bankStatus').classList.remove('text-slate-500');
+    document.getElementById('bankStatus').classList.add('text-emerald-400');
+  });
+
+  document.getElementById('productSearch').addEventListener('input', function(e) {
+    searchQuery = e.target.value;
+    renderProducts();
+  });
+
+  loadCart();
+  renderCategoryChips();
+  renderProducts();
+  renderCart();
+  renderCheckoutSummary();
+  updatePayoutPreview();
+  loadPayoutHistory();
+
+  var pills = document.querySelectorAll('.nav-pill');
+  function setActivePill() {
+    var hash = (window.location.hash || '#catalog').slice(1);
+    if (!hash) hash = 'catalog';
+    pills.forEach(function(p) {
+      var seg = p.getAttribute('data-segment');
+      if (seg === hash) {
+        p.classList.add('active');
+      } else {
+        p.classList.remove('active');
+      }
+    });
+  }
+  window.addEventListener('hashchange', setActivePill);
+  setActivePill();
+
+  pills.forEach(function(p) {
+    p.addEventListener('click', function() {
+      setTimeout(setActivePill, 0);
+    });
+  });
+
+  // Global Animations
+  if (typeof gsap !== 'undefined') {
+    gsap.registerPlugin(ScrollTrigger);
+    
+    gsap.utils.toArray('.reveal-up').forEach(function(el) {
+      gsap.from(el, {
+        scrollTrigger: {
+          trigger: el,
+          start: "top 90%",
+          toggleActions: "play none none none"
+        },
+        y: 40,
+        opacity: 0,
+        duration: 1,
+        ease: "expo.out"
+      });
+    });
+  }
+
+  // ── OpenFDA Intelligence Search ─────────────────────────────────────────────
+  var fdaTimer = null;
+
+  function renderFdaCard(d) {
+    var uses        = (d.uses        || []).join(' ').slice(0, 400) || 'N/A';
+    var warnings    = (d.warnings    || []).join(' ').slice(0, 300) || 'N/A';
+    var sideEffects = (d.side_effects|| []).join(' ').slice(0, 300) || 'N/A';
+    var adverse     = (d.adverse_events || []).slice(0,8).join(', ') || 'None on record';
+    var recalls     = d.recalls && d.recalls.length
+      ? d.recalls.slice(0,2).map(function(r){ return '<span class="inline-block bg-red-900/40 border border-red-500/30 text-red-300 text-[10px] font-bold px-2 py-0.5 rounded-full mr-1">'+(r.classification || '')+'</span>'; }).join('')
+      : '<span class="text-slate-500 text-xs">No active recalls</span>';
+    var approvalBadge = d.approval_status
+      ? '<span class="inline-block bg-emerald-900/40 border border-emerald-500/30 text-emerald-300 text-[10px] font-bold px-2 py-0.5 rounded-full">'+(d.approval_status)+'</span>'
+      : '';
+    var sources = (d.data_sources || []).map(function(s){
+      return '<span class="text-[9px] bg-slate-700 text-slate-300 px-1.5 py-0.5 rounded font-bold uppercase">'+s+'</span>';
+    }).join(' ');
+
+    return (
+      '<div class="bg-slate-800/80 border border-slate-700 rounded-2xl p-5 text-sm">' +
+        '<div class="flex items-start justify-between gap-3 mb-3">' +
+          '<div>' +
+            '<h3 class="font-extrabold text-white text-base capitalize">' + (d.drug_name || '') + '</h3>' +
+            (d.brand_names && d.brand_names.filter(Boolean).length
+              ? '<p class="text-indigo-300 text-xs mt-0.5">' + d.brand_names.filter(Boolean).slice(0,3).join(', ') + '</p>'
+              : '') +
+          '</div>' +
+          '<div class="flex flex-wrap gap-1 shrink-0">' + approvalBadge + '</div>' +
+        '</div>' +
+
+        '<div class="grid sm:grid-cols-2 gap-3 mb-3">' +
+          '<div class="bg-slate-900/50 rounded-xl p-3">' +
+            '<p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Uses</p>' +
+            '<p class="text-slate-300 text-xs leading-relaxed line-clamp-3">' + uses + '</p>' +
+          '</div>' +
+          '<div class="bg-slate-900/50 rounded-xl p-3">' +
+            '<p class="text-[10px] font-bold text-amber-400 uppercase tracking-wider mb-1">⚠ Warnings</p>' +
+            '<p class="text-slate-300 text-xs leading-relaxed line-clamp-3">' + warnings + '</p>' +
+          '</div>' +
+        '</div>' +
+
+        '<div class="bg-slate-900/50 rounded-xl p-3 mb-3">' +
+          '<p class="text-[10px] font-bold text-rose-400 uppercase tracking-wider mb-1.5">Top Adverse Events (' + (d.adverse_event_count || 0) + ' reports)</p>' +
+          '<p class="text-slate-300 text-xs">' + adverse + '</p>' +
+        '</div>' +
+
+        '<div class="flex items-center justify-between gap-3">' +
+          '<div><p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Recalls</p>' + recalls + '</div>' +
+          '<div class="text-right"><p class="text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1">Data Sources</p>' + sources + '</div>' +
+        '</div>' +
+      '</div>'
+    );
+  }
+
+  var fdaSearchEl = document.getElementById('fdaSearch');
+  if (fdaSearchEl) {
+    fdaSearchEl.addEventListener('input', function(e) {
+      clearTimeout(fdaTimer);
+      var q = e.target.value.trim();
+      var resultsEl = document.getElementById('fdaResults');
+      if (!q) {
+        resultsEl.innerHTML = '<p class="text-slate-400 text-sm text-center py-8">Search any drug name to see its complete FDA profile ↑</p>';
+        return;
+      }
+      resultsEl.innerHTML = '<p class="text-slate-500 text-sm text-center py-8 animate-pulse">Searching FDA database…</p>';
+      fdaTimer = setTimeout(function() {
+        fetch('/api/pharma/search?q=' + encodeURIComponent(q) + '&limit=5')
+          .then(function(r){ return r.json(); })
+          .then(function(data) {
+            if (!data.results || data.results.length === 0) {
+              resultsEl.innerHTML = '<p class="text-slate-400 text-sm text-center py-8">No FDA records found for "' + q + '"</p>';
+              return;
+            }
+            resultsEl.innerHTML =
+              '<p class="text-slate-500 text-xs mb-3">' + data.total + ' result(s) from OpenFDA</p>' +
+              data.results.map(renderFdaCard).join('');
+          })
+          .catch(function() {
+            resultsEl.innerHTML = '<p class="text-red-400 text-sm text-center py-8">API error — ensure Flask is running.</p>';
+          });
+      }, 400);
+    });
+  }
+
+})();
+{% endraw %}
+</script>
+{% endblock %}

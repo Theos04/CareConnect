@@ -1,25 +1,418 @@
 {% extends "base.html" %}
-{% import "_macros.html" as macros %}
 {% block title %}My Prescriptions | CareConnect{% endblock %}
 
 {% block content %}
-<div class="max-w-5xl mx-auto">
-  <h1 class="text-3xl font-bold text-gray-800 mb-2">Your Prescriptions, {{ g.user.name }}</h1>
-  <p class="text-gray-600 mb-8">View your active and past prescriptions.</p>
 
-  <!-- KPIs using macro -->
-  <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
-    {{ macros.kpi_card('Total Prescriptions', prescriptions | length, 'text-indigo-600') }}
-    {{ macros.kpi_card('Pending', (prescriptions | selectattr('status', 'equalto', 'Pending') | list) | length, 'text-yellow-600') }}
-    {{ macros.kpi_card('Filled', (prescriptions | selectattr('status', 'equalto', 'Filled') | list) | length, 'text-green-600') }}
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+  body { font-family: 'DM Sans', sans-serif; }
+
+  .page-wrapper {
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  /* Hero header */
+  .page-hero {
+    position: relative;
+    background: linear-gradient(135deg, #0f766e 0%, #0d9488 60%, #14b8a6 100%);
+    border-radius: 24px;
+    padding: 40px 48px;
+    margin-bottom: 32px;
+    overflow: hidden;
+    color: white;
+  }
+  .page-hero::before {
+    content: '';
+    position: absolute;
+    top: -60px; right: -60px;
+    width: 240px; height: 240px;
+    background: rgba(255,255,255,0.06);
+    border-radius: 50%;
+  }
+  .page-hero::after {
+    content: '';
+    position: absolute;
+    bottom: -80px; right: 80px;
+    width: 320px; height: 320px;
+    background: rgba(255,255,255,0.04);
+    border-radius: 50%;
+  }
+  .page-hero h1 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 2.25rem;
+    font-weight: 400;
+    margin-bottom: 6px;
+    position: relative;
+  }
+  .page-hero p {
+    font-size: 0.9375rem;
+    color: rgba(255,255,255,0.75);
+    position: relative;
+  }
+  .hero-date {
+    position: absolute;
+    top: 40px; right: 48px;
+    font-size: 0.8125rem;
+    color: rgba(255,255,255,0.65);
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+
+  /* Stat cards */
+  .stat-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-bottom: 32px;
+  }
+  @media (max-width: 768px) { .stat-grid { grid-template-columns: repeat(2, 1fr); } }
+
+  .stat-card {
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 16px;
+    padding: 20px 24px;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  .stat-card:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,0.08); }
+  .stat-card .stat-icon {
+    width: 40px; height: 40px;
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.125rem;
+    margin-bottom: 14px;
+  }
+  .stat-card .stat-label { font-size: 0.75rem; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 4px; }
+  .stat-card .stat-value { font-family: 'DM Serif Display', serif; font-size: 2rem; line-height: 1; }
+  .stat-card .stat-accent { position: absolute; bottom: 0; left: 0; right: 0; height: 3px; }
+
+  .stat-total  .stat-icon { background: #eff6ff; }
+  .stat-total  .stat-label { color: #3b82f6; }
+  .stat-total  .stat-value { color: #1e3a8a; }
+  .stat-total  .stat-accent { background: #3b82f6; }
+
+  .stat-pending .stat-icon { background: #fefce8; }
+  .stat-pending .stat-label { color: #ca8a04; }
+  .stat-pending .stat-value { color: #713f12; }
+  .stat-pending .stat-accent { background: #eab308; }
+
+  .stat-filled .stat-icon { background: #f0fdf4; }
+  .stat-filled .stat-label { color: #16a34a; }
+  .stat-filled .stat-value { color: #14532d; }
+  .stat-filled .stat-accent { background: #22c55e; }
+
+  .stat-updated .stat-icon { background: #f8fafc; }
+  .stat-updated .stat-label { color: #64748b; }
+  .stat-updated .stat-value { color: #0f172a; font-size: 1.25rem; font-family: 'DM Sans', sans-serif; font-weight: 700; }
+  .stat-updated .stat-accent { background: #94a3b8; }
+
+  /* Section cards */
+  .section-card {
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 20px;
+    padding: 28px 32px;
+    margin-bottom: 24px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+  }
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 24px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid #f1f5f9;
+  }
+  .section-icon {
+    width: 36px; height: 36px;
+    background: #f0fdfa;
+    border-radius: 9px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1rem;
+    flex-shrink: 0;
+  }
+  .section-header h2 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.25rem;
+    font-weight: 400;
+    color: #0f172a;
+  }
+  .section-count {
+    margin-left: auto;
+    background: #f1f5f9;
+    color: #64748b;
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 3px 10px;
+    border-radius: 99px;
+  }
+
+  /* Table */
+  .rx-table { width: 100%; border-collapse: collapse; font-size: 0.875rem; }
+  .rx-table thead tr { border-bottom: 2px solid #f1f5f9; }
+  .rx-table th { padding: 10px 14px 10px 0; text-align: left; font-size: 0.7rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #94a3b8; }
+  .rx-table td { padding: 14px 14px 14px 0; vertical-align: middle; color: #374151; }
+  .rx-table tbody tr { border-bottom: 1px solid #f8fafc; transition: background 0.15s; }
+  .rx-table tbody tr:last-child { border-bottom: none; }
+  .rx-table tbody tr:hover { background: #f8fafc; }
+  .rx-table .med-name { font-weight: 600; color: #0f172a; }
+  .rx-table .doctor-chip {
+    display: inline-flex; align-items: center; gap-5px;
+    background: #f1f5f9; padding: 3px 10px; border-radius: 99px;
+    font-size: 0.75rem; color: #475569; font-weight: 500;
+  }
+
+  /* Status badge */
+  .badge {
+    display: inline-flex; align-items: center; gap: 5px;
+    padding: 4px 12px; border-radius: 99px;
+    font-size: 0.72rem; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase;
+  }
+  .badge::before { content: ''; width: 6px; height: 6px; border-radius: 50%; display: inline-block; }
+  .badge-pending { background: #fefce8; color: #854d0e; }
+  .badge-pending::before { background: #eab308; }
+  .badge-filled  { background: #f0fdf4; color: #166534; }
+  .badge-filled::before  { background: #22c55e; }
+  .badge-default { background: #f1f5f9; color: #475569; }
+  .badge-default::before { background: #94a3b8; }
+
+  /* Order timeline */
+  .order-timeline { display: flex; flex-direction: column; gap: 0; }
+  .order-item {
+    display: flex; gap: 20px;
+    padding: 18px 0;
+    border-bottom: 1px solid #f1f5f9;
+    position: relative;
+  }
+  .order-item:last-child { border-bottom: none; }
+  .order-timeline-dot {
+    flex-shrink: 0;
+    width: 38px; height: 38px;
+    border-radius: 10px;
+    background: #f0fdfa;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1rem;
+    margin-top: 2px;
+  }
+  .order-body { flex: 1; }
+  .order-med { font-weight: 600; color: #0f172a; font-size: 0.9375rem; margin-bottom: 3px; }
+  .order-meta { font-size: 0.8rem; color: #94a3b8; }
+  .order-meta span { color: #64748b; font-weight: 500; }
+  .order-right { text-align: right; flex-shrink: 0; }
+  .order-date { font-size: 0.8rem; color: #94a3b8; margin-top: 4px; }
+  .order-id { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.06em; color: #cbd5e1; text-transform: uppercase; }
+
+  /* Follow-up cards */
+  .followup-list { display: flex; flex-direction: column; gap: 12px; }
+  .followup-item {
+    border: 1px solid #e5e7eb;
+    border-left: 4px solid #14b8a6;
+    border-radius: 12px;
+    padding: 16px 20px;
+    display: flex; align-items: flex-start; gap: 14px;
+  }
+  .followup-icon {
+    width: 34px; height: 34px; flex-shrink: 0;
+    background: #f0fdfa; border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.9rem; margin-top: 1px;
+  }
+  .followup-med { font-weight: 600; color: #0f172a; font-size: 0.9rem; margin-bottom: 4px; }
+  .followup-note { font-size: 0.825rem; color: #64748b; line-height: 1.5; }
+  .followup-action {
+    margin-left: auto; flex-shrink: 0;
+    padding: 6px 16px;
+    border: 1.5px solid #14b8a6;
+    color: #0f766e;
+    border-radius: 99px;
+    font-size: 0.75rem; font-weight: 600;
+    cursor: pointer;
+    background: transparent;
+    transition: background 0.15s, color 0.15s;
+    white-space: nowrap;
+  }
+  .followup-action:hover { background: #0f766e; color: white; }
+
+  /* Empty state */
+  .empty-state {
+    text-align: center; padding: 48px 20px;
+    color: #94a3b8;
+  }
+  .empty-state .empty-icon { font-size: 2.5rem; margin-bottom: 12px; }
+  .empty-state p { font-size: 0.9rem; }
+
+  /* Fade-in animation */
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+  .page-hero       { animation: fadeUp 0.45s ease both; }
+  .stat-grid       { animation: fadeUp 0.45s 0.08s ease both; }
+  .section-card:nth-child(1) { animation: fadeUp 0.45s 0.16s ease both; }
+  .section-card:nth-child(2) { animation: fadeUp 0.45s 0.22s ease both; }
+  .section-card:nth-child(3) { animation: fadeUp 0.45s 0.28s ease both; }
+</style>
+
+<div class="page-wrapper">
+
+  <!-- ── Hero Header ── -->
+  <div class="page-hero">
+    <span class="hero-date">{{ prescriptions[0].date if prescriptions else 'No activity yet' }}</span>
+    <h1>Hello, {{ g.user.name.split()[0] }} 👋</h1>
+    <p>Your full prescription history, orders, and follow-up plan — all in one place.</p>
   </div>
 
-  <!-- Prescription table using macro -->
-  {{ macros.prescription_table(prescriptions, g.user.role) }}
+  <!-- ── Stats ── -->
+  <div class="stat-grid">
+    <div class="stat-card stat-total">
+      <div class="stat-icon">💊</div>
+      <div class="stat-label">Total</div>
+      <div class="stat-value">{{ prescriptions | length }}</div>
+      <div class="stat-accent"></div>
+    </div>
+    <div class="stat-card stat-pending">
+      <div class="stat-icon">⏳</div>
+      <div class="stat-label">Pending</div>
+      <div class="stat-value">{{ (prescriptions | selectattr('status', 'equalto', 'Pending') | list) | length }}</div>
+      <div class="stat-accent"></div>
+    </div>
+    <div class="stat-card stat-filled">
+      <div class="stat-icon">✅</div>
+      <div class="stat-label">Filled</div>
+      <div class="stat-value">{{ (prescriptions | selectattr('status', 'equalto', 'Filled') | list) | length }}</div>
+      <div class="stat-accent"></div>
+    </div>
+    <div class="stat-card stat-updated">
+      <div class="stat-icon">🕒</div>
+      <div class="stat-label">Last Updated</div>
+      <div class="stat-value">{{ prescriptions[0].date if prescriptions else '—' }}</div>
+      <div class="stat-accent"></div>
+    </div>
+  </div>
 
-  <!-- Example details using macro -->
-  {% if prescriptions %}
-    {{ macros.prescription_details(prescriptions[0]) }}
-  {% endif %}
+  <!-- ── Prescriptions Table ── -->
+  <div class="section-card">
+    <div class="section-header">
+      <div class="section-icon">📋</div>
+      <h2>Prescriptions</h2>
+      <span class="section-count">{{ prescriptions | length }} total</span>
+    </div>
+
+    {% if prescriptions %}
+      <div class="overflow-x-auto">
+        <table class="rx-table">
+          <thead>
+            <tr>
+              <th>Medication</th>
+              <th>Dosage</th>
+              <th>Duration</th>
+              <th>Prescribed by</th>
+              <th>Status</th>
+              <th>Date</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for rx in prescriptions %}
+              <tr>
+                <td class="med-name">{{ rx.medication }}</td>
+                <td>{{ rx.dosage }}</td>
+                <td>{{ rx.duration }}</td>
+                <td>
+                  <span class="doctor-chip">{{ rx.doctor_name }}</span>
+                </td>
+                <td>
+                  <span class="badge
+                    {% if rx.status == 'Pending' %}badge-pending
+                    {% elif rx.status == 'Filled' %}badge-filled
+                    {% else %}badge-default{% endif %}">
+                    {{ rx.status }}
+                  </span>
+                </td>
+                <td style="color:#94a3b8; font-size:0.8125rem;">{{ rx.date }}</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    {% else %}
+      <div class="empty-state">
+        <div class="empty-icon">📭</div>
+        <p>No prescriptions on file yet.</p>
+      </div>
+    {% endif %}
+  </div>
+
+  <!-- ── Orders Timeline ── -->
+  <div class="section-card">
+    <div class="section-header">
+      <div class="section-icon">🛍️</div>
+      <h2>Orders</h2>
+      <span class="section-count">{{ prescriptions | length }} items</span>
+    </div>
+
+    {% if prescriptions %}
+      <div class="order-timeline">
+        {% for rx in prescriptions %}
+          <div class="order-item">
+            <div class="order-timeline-dot">💊</div>
+            <div class="order-body">
+              <div class="order-med">{{ rx.medication }}</div>
+              <div class="order-meta">Prescribed by <span>{{ rx.doctor_name }}</span></div>
+            </div>
+            <div class="order-right">
+              <span class="badge
+                {% if rx.status == 'Pending' %}badge-pending
+                {% elif rx.status == 'Filled' %}badge-filled
+                {% else %}badge-default{% endif %}">
+                {{ rx.status }}
+              </span>
+              <div class="order-date">{{ rx.date }}</div>
+              <div class="order-id">RX-{{ rx.id }}</div>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    {% else %}
+      <div class="empty-state">
+        <div class="empty-icon">📦</div>
+        <p>No orders yet.</p>
+      </div>
+    {% endif %}
+  </div>
+
+  <!-- ── Follow-up ── -->
+  <div class="section-card">
+    <div class="section-header">
+      <div class="section-icon">🩺</div>
+      <h2>Follow-up Plan</h2>
+      <span class="section-count">{{ prescriptions | length }} active</span>
+    </div>
+
+    {% if prescriptions %}
+      <div class="followup-list">
+        {% for rx in prescriptions %}
+          <div class="followup-item">
+            <div class="followup-icon">💬</div>
+            <div>
+              <div class="followup-med">{{ rx.medication }}</div>
+              <div class="followup-note">
+                Take {{ rx.dosage }} for {{ rx.duration }}.
+                If symptoms persist, schedule a review with {{ rx.doctor_name }}.
+              </div>
+            </div>
+            <button class="followup-action">Schedule Review</button>
+          </div>
+        {% endfor %}
+      </div>
+    {% else %}
+      <div class="empty-state">
+        <div class="empty-icon">🗓️</div>
+        <p>No follow-up actions needed right now.</p>
+      </div>
+    {% endif %}
+  </div>
+
 </div>
 {% endblock %}
