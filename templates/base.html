@@ -23,13 +23,30 @@
   <!-- Navbar -->
   <header id="mainNav" class="fixed top-0 inset-x-0 z-50 transition-all duration-500 py-6">
     <nav class="mx-auto max-w-7xl px-8 flex justify-between items-center glass rounded-full mx-4 md:mx-auto">
-      <a href="/" class="text-2xl font-bold tracking-tight text-gray-900 group flex items-center gap-2">
+      {% set home_href = url_for('landing') %}
+      {% if g.user %}
+        {% if g.user.role == 'Patient' %}
+          {% set home_href = url_for('patient_prescriptions') %}
+        {% elif g.user.role in ['Licensed provider', 'Doctor'] %}
+          {% set home_href = url_for('doctor_home') %}
+        {% elif g.user.role == 'Pathology laboratory' %}
+          {% set home_href = url_for('pathology_lab_home') %}
+        {% elif g.user.role == 'Pharmacy' %}
+          {% set home_href = url_for('pharmacy_prescriptions') %}
+        {% elif g.user.role == 'Admin' %}
+          {% set home_href = url_for('admin_home') %}
+        {% endif %}
+      {% endif %}
+
+      <a href="{{ home_href }}" class="text-2xl font-bold tracking-tight text-gray-900 group flex items-center gap-2">
         <div class="w-8 h-8 bg-indigo-600 rounded-lg flex items-center justify-center text-white text-sm">C</div>
         <span>CareConnect</span>
       </a>
 
       <div class="hidden lg:flex items-center space-x-8">
+        {% if not g.user %}
         <a href="/" class="{% if request.endpoint == 'landing' %}text-indigo-600{% else %}text-gray-500 hover:text-indigo-600{% endif %} transition-colors font-semibold text-sm uppercase tracking-wider">Concept</a>
+        {% endif %}
 
         {% if g.user %}
           {% if g.user.role != 'Pending' %}
@@ -42,7 +59,7 @@
           {% if g.user.role == 'Pending' %}
             <a href="{{ url_for('oauth_choose_role') }}" class="text-amber-600 font-bold text-sm uppercase tracking-wider">Onboarding</a>
           {% else %}
-            <span class="text-[10px] font-black uppercase tracking-[0.2em] text-gray-400 bg-gray-100 px-2 py-1 rounded">{{ g.user.role }}</span>
+            <a href="{{ home_href }}" class="text-[10px] font-black uppercase tracking-[0.2em] text-gray-400 bg-gray-100 px-2 py-1 rounded hover:bg-gray-200 hover:text-gray-600 transition-colors">{{ g.user.role }}</a>
           {% endif %}
 
           <a href="{{ url_for('logout') }}" class="btn-premium btn-primary text-sm">
@@ -87,56 +104,281 @@
     </main>
 
     <!-- Professional Footer -->
-    <footer class="bg-secondary text-white pt-32 pb-12">
-      <div class="container-wide">
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-16 px-8">
-          <div class="lg:col-span-4">
-            <a href="/" class="text-3xl font-display font-bold tracking-tighter">CareConnect</a>
-            <p class="mt-6 text-text-muted max-w-sm leading-relaxed">
+    <footer class="bg-zinc-950 text-white relative overflow-hidden">
+
+      <!-- Top glow -->
+      <div class="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-indigo-500/40 to-transparent"></div>
+      <div class="absolute -top-40 left-1/2 -translate-x-1/2 w-[600px] h-[300px] bg-indigo-600/5 rounded-full blur-[80px] pointer-events-none"></div>
+
+      <div class="container-wide px-8 relative z-10">
+
+        <!-- Main footer grid -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-16 pt-20 pb-16 border-b border-white/8">
+
+          <!-- Brand col -->
+          <div class="lg:col-span-4 space-y-6">
+            <a href="/" class="inline-flex items-center gap-3 group">
+              <div class="w-9 h-9 bg-indigo-600 rounded-xl flex items-center justify-center text-white font-black text-sm group-hover:bg-indigo-500 transition-colors">C</div>
+              <span class="text-2xl font-display font-black tracking-tighter text-white">CareConnect</span>
+            </a>
+            <p class="text-zinc-400 text-sm leading-relaxed max-w-xs">
               The elite standard for modern healthcare networking. Secure, scalable, and human-centric technology for the next generation of medicine.
             </p>
-          </div>
-          <div class="lg:col-span-8 grid grid-cols-2 md:grid-cols-4 gap-8">
-            <div class="space-y-4">
-              <h4 class="font-display font-bold text-xs uppercase tracking-[0.2em] opacity-40">Network</h4>
-              <ul class="space-y-2 text-sm font-medium text-gray-400">
-                <li><a href="#" class="hover:text-white transition-colors">Marketplace</a></li>
-                <li><a href="#" class="hover:text-white transition-colors">Find Doctors</a></li>
-                <li><a href="#" class="hover:text-white transition-colors">Insurance</a></li>
-              </ul>
-            </div>
-            <div class="space-y-4">
-              <h4 class="font-display font-bold text-xs uppercase tracking-[0.2em] opacity-40">Patients</h4>
-              <ul class="space-y-2 text-sm font-medium text-gray-400">
-                <li><a href="#" class="hover:text-white transition-colors">Hub</a></li>
-                <li><a href="#" class="hover:text-white transition-colors">Prescriptions</a></li>
-              </ul>
-            </div>
-            <div class="space-y-4">
-              <h4 class="font-display font-bold text-xs uppercase tracking-[0.2em] opacity-40">Company</h4>
-              <ul class="space-y-2 text-sm font-medium text-gray-400">
-              <h4 class="font-display font-bold text-xs uppercase tracking-[0.2em] text-white">Company</h4>
-              <ul class="space-y-2 text-sm font-medium text-gray-300">
-                <li><a href="#" class="hover:text-white transition-colors">About</a></li>
-                <li><a href="#" class="hover:text-white transition-colors">Legal</a></li>
-              </ul>
+            <!-- Trust badges -->
+            <div class="flex flex-wrap gap-2 pt-2">
+              <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/5 border border-white/10 text-xs font-semibold text-zinc-300">
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span> HIPAA Compliant
+              </span>
+              <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/5 border border-white/10 text-xs font-semibold text-zinc-300">
+                <span class="w-1.5 h-1.5 rounded-full bg-indigo-400"></span> AES-256 + PQ
+              </span>
+              <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/5 border border-white/10 text-xs font-semibold text-zinc-300">
+                <span class="w-1.5 h-1.5 rounded-full bg-amber-400"></span> 99.9% Uptime
+              </span>
             </div>
           </div>
+
+          <!-- Links cols -->
+          <div class="lg:col-span-8 grid grid-cols-2 md:grid-cols-4 gap-10">
+
+            <div class="space-y-5">
+              <h4 class="text-xs font-bold uppercase tracking-[0.2em] text-zinc-500">Network</h4>
+              <ul class="space-y-3">
+                <li><a href="{{ url_for('marketplace') if g.user else '#' }}" class="text-sm text-zinc-400 hover:text-white transition-colors duration-200">Marketplace</a></li>
+                <li><a href="{{ url_for('doctors') if g.user else '#' }}" class="text-sm text-zinc-400 hover:text-white transition-colors duration-200">Find Doctors</a></li>
+                <li><a href="#" class="text-sm text-zinc-400 hover:text-white transition-colors duration-200">Insurance</a></li>
+                <li><a href="#" class="text-sm text-zinc-400 hover:text-white transition-colors duration-200">Labs</a></li>
+              </ul>
+            </div>
+
+            <div class="space-y-5">
+              <h4 class="text-xs font-bold uppercase tracking-[0.2em] text-zinc-500">Patients</h4>
+              <ul class="space-y-3">
+                <li><a href="{{ url_for('patients_info') }}" class="text-sm text-zinc-400 hover:text-white transition-colors duration-200">Overview</a></li>
+                <li><a href="{{ url_for('patient_prescriptions') if g.user else url_for('login') }}" class="text-sm text-zinc-400 hover:text-white transition-colors duration-200">Prescriptions</a></li>
+                <li><a href="#" class="text-sm text-zinc-400 hover:text-white transition-colors duration-200">Health Records</a></li>
+                <li><a href="#" class="text-sm text-zinc-400 hover:text-white transition-colors duration-200">Appointments</a></li>
+              </ul>
+            </div>
+
+            <div class="space-y-5">
+              <h4 class="text-xs font-bold uppercase tracking-[0.2em] text-zinc-500">Providers</h4>
+              <ul class="space-y-3">
+                <li><a href="{{ url_for('providers_info') }}" class="text-sm text-zinc-400 hover:text-white transition-colors duration-200">Overview</a></li>
+                <li><a href="/getting-started?role=doctor" class="text-sm text-zinc-400 hover:text-white transition-colors duration-200">Clinics</a></li>
+                <li><a href="/getting-started?role=pathology" class="text-sm text-zinc-400 hover:text-white transition-colors duration-200">Laboratories</a></li>
+                <li><a href="/getting-started?role=hospital" class="text-sm text-zinc-400 hover:text-white transition-colors duration-200">Enterprise</a></li>
+              </ul>
+            </div>
+
+            <div class="space-y-5">
+              <h4 class="text-xs font-bold uppercase tracking-[0.2em] text-zinc-500">Company</h4>
+              <ul class="space-y-3">
+                <li><a href="#" class="text-sm text-zinc-400 hover:text-white transition-colors duration-200">About</a></li>
+                <li><a href="#" class="text-sm text-zinc-400 hover:text-white transition-colors duration-200">Security</a></li>
+                <li><a href="#" class="text-sm text-zinc-400 hover:text-white transition-colors duration-200">Legal</a></li>
+                <li><a href="{{ url_for('login') }}" class="text-sm text-zinc-400 hover:text-white transition-colors duration-200">Login</a></li>
+              </ul>
+            </div>
+
+          </div>
         </div>
-        <div class="mt-20 pt-8 border-t border-white/5 mx-8 flex flex-col md:flex-row justify-between items-center gap-6">
-          <p class="text-xs font-medium text-gray-400 uppercase tracking-widest leading-none">© 2026 CareConnect Health. Elite Performance.</p>
-          <nav class="hidden md:flex items-center gap-10">
-            <a href="#concept" class="text-sm font-bold uppercase tracking-widest text-white hover:text-indigo-400 transition-all">Concept</a>
-            <a href="/patients-info" class="text-sm font-bold uppercase tracking-widest text-white hover:text-indigo-400 transition-all">Patients</a>
-            <a href="/providers-info" class="text-sm font-bold uppercase tracking-widest text-white hover:text-indigo-400 transition-all">Providers</a>
-            <a href="/login" class="text-sm font-bold uppercase tracking-widest text-white hover:text-indigo-400 transition-all">Login</a>
-          </nav>
+
+        <!-- Bottom bar -->
+        <div class="py-8 flex flex-col md:flex-row justify-between items-center gap-4">
+          <p class="text-xs text-zinc-600 tracking-widest uppercase">© 2026 CareConnect Health Inc. All rights reserved.</p>
+          <div class="flex items-center gap-6">
+            <a href="#" class="text-xs text-zinc-600 hover:text-zinc-300 transition-colors">Privacy</a>
+            <a href="#" class="text-xs text-zinc-600 hover:text-zinc-300 transition-colors">Terms</a>
+            <a href="#" class="text-xs text-zinc-600 hover:text-zinc-300 transition-colors">HIPAA Notice</a>
+            <a href="#" class="text-xs text-zinc-600 hover:text-zinc-300 transition-colors">Accessibility</a>
+          </div>
         </div>
+
       </div>
-    </footer>
+    </footer>>
   </div>
 
-  <button id="backToTop" class="fixed bottom-12 right-12 w-12 h-12 bg-white text-secondary rounded-full shadow-2xl flex items-center justify-center transition-all opacity-0 invisible hover:scale-110 active:scale-95 z-50" aria-label="Back to top">
+  <!-- ═══════════════════════════════════════════
+       EXIT-INTENT POPUP
+  ════════════════════════════════════════════ -->
+  <div id="exit-popup" aria-modal="true" role="dialog" aria-label="Stay with CareConnect" style="display:none">
+    <!-- Backdrop -->
+    <div id="exit-backdrop" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[9998]"></div>
+
+    <!-- Panel -->
+    <div id="exit-panel" class="fixed z-[9999] inset-0 flex items-center justify-center p-4 pointer-events-none">
+      <div class="pointer-events-auto w-full max-w-lg bg-zinc-950 border border-white/10 rounded-[2.5rem] overflow-hidden shadow-2xl relative"
+           style="transform:scale(0.92);opacity:0" id="exit-card">
+
+        <!-- Top accent line -->
+        <div class="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-indigo-400/60 to-transparent"></div>
+
+        <!-- Ambient glow -->
+        <div class="absolute -top-20 left-1/2 -translate-x-1/2 w-64 h-32 bg-indigo-500/15 rounded-full blur-3xl pointer-events-none"></div>
+
+        <!-- Close button -->
+        <button id="exit-close" aria-label="Close"
+          class="absolute top-5 right-5 w-9 h-9 rounded-full bg-white/8 hover:bg-white/15 border border-white/10 flex items-center justify-center text-zinc-400 hover:text-white transition-all z-10">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+          </svg>
+        </button>
+
+        <div class="p-10 relative z-10">
+          <!-- Badge -->
+          <div class="inline-flex items-center gap-2 px-4 py-1.5 bg-indigo-500/15 border border-indigo-500/25 rounded-full text-indigo-300 text-xs font-bold uppercase tracking-widest mb-8">
+            <span class="w-1.5 h-1.5 rounded-full bg-indigo-400 animate-pulse"></span>
+            Exclusive Offer
+          </div>
+
+          <h2 class="text-3xl font-display font-black tracking-tighter text-white mb-3">Leaving so soon?</h2>
+          <p class="text-zinc-400 text-sm leading-relaxed mb-8">
+            We've got something exclusive for you. Share your details and get early access to CareConnect's elite network — free for 30 days.
+          </p>
+
+          <!-- Form -->
+          <form id="exit-form" class="space-y-4" novalidate>
+            <div class="grid grid-cols-2 gap-4">
+              <div>
+                <input type="text" id="exit-name" placeholder="Your name"
+                  class="w-full bg-white/5 border border-white/10 focus:border-indigo-500/60 rounded-xl px-4 py-3 text-white text-sm placeholder-zinc-500 outline-none transition-colors">
+              </div>
+              <div>
+                <input type="tel" id="exit-phone" placeholder="Phone number" maxlength="15"
+                  class="w-full bg-white/5 border border-white/10 focus:border-indigo-500/60 rounded-xl px-4 py-3 text-white text-sm placeholder-zinc-500 outline-none transition-colors">
+              </div>
+            </div>
+
+            <div>
+              <select id="exit-role"
+                class="w-full bg-white/5 border border-white/10 focus:border-indigo-500/60 rounded-xl px-4 py-3 text-sm outline-none transition-colors appearance-none"
+                style="color:#a1a1aa">
+                <option value="" disabled selected>I am a...</option>
+                <option value="patient">Patient</option>
+                <option value="doctor">Doctor / Clinician</option>
+                <option value="lab">Laboratory</option>
+                <option value="hospital">Hospital / Enterprise</option>
+              </select>
+            </div>
+
+            <p id="exit-error" class="text-red-400 text-xs hidden">Please fill in all fields.</p>
+
+            <button type="submit" id="exit-submit"
+              class="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-3.5 rounded-xl transition-colors text-sm tracking-wide">
+              Claim My Free 30-Day Access →
+            </button>
+          </form>
+
+          <!-- Success state (hidden initially) -->
+          <div id="exit-success" class="hidden text-center py-4">
+            <div class="w-14 h-14 bg-emerald-500/20 rounded-full flex items-center justify-center mx-auto mb-5">
+              <svg class="w-7 h-7 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/>
+              </svg>
+            </div>
+            <h3 class="text-xl font-display font-bold text-white mb-2">You're on the list.</h3>
+            <p class="text-zinc-400 text-sm">We'll be in touch shortly with your exclusive access details.</p>
+          </div>
+
+          <p class="text-zinc-600 text-xs text-center mt-6">
+            By continuing you agree to our <a href="#" class="text-zinc-500 hover:text-zinc-300 underline underline-offset-2">Terms</a> &amp; <a href="#" class="text-zinc-500 hover:text-zinc-300 underline underline-offset-2">Privacy Policy</a>.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+  (function () {
+    // Only show once per session
+    if (sessionStorage.getItem('cc_exit_shown')) return;
+
+    const popup    = document.getElementById('exit-popup');
+    const card     = document.getElementById('exit-card');
+    const backdrop = document.getElementById('exit-backdrop');
+    const closeBtn = document.getElementById('exit-close');
+    const form     = document.getElementById('exit-form');
+    const success  = document.getElementById('exit-success');
+    const errMsg   = document.getElementById('exit-error');
+
+    let triggered = false;
+
+    function openPopup() {
+      if (triggered) return;
+      triggered = true;
+      sessionStorage.setItem('cc_exit_shown', '1');
+
+      popup.style.display = 'block';
+      document.body.style.overflow = 'hidden';
+
+      if (typeof gsap !== 'undefined') {
+        gsap.to(card, { scale: 1, opacity: 1, duration: 0.45, ease: 'back.out(1.4)' });
+        gsap.from(backdrop, { opacity: 0, duration: 0.3 });
+      } else {
+        card.style.transform = 'scale(1)';
+        card.style.opacity   = '1';
+      }
+    }
+
+    function closePopup() {
+      if (typeof gsap !== 'undefined') {
+        gsap.to(card,     { scale: 0.92, opacity: 0, duration: 0.3, ease: 'power2.in' });
+        gsap.to(backdrop, { opacity: 0, duration: 0.3,
+          onComplete: () => { popup.style.display = 'none'; document.body.style.overflow = ''; }
+        });
+      } else {
+        popup.style.display = 'none';
+        document.body.style.overflow = '';
+      }
+    }
+
+    // Exit-intent: mouse leaves viewport through the top
+    document.addEventListener('mouseleave', e => {
+      if (e.clientY <= 0) openPopup();
+    });
+
+    // Mobile fallback: show after 45s of inactivity
+    let mobileTimer = setTimeout(() => {
+      if (!triggered && window.innerWidth < 768) openPopup();
+    }, 45000);
+
+    closeBtn.addEventListener('click', closePopup);
+    backdrop.addEventListener('click', closePopup);
+
+    // Escape key
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape' && popup.style.display !== 'none') closePopup();
+    });
+
+    // Form submit
+    form.addEventListener('submit', e => {
+      e.preventDefault();
+      const name  = document.getElementById('exit-name').value.trim();
+      const phone = document.getElementById('exit-phone').value.trim();
+      const role  = document.getElementById('exit-role').value;
+
+      if (!name || !phone || !role) {
+        errMsg.classList.remove('hidden');
+        return;
+      }
+      errMsg.classList.add('hidden');
+
+      // Hide form, show success
+      form.style.display = 'none';
+      success.classList.remove('hidden');
+
+      // Auto-close after 3s
+      setTimeout(closePopup, 3000);
+    });
+
+    // Cleanup mobile timer if mouse detected
+    document.addEventListener('mousemove', () => {
+      clearTimeout(mobileTimer);
+    }, { once: true });
+
+  })();
+  </script> class="fixed bottom-12 right-12 w-12 h-12 bg-white text-secondary rounded-full shadow-2xl flex items-center justify-center transition-all opacity-0 invisible hover:scale-110 active:scale-95 z-50" aria-label="Back to top">
     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18"></path></svg>
   </button>
 
@@ -208,4 +450,4 @@
     });
   </script>
 </body>
-</html>
+</html>

@@ -1,9 +1,9 @@
-{% extends "base.html" %}
+﻿{% extends "base.html" %}
 {% block title %}Providers | The CareConnect Ecosystem{% endblock %}
 
 {% block content %}
 <!-- Elite Header -->
-<section class="relative min-h-[70vh] flex items-center pt-32 pb-20 overflow-hidden bg-background">
+<section class="relative min-h-[90vh] flex items-center pt-32 pb-20 overflow-hidden bg-background">
   <div class="container-wide px-8 relative z-10">
     <div class="max-w-4xl">
       <div class="inline-flex items-center gap-2 px-3 py-1 bg-indigo-50 text-indigo-700 rounded-full text-xs font-bold uppercase tracking-widest mb-8 opacity-0 hero-fade">
@@ -32,56 +32,57 @@
 </section>
 
 <!-- Solution Grid -->
-<section id="solutions" class="section-padding bg-secondary text-white relative overflow-hidden">
-  <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-10"></div>
+<section id="solutions" class="section-padding bg-zinc-900 text-white relative overflow-hidden">
+  <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-[0.06]"></div>
+  <div class="absolute inset-0 bg-gradient-to-br from-indigo-600/10 via-transparent to-violet-900/10 pointer-events-none"></div>
   <div class="container-wide relative z-10">
     <div class="grid lg:grid-cols-3 gap-8">
       <!-- Doctors -->
-      <div class="glass-dark p-12 rounded-[3.5rem] border-white/5 hover:border-indigo-500/30 transition-all group reveal-trigger">
-        <div class="w-16 h-16 bg-white/10 rounded-2xl flex items-center justify-center text-3xl mb-8 group-hover:scale-110 transition-transform">🩺</div>
-        <h3 class="text-3xl font-bold mb-4 font-display italic">Clinics</h3>
-        <p class="text-gray-400 mb-8 leading-relaxed">Unified timelines & smart prescriptions. Reduce administrative lag by 40% using our AI-driven scheduling engine.</p>
+      <div class="bg-white/5 border border-white/10 hover:border-indigo-500/50 hover:bg-white/8 transition-all duration-300 p-12 rounded-[3.5rem] group reveal-trigger">
+        <div class="w-16 h-16 bg-indigo-500/20 rounded-2xl flex items-center justify-center text-3xl mb-8 group-hover:scale-110 transition-transform">&#x1FA7A;</div>
+        <h3 class="text-3xl font-bold mb-4 font-display italic text-white">Clinics</h3>
+        <p class="text-zinc-300 mb-8 leading-relaxed">Unified timelines &amp; smart prescriptions. Reduce administrative lag by 40% using our AI-driven scheduling engine.</p>
         <div class="space-y-4 mb-8">
           <div class="flex items-center gap-3 text-sm text-indigo-300 font-bold">
-            <span class="w-1.5 h-1.5 bg-indigo-500 rounded-full"></span> Smart EHR Sync
+            <span class="w-1.5 h-1.5 bg-indigo-400 rounded-full"></span> Smart EHR Sync
           </div>
           <div class="flex items-center gap-3 text-sm text-indigo-300 font-bold">
-            <span class="w-1.5 h-1.5 bg-indigo-500 rounded-full"></span> Automated Billing
+            <span class="w-1.5 h-1.5 bg-indigo-400 rounded-full"></span> Automated Billing
           </div>
         </div>
-        <a href="/getting-started?role=doctor" class="btn-premium bg-white/10 text-white border border-white/10 hover:bg-white transition-all hover:text-secondary w-full">Join Network</a>
+        <a href="/getting-started?role=doctor" class="btn-premium bg-indigo-600 text-white border border-indigo-500 hover:bg-indigo-500 transition-all w-full">Join Network</a>
       </div>
 
       <!-- Labs -->
-      <div class="glass-dark p-12 rounded-[3.5rem] border-white/5 hover:border-rose-500/30 transition-all group reveal-trigger" style="transition-delay: 0.1s">
-        <div class="w-16 h-16 bg-white/10 rounded-2xl flex items-center justify-center text-3xl mb-8 group-hover:scale-110 transition-transform">🔬</div>
-        <h3 class="text-3xl font-bold mb-4 font-display italic">Laboratories</h3>
-        <p class="text-gray-400 mb-8 leading-relaxed">Real-time report broadcasting. Secure API channels directly to referring specialists and patient apps.</p>
+      <div class="bg-white/5 border border-white/10 hover:border-rose-500/50 hover:bg-white/8 transition-all duration-300 p-12 rounded-[3.5rem] group reveal-trigger" style="transition-delay: 0.1s">
+        <div class="w-16 h-16 bg-rose-500/20 rounded-2xl flex items-center justify-center text-3xl mb-8 group-hover:scale-110 transition-transform">&#x1F52C;</div>
+        <h3 class="text-3xl font-bold mb-4 font-display italic text-white">Laboratories</h3>
+        <p class="text-zinc-300 mb-8 leading-relaxed">Real-time report broadcasting. Secure API channels directly to referring specialists and patient apps.</p>
         <div class="space-y-4 mb-8">
           <div class="flex items-center gap-3 text-sm text-rose-300 font-bold">
-            <span class="w-1.5 h-1.5 bg-rose-500 rounded-full"></span> Direct Result API
+            <span class="w-1.5 h-1.5 bg-rose-400 rounded-full"></span> Direct Result API
           </div>
           <div class="flex items-center gap-3 text-sm text-rose-300 font-bold">
-            <span class="w-1.5 h-1.5 bg-rose-500 rounded-full"></span> Digital Authorization
+            <span class="w-1.5 h-1.5 bg-rose-400 rounded-full"></span> Digital Authorization
           </div>
         </div>
-        <a href="/getting-started?role=pathology" class="btn-premium bg-white/10 text-white border border-white/10 hover:bg-white transition-all hover:text-secondary w-full">Sync Lab</a>
+        <a href="/getting-started?role=pathology" class="btn-premium bg-rose-600 text-white border border-rose-500 hover:bg-rose-500 transition-all w-full">Sync Lab</a>
       </div>
 
       <!-- Hospitals -->
-      <div class="glass-dark p-12 rounded-[3.5rem] border-white/5 hover:border-emerald-500/30 transition-all group reveal-trigger" style="transition-delay: 0.2s">
-        <div class="w-16 h-16 bg-white/10 rounded-2xl flex items-center justify-center text-3xl mb-8 group-hover:scale-110 transition-transform">🏥</div>
-        <h3 class="text-3xl font-bold mb-4 font-display italic">Enterprise</h3>
-        <p class="text-gray-400 mb-8 leading-relaxed">Multi-department coordination. Inventory tracking & ward management with military-grade security.</p>
+      <div class="bg-white/5 border border-white/10 hover:border-emerald-500/50 hover:bg-white/8 transition-all duration-300 p-12 rounded-[3.5rem] group reveal-trigger" style="transition-delay: 0.2s">
+        <div class="w-16 h-16 bg-emerald-500/20 rounded-2xl flex items-center justify-center text-3xl mb-8 group-hover:scale-110 transition-transform">&#x1F3E5;</div>
+        <h3 class="text-3xl font-bold mb-4 font-display italic text-white">Enterprise</h3>
+        <p class="text-zinc-300 mb-8 leading-relaxed">Multi-department coordination. Inventory tracking &amp; ward management with military-grade security.</p>
         <div class="space-y-4 mb-8">
           <div class="flex items-center gap-3 text-sm text-emerald-300 font-bold">
-            <span class="w-1.5 h-1.5 bg-emerald-500 rounded-full"></span> Facility Resource ERP
+            <span class="w-1.5 h-1.5 bg-emerald-400 rounded-full"></span> Facility Resource ERP
           </div>
           <div class="flex items-center gap-3 text-sm text-emerald-300 font-bold">
-            <span class="w-1.5 h-1.5 bg-emerald-500 rounded-full"></span> Custom API Nodes
+            <span class="w-1.5 h-1.5 bg-emerald-400 rounded-full"></span> Custom API Nodes
           </div>
         </div>
-        <a href="/getting-started?role=hospital" class="btn-premium bg-white/10 text-white border border-white/10 hover:bg-white transition-all hover:text-secondary w-full">Integrate</a>
+        <a href="/getting-started?role=hospital" class="btn-premium bg-emerald-600 text-white border border-emerald-500 hover:bg-emerald-500 transition-all w-full">Integrate</a>
       </div>
     </div>
   </div>

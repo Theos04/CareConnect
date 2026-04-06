@@ -1,4 +1,4 @@
-﻿{% extends "base.html" %}
+{% extends "base.html" %}
 {% block title %}Getting Started | CareConnect{% endblock %}
 
 {% block content %}
@@ -126,25 +126,25 @@
                 <label class="block text-xs font-bold uppercase tracking-widest text-zinc-500 mb-3">I am a</label>
                 <div class="grid grid-cols-2 gap-2" id="roleCards">
                   <label class="role-card cursor-pointer">
-                    <input type="radio" value="patient" class="sr-only" required>
+                    <input type="radio" name="role" value="patient" class="sr-only" required>
                     <div class="role-card-inner flex items-center gap-2.5 px-4 py-3 rounded-xl border border-white/10 bg-white/5 hover:border-indigo-500/50 hover:bg-indigo-500/8 transition-all text-sm text-zinc-300 font-semibold">
                       <span class="text-lg">🤝</span> Patient
                     </div>
                   </label>
                   <label class="role-card cursor-pointer">
-                    <input type="radio" value="doctor" class="sr-only">
+                    <input type="radio" name="role" value="doctor" class="sr-only">
                     <div class="role-card-inner flex items-center gap-2.5 px-4 py-3 rounded-xl border border-white/10 bg-white/5 hover:border-indigo-500/50 hover:bg-indigo-500/8 transition-all text-sm text-zinc-300 font-semibold">
                       <span class="text-lg">&#x1FA7A;</span> Doctor
                     </div>
                   </label>
                   <label class="role-card cursor-pointer">
-                    <input type="radio" value="pathology" class="sr-only">
+                    <input type="radio" name="role" value="pathology" class="sr-only">
                     <div class="role-card-inner flex items-center gap-2.5 px-4 py-3 rounded-xl border border-white/10 bg-white/5 hover:border-indigo-500/50 hover:bg-indigo-500/8 transition-all text-sm text-zinc-300 font-semibold">
                       <span class="text-lg">&#x1F52C;</span> Pathology
                     </div>
                   </label>
                   <label class="role-card cursor-pointer">
-                    <input type="radio" value="hospital" class="sr-only">
+                    <input type="radio" name="role" value="hospital" class="sr-only">
                     <div class="role-card-inner flex items-center gap-2.5 px-4 py-3 rounded-xl border border-white/10 bg-white/5 hover:border-indigo-500/50 hover:bg-indigo-500/8 transition-all text-sm text-zinc-300 font-semibold">
                       <span class="text-lg">&#x1F3E5;</span> Hospital
                     </div>

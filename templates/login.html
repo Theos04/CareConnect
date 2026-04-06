@@ -2,18 +2,24 @@
 {% block title %}Login | CareConnect{% endblock %}
 
 {% block content %}
-<div class="max-w-md mx-auto bg-white p-6 rounded-lg shadow">
-  <h2 class="text-2xl font-bold mb-4">Doctor Login</h2>
-  <form method="post" class="space-y-4">
-    <input type="email" name="email" placeholder="Email" required
-           class="w-full border p-2 rounded">
-    <button type="submit"
-            class="w-full bg-indigo-600 text-white py-2 rounded hover:bg-indigo-700">
-      Log In
-    </button>
-  </form>
-  <p class="mt-4 text-sm text-center">
-    No account? <a href="{{ url_for('create_profile') }}" class="text-indigo-600">Create one</a>
-  </p>
+<div class="min-h-[80vh] flex items-center justify-center">
+  <div class="max-w-md w-full bg-white p-6 rounded-lg shadow">
+    <h2 class="text-2xl font-bold mb-4">Doctor Login</h2>
+
+    <form method="post" class="space-y-4">
+      <input type="email" name="email" placeholder="Email" required class="w-full border p-2 rounded">
+
+      <button type="submit" class="w-full bg-indigo-600 text-white py-2 rounded hover:bg-indigo-700">
+        Log In
+      </button>
+    </form>
+
+    <p class="mt-4 text-sm text-center">
+      No account?
+      <a href="{{ url_for('create_profile') }}" class="text-indigo-600">
+        Create one
+      </a>
+    </p>
+  </div>
 </div>
 {% endblock %}

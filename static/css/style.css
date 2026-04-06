@@ -1,31 +1,62 @@
-@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Inter:ital,wght@0,300;0,400;0,600;1,400&display=swap');
+﻿@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800;900&family=Inter:ital,wght@0,300;0,400;0,600;1,400&display=swap');
 
 :root {
-  /* Ultra-Luxury High-Contrast Palette */
-  --primary: #4338CA;      /* Indigo-700 for better contrast on light */
-  --primary-glow: rgba(79, 70, 229, 0.4);
-  --primary-hover: #3730A3;
-  --secondary: #020617;    /* Deeper Slate-950 for striking depth */
-  --accent: #E11D48;       /* Rose-600 */
-  --background: #FFFFFF;   /* Pure White for maximum contrast */
-  --surface: #F8FAFC;
-  --text-main: #020617;    /* Slate-950 for maximum contrast */
-  --text-muted: #1E293B;   /* Slate-800 for clear visibility */
-  --text-label: #475569;   /* Slate-600 for subtle but readable labels */
-  --border: #CBD5E1;       /* Darkened Slate-300 for clearer borders */
-  --border-light: rgba(203, 213, 225, 0.5);
-  
-  /* Typography */
-  --font-display: 'Outfit', sans-serif;
-  --font-body: 'Inter', sans-serif;
-  
-  /* Precision Transitions */
-  --transition-smooth: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
-  --transition-fast: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  
-  /* Premium Shadows */
-  --shadow-premium: 0 20px 50px -12px rgba(0, 0, 0, 0.08);
-  --shadow-hover: 0 30px 60px -12px rgba(0, 0, 0, 0.12);
+    /* Ultra-Luxury High-Contrast Palette */
+    --primary: #4338CA;
+    --primary-glow: rgba(79, 70, 229, 0.4);
+    --primary-hover: #3730A3;
+    --secondary: #020617;
+    --accent: #E11D48;
+    --background: #FFFFFF;
+    --surface: #F8FAFC;
+    --text-main: #020617;
+    --text-muted: #1E293B;
+    --text-label: #475569;
+    --border: #CBD5E1;
+    --border-light: rgba(203, 213, 225, 0.5);
+
+    /* Dark surface tokens (used by zinc-950/900 sections) */
+    --surface-dark: #09090b;       /* zinc-950 */
+    --surface-dark-2: #18181b;     /* zinc-900 */
+    --surface-dark-3: #27272a;     /* zinc-800 */
+    --text-on-dark: #fafafa;       /* zinc-50 */
+    --text-on-dark-muted: #a1a1aa; /* zinc-400 */
+    --text-on-dark-subtle: #71717a;/* zinc-500 */
+
+    /* Gradient accent (hero headline) */
+    --gradient-hero: linear-gradient(to right, #818cf8, #a78bfa, #e879f9);
+
+    /* Typography */
+    --font-display: 'Outfit', sans-serif;
+    --font-body: 'Inter', sans-serif;
+
+    /* Precision Transitions */
+    --transition-smooth: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    --transition-fast: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+    /* Premium Shadows */
+    --shadow-premium: 0 20px 50px -12px rgba(0, 0, 0, 0.08);
+    --shadow-hover: 0 30px 60px -12px rgba(0, 0, 0, 0.12);
+    --shadow-dark: 0 20px 50px -12px rgba(0, 0, 0, 0.5);
+    --shadow-dark-hover: 0 30px 60px -12px rgba(0, 0, 0, 0.7);
+}
+
+/* ============================= */
+/* GLOBAL RESET & BASE           */
+/* ============================= */
+
+* {
+    box-sizing: border-box;
+}
+
+html,
+body {
+    overscroll-behavior-y: none;
+}
+
+html {
+    scroll-behavior: smooth;
+    scroll-padding-top: 0px;
 }
 
 body {
@@ -35,17 +66,34 @@ body {
     line-height: 1.6;
     overflow-x: hidden;
     margin: 0;
+    text-rendering: optimizeLegibility;
     -webkit-font-smoothing: antialiased;
+    overflow-y: auto;
 }
 
-h1, h2, h3, .font-display {
+/* ============================= */
+/* TYPOGRAPHY                    */
+/* ============================= */
+
+h1,
+h2,
+h3,
+.font-display {
     font-family: var(--font-display);
     font-weight: 800;
     letter-spacing: -0.04em;
     margin: 0;
 }
 
-/* Glassmorphism Evolution */
+/* font-black utility for display headings */
+.font-black {
+    font-weight: 900;
+}
+
+/* ============================= */
+/* GLASS EFFECTS                 */
+/* ============================= */
+
 .glass {
     background: rgba(255, 255, 255, 0.8);
     backdrop-filter: blur(20px);
@@ -63,13 +111,26 @@ h1, h2, h3, .font-display {
 }
 
 .glass-dark {
-    background: rgba(2, 6, 23, 0.85);
+    background: rgba(255, 255, 255, 0.06);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.3);
 }
 
-/* Luxury Interactive Cards */
+/* Dark-surface glass used in zinc-950 sections */
+.glass-zinc {
+    background: rgba(9, 9, 11, 0.7);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+}
+
+/* ============================= */
+/* LUXURY CARDS (GSAP OPTIMIZED) */
+/* ============================= */
+
 .card-premium {
     background: var(--surface);
     border: 1px solid var(--border-light);
@@ -78,27 +139,61 @@ h1, h2, h3, .font-display {
     transition: var(--transition-smooth);
     position: relative;
     overflow: hidden;
+    will-change: transform, opacity;
+    transform: translateZ(0);
+    transform-style: preserve-3d;
+    backface-visibility: hidden;
 }
 
 .card-premium:hover {
     transform: translateY(-12px) scale(1.01);
-    box-shadow: 0 40px 80px -15px rgba(0, 0, 0, 0.15);
+    box-shadow: var(--shadow-hover);
     border-color: var(--primary);
     z-index: 10;
 }
 
-/* Brand Micro-animations */
+/* Dark variant — used in zinc-950/900 sections */
+.card-premium.bg-zinc-950,
+.card-premium.bg-zinc-900,
+.card-premium.bg-slate-950,
+.card-premium.bg-slate-900 {
+    box-shadow: var(--shadow-dark);
+}
+
+.card-premium.bg-zinc-950:hover,
+.card-premium.bg-zinc-900:hover,
+.card-premium.bg-slate-950:hover,
+.card-premium.bg-slate-900:hover {
+    box-shadow: var(--shadow-dark-hover);
+    border-color: rgba(255, 255, 255, 0.2);
+}
+
+/* ============================= */
+/* ANIMATIONS                    */
+/* ============================= */
+
 .float-element {
     animation: floating 6s ease-in-out infinite;
 }
 
 @keyframes floating {
-    0% { transform: translateY(0px); }
-    50% { transform: translateY(-20px); }
-    100% { transform: translateY(0px); }
+    0% {
+        transform: translateY(0px);
+    }
+
+    50% {
+        transform: translateY(-20px);
+    }
+
+    100% {
+        transform: translateY(0px);
+    }
 }
 
-/* Preloader Styles */
+/* ============================= */
+/* PRELOADER (SMOOTH EXIT)       */
+/* ============================= */
+
 .preloader {
     position: fixed;
     inset: 0;
@@ -111,6 +206,12 @@ h1, h2, h3, .font-display {
     justify-content: center;
     align-items: center;
     color: white;
+    transition: opacity 0.6s ease, visibility 0.6s ease;
+}
+
+.preloader.hidden {
+    opacity: 0;
+    visibility: hidden;
 }
 
 .preloader-counter {
@@ -124,7 +225,10 @@ h1, h2, h3, .font-display {
     -webkit-text-fill-color: transparent;
 }
 
-/* Reveal Animations */
+/* ============================= */
+/* REVEAL ANIMATIONS             */
+/* ============================= */
+
 .reveal-text {
     overflow: hidden;
     display: block;
@@ -135,7 +239,10 @@ h1, h2, h3, .font-display {
     transform: translateY(100%);
 }
 
-/* Luxury Buttons */
+/* ============================= */
+/* LUXURY BUTTONS                */
+/* ============================= */
+
 .btn-premium {
     position: relative;
     padding: 1rem 2.5rem;
@@ -167,15 +274,44 @@ h1, h2, h3, .font-display {
     transform: translateY(-2px);
 }
 
-/* High-Contrast Utilities */
-.text-label { color: var(--text-label); }
-.text-secondary-contrast { color: var(--secondary); }
-.border-contrast { border-color: var(--border); }
+/* ============================= */
+/* UTILITIES                     */
+/* ============================= */
+
+.text-label {
+    color: var(--text-label);
+}
+
+.text-secondary-contrast {
+    color: var(--secondary);
+}
+
+.border-contrast {
+    border-color: var(--border);
+}
+
+.glow {
+    box-shadow: 0 0 40px var(--primary-glow);
+}
 
 /* GSAP Optimization */
-.reveal-trigger {
+.reveal-trigger,
+.snap-section,
+.card-premium,
+.glass,
+.glass-premium {
     will-change: transform, opacity;
+    transform: translateZ(0);
 }
+
+/* Parallax System Prep */
+[data-depth] {
+    will-change: transform;
+}
+
+/* ============================= */
+/* RESPONSIVE                    */
+/* ============================= */
 
 @media (max-width: 768px) {
     .section-padding {
@@ -183,7 +319,10 @@ h1, h2, h3, .font-display {
     }
 }
 
-/* Layout Utilities */
+/* ============================= */
+/* LAYOUT UTILITIES              */
+/* ============================= */
+
 .section-padding {
     padding: 140px 5%;
 }
@@ -192,3 +331,371 @@ h1, h2, h3, .font-display {
     max-width: 1440px;
     margin: 0 auto;
 }
+
+/* ============================= */
+/* SNAP SCROLL SYSTEM            */
+/* ============================= */
+
+/* Soft snap — no mandatory lock so GSAP ScrollTrigger can work freely */
+.snap-section {
+    scroll-snap-align: start;
+    min-height: 100vh;
+    width: 100%;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.snap-section .container-wide {
+    max-height: 100%;
+    overflow: visible;
+}
+
+.snap-section > * {
+    width: 100%;
+}
+
+section {
+    scroll-margin-top: 80px;
+}
+
+/* Stacking section must NOT clip overflow — sticky needs it */
+.stacking {
+    overflow: visible !important;
+    display: block !important;
+    align-items: unset !important;
+    justify-content: unset !important;
+}
+
+/* ============================= */
+/* HERO — GRADIENT HEADLINE      */
+/* ============================= */
+
+/* Ensures bg-clip text works cross-browser for the hero gradient span */
+.hero-gradient-text {
+    background: var(--gradient-hero);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+}
+
+/* ============================= */
+/* HERO — STAT COUNTERS          */
+/* ============================= */
+
+.stat-item {
+    position: relative;
+}
+
+/* Subtle divider between stats on dark bg */
+.bg-zinc-950 .stat-item + .stat-item::before,
+.bg-zinc-900 .stat-item + .stat-item::before {
+    content: '';
+    position: absolute;
+    left: -1.5rem;
+    top: 10%;
+    height: 80%;
+    width: 1px;
+    background: rgba(255, 255, 255, 0.08);
+}
+
+/* ============================= */
+/* TEXT FILL SCROLL SECTION      */
+/* ============================= */
+
+.fill-text {
+    margin: 0;
+    font-size: clamp(22px, 4vw, 48px);
+    font-weight: 600;
+    line-height: 1.15;
+    letter-spacing: -0.01em;
+    text-wrap: pretty;
+    font-family: var(--font-display);
+}
+
+.fill-text > span {
+    -webkit-background-clip: text;
+    background-clip: text;
+    background-color: #3f434a;
+    background-image: linear-gradient(135deg, #f3f4f6 50%, #3f434a 60%);
+    background-position: 0 0;
+    background-repeat: no-repeat;
+    background-size: 0% 200%;
+    color: transparent;
+    display: inline;
+    will-change: background-size;
+}
+
+/* ============================= */
+/* STACKING CARDS                */
+/* ============================= */
+
+.stacking__container {
+    position: relative;
+}
+
+/* sticky works only when no ancestor has overflow:hidden */
+.stacking__card {
+    position: sticky;
+    top: 8rem;
+    will-change: transform;
+    transform-origin: top center;
+    transition: box-shadow 0.3s ease;
+    /* later cards layer on top */
+    z-index: 1;
+}
+
+.stacking__card:nth-child(1) { z-index: 1; }
+.stacking__card:nth-child(2) { z-index: 2; }
+.stacking__card:nth-child(3) { z-index: 3; }
+.stacking__card:nth-child(4) { z-index: 4; }
+
+.stacking__card:hover {
+    box-shadow: 0 40px 80px -20px rgba(0, 0, 0, 0.6);
+}
+
+/* ============================= */
+/* DARK SECTION UTILITIES        */
+/* ============================= */
+
+/* Sections with bg-zinc-950 get proper text defaults */
+.bg-zinc-950,
+.bg-zinc-900 {
+    color: var(--text-on-dark);
+}
+
+/* Force all common text utility classes to be readable on dark sections */
+.bg-zinc-950 h1,
+.bg-zinc-950 h2,
+.bg-zinc-950 h3,
+.bg-zinc-900 h1,
+.bg-zinc-900 h2,
+.bg-zinc-900 h3 {
+    color: #ffffff;
+}
+
+.bg-zinc-950 p,
+.bg-zinc-900 p {
+    color: #d4d4d8; /* zinc-300 */
+}
+
+/* bg-secondary is #020617 — same treatment */
+.bg-secondary h1,
+.bg-secondary h2,
+.bg-secondary h3 {
+    color: #ffffff;
+}
+
+.bg-secondary p {
+    color: #d1d5db; /* gray-300 */
+}
+
+/* text-text-muted on dark sections — override to readable */
+.bg-zinc-950 .text-text-muted,
+.bg-zinc-900 .text-text-muted,
+.bg-secondary .text-text-muted {
+    color: #a1a1aa !important; /* zinc-400 */
+}
+
+/* Muted text on dark backgrounds */
+.bg-zinc-950 .text-zinc-400,
+.bg-zinc-900 .text-zinc-400 {
+    color: var(--text-on-dark-muted);
+}
+
+.bg-zinc-950 .text-zinc-500,
+.bg-zinc-900 .text-zinc-500 {
+    color: #a1a1aa; /* bump up from zinc-500 for readability */
+}
+
+/* Emerald badge glow on dark */
+.bg-zinc-950 .text-emerald-400 {
+    text-shadow: 0 0 20px rgba(52, 211, 153, 0.4);
+}
+
+/* Indigo labels on dark — use indigo-300 not indigo-400 for better contrast */
+.bg-zinc-950 .text-indigo-400,
+.bg-zinc-900 .text-indigo-400 {
+    color: #a5b4fc; /* indigo-300 */
+    text-shadow: 0 0 16px rgba(165, 180, 252, 0.3);
+}
+
+/* text-primary on dark sections is indigo-700 — too dark, override */
+.bg-secondary .text-primary,
+.bg-zinc-950 .text-primary,
+.bg-zinc-900 .text-primary {
+    color: #a5b4fc !important; /* indigo-300 — readable on dark */
+}
+
+/* glass-dark cards: ensure body text inside is readable */
+.glass-dark p,
+.glass-dark span:not(.badge) {
+    color: #e4e4e7; /* zinc-200 */
+}
+
+.glass-dark h3 {
+    color: #ffffff;
+}
+
+/* ============================= */
+/* DUAL JOURNEY CARDS            */
+/* ============================= */
+
+/* Ensure glass-dark cards in zinc/dark sections have correct border rendering */
+.bg-zinc-950 .glass-dark,
+.bg-zinc-900 .glass-dark {
+    background: rgba(255, 255, 255, 0.06);
+    border-color: rgba(255, 255, 255, 0.12);
+}
+
+.bg-zinc-950 .glass-dark:hover,
+.bg-zinc-900 .glass-dark:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+/* ============================= */
+/* LIGHT SECTION UTILITIES       */
+/* ============================= */
+
+/* bg-slate-50 and bg-white sections — ensure headings are dark */
+.bg-slate-50 h1,
+.bg-slate-50 h2,
+.bg-slate-50 h3,
+section.bg-white h1,
+section.bg-white h2,
+section.bg-white h3 {
+    color: var(--text-main);
+}
+
+/* glass cards on light bg — text must be dark */
+.bg-slate-50 .glass h3,
+.bg-slate-50 .glass p,
+section.bg-white .glass h3,
+section.bg-white .glass p {
+    color: var(--text-main);
+}
+
+/* progress bar region labels */
+.bg-white .text-sm,
+.bg-slate-50 .text-sm {
+    color: var(--text-muted);
+}
+
+/* ============================= */
+/* SCROLL INDICATOR BOUNCE       */
+/* ============================= */
+
+@keyframes bounce-slow {
+    0%, 100% { transform: translateY(0) translateX(-50%); }
+    50%       { transform: translateY(8px) translateX(-50%); }
+}
+
+.scroll-indicator {
+    animation: bounce-slow 2s ease-in-out infinite;
+}
+
+/* ============================= */
+/* REDUCED MOTION OVERRIDES      */
+/* ============================= */
+
+@media (prefers-reduced-motion: reduce) {
+    .fill-text > span {
+        background-size: 200% 200%;
+    }
+
+    .stacking__card,
+    .card-premium,
+    .glass-dark,
+    .btn-premium {
+        transition: none !important;
+        animation: none !important;
+    }
+}
+
+/* ============================= */
+/* INFRASTRUCTURE SECTION        */
+/* ============================= */
+
+section.bg-white .card-premium:hover {
+    border-color: var(--primary);
+    box-shadow: 0 20px 50px -10px rgba(67, 56, 202, 0.15);
+}
+
+/* ============================= */
+/* FOOTER                        */
+/* ============================= */
+
+footer {
+    position: relative;
+}
+
+footer a {
+    text-decoration: none;
+}
+
+/* Column heading labels */
+footer h4 {
+    font-family: var(--font-body);
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    color: #52525b; /* zinc-600 */
+    margin: 0;
+}
+
+/* Link hover — smooth underline slide */
+footer ul a {
+    position: relative;
+    display: inline-block;
+}
+
+footer ul a::after {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    width: 0;
+    height: 1px;
+    background: #818cf8; /* indigo-400 */
+    transition: width 0.25s ease;
+}
+
+footer ul a:hover::after {
+    width: 100%;
+}
+
+/* Trust badge pills */
+footer .border-white\/10 {
+    transition: border-color 0.2s, background-color 0.2s;
+}
+
+footer .border-white\/10:hover {
+    border-color: rgba(255, 255, 255, 0.2);
+    background: rgba(255, 255, 255, 0.08);
+}
+
+/* Bottom bar divider */
+footer .border-white\/8 {
+    border-color: rgba(255, 255, 255, 0.08);
+}
+
+/* ============================= */
+/* EXIT-INTENT POPUP             */
+/* ============================= */
+
+#exit-popup select option {
+    background: #18181b; /* zinc-900 */
+    color: #f4f4f5;      /* zinc-100 */
+}
+
+#exit-card input::placeholder {
+    color: #71717a; /* zinc-500 */
+}
+
+#exit-card input:focus,
+#exit-card select:focus {
+    border-color: rgba(99, 102, 241, 0.6);
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.12);
+}
+

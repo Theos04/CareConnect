@@ -1,30 +1,411 @@
 {% extends "base.html" %}
-{% import "_macros.html" as macros %}
-{% block title %}Doctor Prescriptions | CareConnect{% endblock %}
+{% block title %}Issue e-Prescription | CareConnect EHR{% endblock %}
 
 {% block content %}
-<div class="max-w-5xl mx-auto">
-  <h1 class="text-3xl font-bold text-gray-800 mb-2">Your Prescriptions, Dr. {{ g.user.name }}</h1>
-  <p class="text-gray-600 mb-8">Manage prescriptions you've issued.</p>
+<link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-  <!-- KPIs using macro -->
-  <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
-    {{ macros.kpi_card('Total Prescriptions', prescriptions | length, 'text-indigo-600') }}
-    {{ macros.kpi_card('Pending', (prescriptions | selectattr('status', 'equalto', 'Pending') | list) | length, 'text-yellow-600') }}
-    {{ macros.kpi_card('Filled', (prescriptions | selectattr('status', 'equalto', 'Filled') | list) | length, 'text-green-600') }}
+<style>
+  * { box-sizing: border-box; }
+
+  :root {
+    --primary: #2563eb;
+    --primary-dark: #1d4ed8;
+    --primary-light: #60a5fa;
+    --primary-glow: rgba(37, 99, 235, 0.1);
+    --secondary: #0f172a;
+    --surface: #ffffff;
+    --background: #f8fafc;
+    --border: #e2e8f0;
+    --text-primary: #0f172a;
+    --text-secondary: #475569;
+    --text-tertiary: #94a3b8;
+    --success: #10b981;
+    --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+    --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+  }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--background);
+    color: var(--text-primary);
+  }
+
+  .pad-container {
+    max-width: 1600px;
+    margin: 0 auto;
+    padding: 24px 32px;
+    padding-top: 120px;
+  }
+
+  .page-header { margin-bottom: 24px; display: flex; justify-content: space-between; align-items: center; }
+  .page-header h1 {
+    font-family: 'Space Grotesk', monospace; font-size: 2rem; font-weight: 700; color: var(--secondary); letter-spacing: -0.02em;
+  }
+
+  .split-layout {
+    display: grid;
+    grid-template-columns: 380px 1fr;
+    gap: 24px;
+    align-items: start;
+  }
+
+  @media (max-width: 1024px) { .split-layout { grid-template-columns: 1fr; } }
+
+  /* Left Panel: Patient Roster */
+  .patient-panel {
+    background: var(--surface);
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow-md);
+    height: calc(100vh - 200px);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+  
+  .panel-header {
+    background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+    color: white;
+    padding: 20px 24px;
+  }
+  .panel-header h2 { font-weight: 600; font-size: 1.125rem; font-family: 'Space Grotesk', monospace; margin-bottom: 8px; }
+  .search-patients input {
+    width: 100%; padding: 8px 12px; border-radius: 8px; border: none; font-size: 0.8125rem;
+    background: rgba(255,255,255,0.1); color: white;
+  }
+  .search-patients input::placeholder { color: rgba(255,255,255,0.5); }
+  .search-patients input:focus { outline: none; background: rgba(255,255,255,0.2); }
+
+  .roster-list { overflow-y: auto; flex: 1; }
+  
+  .patient-card {
+    padding: 16px 24px;
+    border-bottom: 1px solid var(--border);
+    cursor: pointer;
+    transition: all 0.2s;
+    border-left: 3px solid transparent;
+  }
+  .patient-card:hover { background: #f8fafc; border-left-color: var(--primary-light); }
+  .patient-card.active { background: #eff6ff; border-left-color: var(--primary); }
+  
+  .patient-name { font-weight: 600; font-size: 0.9375rem; color: var(--text-primary); margin-bottom: 2px; }
+  .patient-email { font-size: 0.75rem; color: var(--text-tertiary); }
+  .patient-meta { display: flex; justify-content: space-between; margin-top: 8px; font-size: 0.7rem; font-weight: 600; color: var(--text-secondary); text-transform: uppercase; }
+
+  /* Right Panel: E-Prescription Pad */
+  .pad-panel {
+    background: var(--surface);
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow-lg);
+    min-height: calc(100vh - 200px);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    position: relative;
+  }
+  .pad-panel::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 6px;
+    background: linear-gradient(90deg, var(--primary), var(--primary-light));
+  }
+
+  .pad-header {
+    padding: 32px 40px;
+    border-bottom: 1px solid var(--border);
+    background: #fafafa;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .pad-title h2 { font-size: 1.5rem; font-weight: 700; color: var(--secondary); letter-spacing: -0.01em; margin-bottom: 4px; }
+  .pad-title p { font-size: 0.875rem; color: var(--text-secondary); }
+
+  .pad-form { padding: 32px 40px; }
+
+  .target-patient-chip {
+    display: inline-flex; align-items: center; gap: 12px;
+    background: #eff6ff; border: 1px solid #bfdbfe; padding: 12px 20px; border-radius: 12px;
+    margin-bottom: 32px; width: 100%;
+  }
+  .chip-icon { font-size: 1.5rem; }
+  .chip-info h4 { font-weight: 700; color: #1e3a8a; font-size: 0.9375rem; margin-bottom: 2px; }
+  .chip-info p { font-size: 0.75rem; color: #3b82f6; }
+
+  /* Form Elements */
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 24px; }
+  .form-group { position: relative; margin-bottom: 24px; }
+  .form-group label { display: block; font-size: 0.8125rem; font-weight: 600; color: var(--text-secondary); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.05em; }
+  
+  .form-control {
+    width: 100%; padding: 12px 16px; border-radius: 10px; border: 1px solid var(--border);
+    font-size: 0.9375rem; font-family: inherit; transition: all 0.2s; background: var(--background);
+  }
+  .form-control:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 4px var(--primary-glow); background: white; }
+
+  /* OpenFDA Live Search Dropdown */
+  .autocomplete-results {
+    position: absolute; top: calc(100% + 4px); left: 0; right: 0;
+    background: white; border: 1px solid var(--border); border-radius: 10px;
+    box-shadow: var(--shadow-lg); max-height: 250px; overflow-y: auto;
+    z-index: 50; display: none;
+  }
+  .autocomplete-item {
+    padding: 12px 16px; cursor: pointer; border-bottom: 1px solid #f1f5f9; display: flex; flex-direction: column;
+  }
+  .autocomplete-item:hover { background: #f8fafc; }
+  .ac-brand { font-weight: 600; color: var(--text-primary); font-size: 0.875rem; margin-bottom: 2px; }
+  .ac-generic { font-size: 0.75rem; color: var(--text-tertiary); }
+
+  .actions { display: flex; justify-content: flex-end; gap: 16px; margin-top: 40px; padding-top: 24px; border-top: 1px solid var(--border); }
+  .btn { padding: 12px 24px; border-radius: 10px; font-weight: 600; font-size: 0.9375rem; cursor: pointer; transition: all 0.2s; border: none; }
+  .btn-submit { background: var(--primary); color: white; box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2); }
+  .btn-submit:hover { background: var(--primary-dark); transform: translateY(-1px); }
+  .btn-submit:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+  /* Hidden State */
+  #padContent { display: none; }
+  #emptyState {
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    height: 100%; color: var(--text-tertiary); padding: 40px; text-align: center;
+  }
+  #emptyState svg { width: 64px; height: 64px; margin-bottom: 16px; opacity: 0.5; }
+  
+  #notification {
+    position: fixed; bottom: 24px; right: 24px; background: var(--success); color: white;
+    padding: 16px 24px; border-radius: 12px; font-weight: 600; font-size: 0.9rem;
+    box-shadow: var(--shadow-lg); transform: translateY(100px); opacity: 0; transition: all 0.3s; z-index: 100;
+  }
+  #notification.show { transform: translateY(0); opacity: 1; }
+</style>
+
+<div class="pad-container">
+  <div class="page-header">
+    <h1>Issue E-Prescription</h1>
   </div>
 
-  <!-- Prescription table using macro -->
-  {{ macros.prescription_table(prescriptions, g.user.role) }}
+  <div class="split-layout">
+    
+    <!-- Left Panel: Roster -->
+    <div class="patient-panel">
+      <div class="panel-header">
+        <h2>Clinic Patients</h2>
+        <div class="search-patients">
+          <input type="text" id="rosterSearch" placeholder="Search by name or email..." onkeyup="filterRoster()">
+        </div>
+      </div>
+      <div class="roster-list" id="rosterList">
+        {% for pd in patients %}
+        <div class="patient-card" data-name="{{ pd.name }}" data-email="{{ pd.email }}" onclick="selectPatient(this)">
+          <div class="patient-name">{{ pd.name }}</div>
+          <div class="patient-email">{{ pd.email }}</div>
+          <div class="patient-meta">
+            <span>ID: #{{ pd.id }}</span>
+            <span style="color: var(--primary);">Select &rarr;</span>
+          </div>
+        </div>
+        {% else %}
+        <div style="padding: 24px; text-align: center; color: var(--text-tertiary); font-size: 0.8125rem;">
+          No registered patients found.
+        </div>
+        {% endfor %}
+      </div>
+    </div>
 
-  <!-- Example details using macro (could be in a modal, but shown here for demo) -->
-  {% if prescriptions %}
-    {{ macros.prescription_details(prescriptions[0]) }}
-  {% endif %}
+    <!-- Right Panel: Rx Pad -->
+    <div class="pad-panel">
+      <!-- Empty Placeholder -->
+      <div id="emptyState">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+        <h2 style="color: var(--secondary); font-size: 1.25rem; font-weight: 600; margin-bottom: 8px;">Select a Patient</h2>
+        <p>Choose a patient from the roster to begin writing an E-Prescription.</p>
+      </div>
 
-  <!-- Action button -->
-  <div class="mt-6">
-    <a href="#" class="bg-green-600 text-white px-5 py-3 rounded hover:bg-green-700">Issue New Prescription</a>
+      <!-- RX Form -->
+      <div id="padContent">
+        <div class="pad-header">
+          <div class="pad-title">
+            <h2>Digital RX Pad</h2>
+            <p>Secure atomic prescription sync</p>
+          </div>
+          <div><img src="/static/img/rx-logo.svg" onerror="this.style.display='none'" alt="RX" style="height: 40px; opacity: 0.2;" /></div>
+        </div>
+
+        <div class="pad-form">
+          <div class="target-patient-chip">
+            <div class="chip-icon">👤</div>
+            <div class="chip-info">
+              <h4 id="chipName">Select Patient</h4>
+              <p id="chipEmail">Email Data</p>
+            </div>
+          </div>
+
+          <form id="rxForm" onsubmit="submitRx(event)">
+            <input type="hidden" id="pName" name="patient_name">
+            <input type="hidden" id="pEmail" name="patient_email">
+
+            <div class="form-group">
+              <label>Medication (Connected to OpenFDA) *</label>
+              <input type="text" id="rxMedication" class="form-control" placeholder="Search drug name..." required autocomplete="off">
+              <div class="autocomplete-results" id="medResults"></div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group" style="margin-bottom: 0;">
+                <label>Dosage & Sig *</label>
+                <input type="text" id="rxDosage" class="form-control" placeholder="e.g. 500mg BID" required>
+              </div>
+              <div class="form-group" style="margin-bottom: 0;">
+                <label>Duration / Quantity *</label>
+                <input type="text" id="rxDuration" class="form-control" placeholder="e.g. 30 Days" required>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label>Doctor's Notes (Optional)</label>
+              <textarea id="rxNotes" class="form-control" rows="3" placeholder="Additional instructions or warnings..."></textarea>
+            </div>
+
+            <div class="actions">
+              <button type="submit" id="submitBtn" class="btn btn-submit">Sign & Emit Prescription</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
+
+<div id="notification">Prescription Emitted Successfully!</div>
+
+<script>
+  // Roster Filter
+  function filterRoster() {
+    const term = document.getElementById('rosterSearch').value.toLowerCase();
+    const cards = document.querySelectorAll('.patient-card');
+    cards.forEach(c => {
+      const text = c.innerText.toLowerCase();
+      c.style.display = text.includes(term) ? 'block' : 'none';
+    });
+  }
+
+  // Select Patient
+  function selectPatient(card) {
+    document.querySelectorAll('.patient-card').forEach(c => c.classList.remove('active'));
+    card.classList.add('active');
+
+    const name = card.getAttribute('data-name');
+    const email = card.getAttribute('data-email');
+
+    document.getElementById('emptyState').style.display = 'none';
+    document.getElementById('padContent').style.display = 'block';
+
+    document.getElementById('chipName').innerText = name;
+    document.getElementById('chipEmail').innerText = email;
+    document.getElementById('pName').value = name;
+    document.getElementById('pEmail').value = email;
+  }
+
+  // OpenFDA Live Search
+  const medInput = document.getElementById('rxMedication');
+  const medResults = document.getElementById('medResults');
+  let timeoutId = null;
+
+  medInput.addEventListener('input', (e) => {
+    const q = e.target.value.trim();
+    if (q.length < 2) {
+      medResults.style.display = 'none';
+      return;
+    }
+
+    clearTimeout(timeoutId);
+    timeoutId = setTimeout(async () => {
+      try {
+        const res = await fetch(`/api/pharma/search?q=${encodeURIComponent(q)}&limit=5`);
+        const json = await res.json();
+        
+        if (json.results && Object.keys(json.results).length > 0) {
+          medResults.innerHTML = '';
+          for (const [key, details] of Object.entries(json.results)) {
+            const div = document.createElement('div');
+            div.className = 'autocomplete-item';
+            div.innerHTML = `
+              <span class="ac-brand">${key.toUpperCase()}</span>
+              <span class="ac-generic">${details.manufacturer || 'Unknown Auth'}</span>
+            `;
+            div.onclick = () => {
+              medInput.value = key.toUpperCase();
+              medResults.style.display = 'none';
+            };
+            medResults.appendChild(div);
+          }
+          medResults.style.display = 'block';
+        } else {
+          medResults.style.display = 'none';
+        }
+      } catch (err) {
+        console.error(err);
+      }
+    }, 300);
+  });
+
+  // Hide dropdown on click outside
+  document.addEventListener('click', (e) => {
+    if (!medInput.contains(e.target) && !medResults.contains(e.target)) {
+      medResults.style.display = 'none';
+    }
+  });
+
+  // Submit RX
+  async function submitRx(e) {
+    e.preventDefault();
+    const btn = document.getElementById('submitBtn');
+    const originalText = btn.innerText;
+    btn.innerText = 'Transmitting...';
+    btn.disabled = true;
+
+    const payload = {
+      patient_name: document.getElementById('pName').value,
+      patient_email: document.getElementById('pEmail').value,
+      medication: document.getElementById('rxMedication').value,
+      dosage: document.getElementById('rxDosage').value,
+      duration: document.getElementById('rxDuration').value,
+      notes: document.getElementById('rxNotes').value
+    };
+
+    try {
+      const res = await fetch('/api/prescriptions', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRFToken': '{{ csrf_token() }}'
+        },
+        body: JSON.stringify(payload)
+      });
+      
+      const data = await res.json();
+      if (res.ok) {
+        showNotification();
+        document.getElementById('rxForm').reset();
+        document.getElementById('emptyState').style.display = 'flex';
+        document.getElementById('padContent').style.display = 'none';
+        document.querySelectorAll('.patient-card').forEach(c => c.classList.remove('active'));
+      } else {
+        alert('Error emitting prescription: ' + (data.error || 'Unknown Error'));
+      }
+    } catch (err) {
+      console.error(err);
+      alert('Network Error occurred.');
+    } finally {
+      btn.innerText = originalText;
+      btn.disabled = false;
+    }
+  }
+
+  function showNotification() {
+    const notify = document.getElementById('notification');
+    notify.classList.add('show');
+    setTimeout(() => { notify.classList.remove('show'); }, 4000);
+  }
+</script>
 {% endblock %}

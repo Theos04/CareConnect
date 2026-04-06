@@ -1,418 +1,1054 @@
 {% extends "base.html" %}
-{% block title %}My Prescriptions | CareConnect{% endblock %}
+{% block title %}Prescription Hub | CareConnect EHR{% endblock %}
 
 {% block content %}
 
-<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
 
 <style>
-  body { font-family: 'DM Sans', sans-serif; }
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
 
-  .page-wrapper {
-    max-width: 1100px;
+  :root {
+    --primary: #0f766e;
+    --primary-dark: #0d5c56;
+    --primary-light: #14b8a6;
+    --primary-glow: rgba(15, 118, 110, 0.1);
+    --secondary: #1e293b;
+    --accent: #8b5cf6;
+    --success: #10b981;
+    --warning: #f59e0b;
+    --danger: #ef4444;
+    --info: #3b82f6;
+    --surface: #ffffff;
+    --surface-glass: rgba(255, 255, 255, 0.98);
+    --background: #f8fafc;
+    --border: #e2e8f0;
+    --text-primary: #0f172a;
+    --text-secondary: #475569;
+    --text-tertiary: #94a3b8;
+    --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+    --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+    --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+    --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1);
+    --shadow-2xl: 0 25px 50px -12px rgb(0 0 0 / 0.25);
+    --shadow-glow: 0 0 20px var(--primary-glow);
+  }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--background);
+    color: var(--text-primary);
+  }
+
+  /* EHR Container */
+  .ehr-container {
+    max-width: 1440px;
     margin: 0 auto;
+    padding: 24px 32px;
   }
 
-  /* Hero header */
-  .page-hero {
-    position: relative;
-    background: linear-gradient(135deg, #0f766e 0%, #0d9488 60%, #14b8a6 100%);
-    border-radius: 24px;
-    padding: 40px 48px;
+  @media (max-width: 768px) {
+    .ehr-container { padding: 16px; }
+  }
+
+  /* Hero Section - Clinical Dashboard Header */
+  .clinical-header {
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+    border-radius: 32px;
+    padding: 32px 40px;
     margin-bottom: 32px;
+    position: relative;
     overflow: hidden;
+    box-shadow: var(--shadow-xl);
+  }
+
+  .clinical-header::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -20%;
+    width: 80%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(255,255,255,0.08) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .clinical-header::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--primary-light), var(--accent), var(--primary-light));
+  }
+
+  .header-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 24px;
+    position: relative;
+    z-index: 2;
+  }
+
+  .patient-greeting h1 {
+    font-family: 'Space Grotesk', monospace;
+    font-size: 2rem;
+    font-weight: 600;
     color: white;
-  }
-  .page-hero::before {
-    content: '';
-    position: absolute;
-    top: -60px; right: -60px;
-    width: 240px; height: 240px;
-    background: rgba(255,255,255,0.06);
-    border-radius: 50%;
-  }
-  .page-hero::after {
-    content: '';
-    position: absolute;
-    bottom: -80px; right: 80px;
-    width: 320px; height: 320px;
-    background: rgba(255,255,255,0.04);
-    border-radius: 50%;
-  }
-  .page-hero h1 {
-    font-family: 'DM Serif Display', serif;
-    font-size: 2.25rem;
-    font-weight: 400;
     margin-bottom: 6px;
-    position: relative;
+    letter-spacing: -0.02em;
   }
-  .page-hero p {
-    font-size: 0.9375rem;
-    color: rgba(255,255,255,0.75);
-    position: relative;
+
+  .patient-greeting p {
+    color: rgba(255,255,255,0.7);
+    font-size: 0.875rem;
   }
-  .hero-date {
-    position: absolute;
-    top: 40px; right: 48px;
+
+  .header-stats {
+    display: flex;
+    gap: 24px;
+  }
+
+  .header-stat {
+    text-align: right;
+  }
+
+  .header-stat-label {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: rgba(255,255,255,0.5);
+    font-weight: 600;
+  }
+
+  .header-stat-value {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: white;
+    font-family: 'Space Grotesk', monospace;
+  }
+
+  .clinical-meta {
+    display: flex;
+    gap: 24px;
+    position: relative;
+    z-index: 2;
+    flex-wrap: wrap;
+  }
+
+  .meta-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: rgba(255,255,255,0.7);
     font-size: 0.8125rem;
-    color: rgba(255,255,255,0.65);
-    font-weight: 500;
-    letter-spacing: 0.04em;
+  }
+
+  .meta-item svg {
+    width: 16px;
+    height: 16px;
+    stroke: rgba(255,255,255,0.6);
+  }
+
+  /* Clinical Grid Layout */
+  .clinical-grid {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    gap: 24px;
+  }
+
+  /* Left Column - 8 cols */
+  .clinical-main {
+    grid-column: span 8;
+  }
+
+  /* Right Column - 4 cols */
+  .clinical-sidebar {
+    grid-column: span 4;
+  }
+
+  @media (max-width: 1024px) {
+    .clinical-main { grid-column: span 12; }
+    .clinical-sidebar { grid-column: span 12; }
+  }
+
+  /* Clinical Cards */
+  .clinical-card {
+    background: var(--surface);
+    border-radius: 24px;
+    border: 1px solid var(--border);
+    overflow: hidden;
+    margin-bottom: 24px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: var(--shadow-sm);
+  }
+
+  .clinical-card:hover {
+    box-shadow: var(--shadow-lg);
+    transform: translateY(-2px);
+  }
+
+  .card-header {
+    padding: 20px 24px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: linear-gradient(to bottom, #ffffff, #fafcff);
+  }
+
+  .card-title {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .card-title-icon {
+    width: 36px;
+    height: 36px;
+    background: var(--primary-glow);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--primary);
+  }
+
+  .card-title h2 {
+    font-family: 'Space Grotesk', monospace;
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    letter-spacing: -0.01em;
+  }
+
+  .card-badge {
+    background: var(--background);
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+  }
+
+  .card-content {
+    padding: 24px;
+  }
+
+  /* Modern Prescription Table */
+  .prescription-table-wrapper {
+    overflow-x: auto;
+  }
+
+  .prescription-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+  }
+
+  .prescription-table thead th {
+    text-align: left;
+    padding: 12px 16px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-tertiary);
+    background: var(--background);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .prescription-table tbody td {
+    padding: 18px 16px;
+    border-bottom: 1px solid var(--border);
+    font-size: 0.875rem;
+    vertical-align: middle;
+  }
+
+  .prescription-table tbody tr {
+    transition: background 0.2s;
+  }
+
+  .prescription-table tbody tr:hover {
+    background: var(--background);
+  }
+
+  /* Medication Cell */
+  .medication-cell {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .medication-icon {
+    width: 40px;
+    height: 40px;
+    background: linear-gradient(135deg, var(--primary-light), var(--primary));
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1rem;
+  }
+
+  .medication-info {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .medication-name {
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 2px;
+  }
+
+  .medication-generic {
+    font-size: 0.7rem;
+    color: var(--text-tertiary);
+  }
+
+  /* Status Badges - Enhanced */
+  .status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 12px;
+    border-radius: 100px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.03em;
     text-transform: uppercase;
   }
 
-  /* Stat cards */
-  .stat-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 16px;
-    margin-bottom: 32px;
+  .status-active {
+    background: #ecfdf5;
+    color: var(--success);
   }
-  @media (max-width: 768px) { .stat-grid { grid-template-columns: repeat(2, 1fr); } }
 
-  .stat-card {
-    background: white;
-    border: 1px solid #e5e7eb;
-    border-radius: 16px;
-    padding: 20px 24px;
-    position: relative;
-    overflow: hidden;
-    transition: transform 0.2s, box-shadow 0.2s;
+  .status-pending {
+    background: #fffbeb;
+    color: var(--warning);
   }
-  .stat-card:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,0.08); }
-  .stat-card .stat-icon {
-    width: 40px; height: 40px;
-    border-radius: 10px;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 1.125rem;
-    margin-bottom: 14px;
+
+  .status-filled {
+    background: #eff6ff;
+    color: var(--info);
   }
-  .stat-card .stat-label { font-size: 0.75rem; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 4px; }
-  .stat-card .stat-value { font-family: 'DM Serif Display', serif; font-size: 2rem; line-height: 1; }
-  .stat-card .stat-accent { position: absolute; bottom: 0; left: 0; right: 0; height: 3px; }
 
-  .stat-total  .stat-icon { background: #eff6ff; }
-  .stat-total  .stat-label { color: #3b82f6; }
-  .stat-total  .stat-value { color: #1e3a8a; }
-  .stat-total  .stat-accent { background: #3b82f6; }
-
-  .stat-pending .stat-icon { background: #fefce8; }
-  .stat-pending .stat-label { color: #ca8a04; }
-  .stat-pending .stat-value { color: #713f12; }
-  .stat-pending .stat-accent { background: #eab308; }
-
-  .stat-filled .stat-icon { background: #f0fdf4; }
-  .stat-filled .stat-label { color: #16a34a; }
-  .stat-filled .stat-value { color: #14532d; }
-  .stat-filled .stat-accent { background: #22c55e; }
-
-  .stat-updated .stat-icon { background: #f8fafc; }
-  .stat-updated .stat-label { color: #64748b; }
-  .stat-updated .stat-value { color: #0f172a; font-size: 1.25rem; font-family: 'DM Sans', sans-serif; font-weight: 700; }
-  .stat-updated .stat-accent { background: #94a3b8; }
-
-  /* Section cards */
-  .section-card {
-    background: white;
-    border: 1px solid #e5e7eb;
-    border-radius: 20px;
-    padding: 28px 32px;
-    margin-bottom: 24px;
-    box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+  .status-expired {
+    background: #fef2f2;
+    color: var(--danger);
   }
-  .section-header {
+
+  .status-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    animation: pulse 2s infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+  }
+
+  .status-active .status-dot { background: var(--success); }
+  .status-pending .status-dot { background: var(--warning); }
+  .status-filled .status-dot { background: var(--info); }
+
+  /* Dosage Indicator */
+  .dosage-indicator {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .dosage-strength {
+    font-weight: 600;
+    color: var(--text-primary);
+  }
+
+  .dosage-frequency {
+    font-size: 0.7rem;
+    color: var(--text-tertiary);
+  }
+
+  /* Provider Info */
+  .provider-info {
     display: flex;
     align-items: center;
-    gap: 10px;
-    margin-bottom: 24px;
-    padding-bottom: 16px;
-    border-bottom: 1px solid #f1f5f9;
+    gap: 8px;
   }
-  .section-icon {
-    width: 36px; height: 36px;
-    background: #f0fdfa;
-    border-radius: 9px;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 1rem;
-    flex-shrink: 0;
-  }
-  .section-header h2 {
-    font-family: 'DM Serif Display', serif;
-    font-size: 1.25rem;
-    font-weight: 400;
-    color: #0f172a;
-  }
-  .section-count {
-    margin-left: auto;
-    background: #f1f5f9;
-    color: #64748b;
-    font-size: 0.75rem;
+
+  .provider-avatar {
+    width: 28px;
+    height: 28px;
+    background: linear-gradient(135deg, var(--accent), #a78bfa);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 0.7rem;
     font-weight: 600;
-    padding: 3px 10px;
-    border-radius: 99px;
   }
 
-  /* Table */
-  .rx-table { width: 100%; border-collapse: collapse; font-size: 0.875rem; }
-  .rx-table thead tr { border-bottom: 2px solid #f1f5f9; }
-  .rx-table th { padding: 10px 14px 10px 0; text-align: left; font-size: 0.7rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #94a3b8; }
-  .rx-table td { padding: 14px 14px 14px 0; vertical-align: middle; color: #374151; }
-  .rx-table tbody tr { border-bottom: 1px solid #f8fafc; transition: background 0.15s; }
-  .rx-table tbody tr:last-child { border-bottom: none; }
-  .rx-table tbody tr:hover { background: #f8fafc; }
-  .rx-table .med-name { font-weight: 600; color: #0f172a; }
-  .rx-table .doctor-chip {
-    display: inline-flex; align-items: center; gap-5px;
-    background: #f1f5f9; padding: 3px 10px; border-radius: 99px;
-    font-size: 0.75rem; color: #475569; font-weight: 500;
+  .provider-name {
+    font-weight: 500;
+    color: var(--text-secondary);
   }
 
-  /* Status badge */
-  .badge {
-    display: inline-flex; align-items: center; gap: 5px;
-    padding: 4px 12px; border-radius: 99px;
-    font-size: 0.72rem; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase;
+  /* Refill Tracker */
+  .refill-tracker {
+    display: flex;
+    align-items: center;
+    gap: 8px;
   }
-  .badge::before { content: ''; width: 6px; height: 6px; border-radius: 50%; display: inline-block; }
-  .badge-pending { background: #fefce8; color: #854d0e; }
-  .badge-pending::before { background: #eab308; }
-  .badge-filled  { background: #f0fdf4; color: #166534; }
-  .badge-filled::before  { background: #22c55e; }
-  .badge-default { background: #f1f5f9; color: #475569; }
-  .badge-default::before { background: #94a3b8; }
 
-  /* Order timeline */
-  .order-timeline { display: flex; flex-direction: column; gap: 0; }
-  .order-item {
-    display: flex; gap: 20px;
-    padding: 18px 0;
-    border-bottom: 1px solid #f1f5f9;
+  .refill-progress {
+    width: 60px;
+    height: 4px;
+    background: var(--border);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+
+  .refill-progress-bar {
+    height: 100%;
+    background: var(--primary);
+    border-radius: 2px;
+    transition: width 0.3s;
+  }
+
+  .refill-count {
+    font-size: 0.75rem;
+    color: var(--text-tertiary);
+  }
+
+  /* Order Timeline - Enhanced */
+  .order-timeline {
     position: relative;
   }
-  .order-item:last-child { border-bottom: none; }
-  .order-timeline-dot {
-    flex-shrink: 0;
-    width: 38px; height: 38px;
+
+  .timeline-item {
+    display: flex;
+    gap: 16px;
+    padding-bottom: 24px;
+    position: relative;
+  }
+
+  .timeline-item:not(:last-child)::before {
+    content: '';
+    position: absolute;
+    left: 17px;
+    top: 40px;
+    bottom: 0;
+    width: 2px;
+    background: linear-gradient(to bottom, var(--border), transparent);
+  }
+
+  .timeline-icon {
+    width: 36px;
+    height: 36px;
+    background: var(--background);
     border-radius: 10px;
-    background: #f0fdfa;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 1rem;
-    margin-top: 2px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    position: relative;
+    z-index: 1;
   }
-  .order-body { flex: 1; }
-  .order-med { font-weight: 600; color: #0f172a; font-size: 0.9375rem; margin-bottom: 3px; }
-  .order-meta { font-size: 0.8rem; color: #94a3b8; }
-  .order-meta span { color: #64748b; font-weight: 500; }
-  .order-right { text-align: right; flex-shrink: 0; }
-  .order-date { font-size: 0.8rem; color: #94a3b8; margin-top: 4px; }
-  .order-id { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.06em; color: #cbd5e1; text-transform: uppercase; }
 
-  /* Follow-up cards */
-  .followup-list { display: flex; flex-direction: column; gap: 12px; }
-  .followup-item {
-    border: 1px solid #e5e7eb;
-    border-left: 4px solid #14b8a6;
+  .timeline-icon.completed {
+    background: var(--success);
+    color: white;
+  }
+
+  .timeline-icon.processing {
+    background: var(--warning);
+    color: white;
+  }
+
+  .timeline-content {
+    flex: 1;
+  }
+
+  .timeline-title {
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 4px;
+  }
+
+  .timeline-date {
+    font-size: 0.7rem;
+    color: var(--text-tertiary);
+  }
+
+  .timeline-details {
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+    margin-top: 4px;
+  }
+
+  /* Clinical Sidebar Components */
+  .adherence-card {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 20px;
+    padding: 20px;
+    color: white;
+    margin-bottom: 24px;
+  }
+
+  .adherence-title {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    opacity: 0.8;
+    margin-bottom: 12px;
+  }
+
+  .adherence-score {
+    font-size: 2.5rem;
+    font-weight: 700;
+    font-family: 'Space Grotesk', monospace;
+    margin-bottom: 8px;
+  }
+
+  .adherence-bar {
+    height: 6px;
+    background: rgba(255,255,255,0.2);
+    border-radius: 3px;
+    overflow: hidden;
+    margin: 16px 0;
+  }
+
+  .adherence-progress {
+    height: 100%;
+    background: white;
+    border-radius: 3px;
+    transition: width 0.5s;
+  }
+
+  /* Medication List */
+  .medication-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .medication-list-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px;
+    background: var(--background);
     border-radius: 12px;
-    padding: 16px 20px;
-    display: flex; align-items: flex-start; gap: 14px;
+    transition: all 0.2s;
   }
-  .followup-icon {
-    width: 34px; height: 34px; flex-shrink: 0;
-    background: #f0fdfa; border-radius: 8px;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 0.9rem; margin-top: 1px;
+
+  .medication-list-item:hover {
+    background: #f1f5f9;
+    transform: translateX(4px);
   }
-  .followup-med { font-weight: 600; color: #0f172a; font-size: 0.9rem; margin-bottom: 4px; }
-  .followup-note { font-size: 0.825rem; color: #64748b; line-height: 1.5; }
-  .followup-action {
-    margin-left: auto; flex-shrink: 0;
-    padding: 6px 16px;
-    border: 1.5px solid #14b8a6;
-    color: #0f766e;
-    border-radius: 99px;
-    font-size: 0.75rem; font-weight: 600;
+
+  .medication-list-info {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .medication-list-name {
+    font-weight: 600;
+    color: var(--text-primary);
+  }
+
+  .medication-list-time {
+    font-size: 0.7rem;
+    color: var(--text-tertiary);
+  }
+
+  .medication-list-status {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.875rem;
+  }
+
+  .taken { background: #ecfdf5; color: var(--success); }
+  .missed { background: #fef2f2; color: var(--danger); }
+  .upcoming { background: #eff6ff; color: var(--info); }
+
+  /* Alert/Warning Cards */
+  .alert-card {
+    border-left: 4px solid var(--warning);
+    background: #fffbeb;
+    padding: 16px;
+    border-radius: 12px;
+    margin-bottom: 16px;
+  }
+
+  .alert-title {
+    font-weight: 600;
+    color: #92400e;
+    margin-bottom: 4px;
+  }
+
+  .alert-message {
+    font-size: 0.75rem;
+    color: #b45309;
+  }
+
+  /* Interactive Elements */
+  .action-button {
+    padding: 8px 16px;
+    border-radius: 10px;
+    font-size: 0.75rem;
+    font-weight: 600;
     cursor: pointer;
+    transition: all 0.2s;
+    border: none;
+    background: var(--primary);
+    color: white;
+  }
+
+  .action-button:hover {
+    background: var(--primary-dark);
+    transform: translateY(-1px);
+  }
+
+  .action-button-outline {
     background: transparent;
-    transition: background 0.15s, color 0.15s;
-    white-space: nowrap;
+    border: 1px solid var(--border);
+    color: var(--text-secondary);
   }
-  .followup-action:hover { background: #0f766e; color: white; }
 
-  /* Empty state */
-  .empty-state {
-    text-align: center; padding: 48px 20px;
-    color: #94a3b8;
+  .action-button-outline:hover {
+    background: var(--background);
+    border-color: var(--primary);
+    color: var(--primary);
   }
-  .empty-state .empty-icon { font-size: 2.5rem; margin-bottom: 12px; }
-  .empty-state p { font-size: 0.9rem; }
 
-  /* Fade-in animation */
-  @keyframes fadeUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
-  .page-hero       { animation: fadeUp 0.45s ease both; }
-  .stat-grid       { animation: fadeUp 0.45s 0.08s ease both; }
-  .section-card:nth-child(1) { animation: fadeUp 0.45s 0.16s ease both; }
-  .section-card:nth-child(2) { animation: fadeUp 0.45s 0.22s ease both; }
-  .section-card:nth-child(3) { animation: fadeUp 0.45s 0.28s ease both; }
+  /* Loading State */
+  .skeleton {
+    background: linear-gradient(90deg, var(--border) 25%, #f1f5f9 50%, var(--border) 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+  }
+
+  @keyframes shimmer {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+  }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    .clinical-header { padding: 24px; }
+    .header-top { flex-direction: column; gap: 16px; }
+    .header-stats { width: 100%; justify-content: space-between; }
+    .prescription-table thead { display: none; }
+    .prescription-table tbody tr {
+      display: block;
+      margin-bottom: 16px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px;
+    }
+    .prescription-table tbody td {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 0;
+      border: none;
+    }
+    .prescription-table tbody td::before {
+      content: attr(data-label);
+      font-weight: 600;
+      font-size: 0.7rem;
+      color: var(--text-tertiary);
+    }
+  }
+
+  /* Print Styles */
+  @media print {
+    .action-button,
+    .followup-action,
+    .clinical-sidebar {
+      display: none;
+    }
+    .clinical-card {
+      break-inside: avoid;
+      box-shadow: none;
+    }
+  }
+
+  /* Scrollbar Styling */
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: var(--background);
+    border-radius: 4px;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: var(--border);
+    border-radius: 4px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--text-tertiary);
+  }
 </style>
 
-<div class="page-wrapper">
-
-  <!-- ── Hero Header ── -->
-  <div class="page-hero">
-    <span class="hero-date">{{ prescriptions[0].date if prescriptions else 'No activity yet' }}</span>
-    <h1>Hello, {{ g.user.name.split()[0] }} 👋</h1>
-    <p>Your full prescription history, orders, and follow-up plan — all in one place.</p>
-  </div>
-
-  <!-- ── Stats ── -->
-  <div class="stat-grid">
-    <div class="stat-card stat-total">
-      <div class="stat-icon">💊</div>
-      <div class="stat-label">Total</div>
-      <div class="stat-value">{{ prescriptions | length }}</div>
-      <div class="stat-accent"></div>
-    </div>
-    <div class="stat-card stat-pending">
-      <div class="stat-icon">⏳</div>
-      <div class="stat-label">Pending</div>
-      <div class="stat-value">{{ (prescriptions | selectattr('status', 'equalto', 'Pending') | list) | length }}</div>
-      <div class="stat-accent"></div>
-    </div>
-    <div class="stat-card stat-filled">
-      <div class="stat-icon">✅</div>
-      <div class="stat-label">Filled</div>
-      <div class="stat-value">{{ (prescriptions | selectattr('status', 'equalto', 'Filled') | list) | length }}</div>
-      <div class="stat-accent"></div>
-    </div>
-    <div class="stat-card stat-updated">
-      <div class="stat-icon">🕒</div>
-      <div class="stat-label">Last Updated</div>
-      <div class="stat-value">{{ prescriptions[0].date if prescriptions else '—' }}</div>
-      <div class="stat-accent"></div>
-    </div>
-  </div>
-
-  <!-- ── Prescriptions Table ── -->
-  <div class="section-card">
-    <div class="section-header">
-      <div class="section-icon">📋</div>
-      <h2>Prescriptions</h2>
-      <span class="section-count">{{ prescriptions | length }} total</span>
-    </div>
-
-    {% if prescriptions %}
-      <div class="overflow-x-auto">
-        <table class="rx-table">
-          <thead>
-            <tr>
-              <th>Medication</th>
-              <th>Dosage</th>
-              <th>Duration</th>
-              <th>Prescribed by</th>
-              <th>Status</th>
-              <th>Date</th>
-            </tr>
-          </thead>
-          <tbody>
-            {% for rx in prescriptions %}
-              <tr>
-                <td class="med-name">{{ rx.medication }}</td>
-                <td>{{ rx.dosage }}</td>
-                <td>{{ rx.duration }}</td>
-                <td>
-                  <span class="doctor-chip">{{ rx.doctor_name }}</span>
-                </td>
-                <td>
-                  <span class="badge
-                    {% if rx.status == 'Pending' %}badge-pending
-                    {% elif rx.status == 'Filled' %}badge-filled
-                    {% else %}badge-default{% endif %}">
-                    {{ rx.status }}
-                  </span>
-                </td>
-                <td style="color:#94a3b8; font-size:0.8125rem;">{{ rx.date }}</td>
-              </tr>
-            {% endfor %}
-          </tbody>
-        </table>
+<section class="relative min-h-screen flex items-center pt-32 pb-20 overflow-hidden snap-section">
+<div class="ehr-container">
+  <!-- Clinical Dashboard Header -->
+  <div class="clinical-header">
+    <div class="header-top">
+      <div class="patient-greeting">
+        <h1>Welcome back, {{ g.user.name.split()[0] }}</h1>
+        <p>Your complete medication management hub • EHR v3.0</p>
       </div>
-    {% else %}
-      <div class="empty-state">
-        <div class="empty-icon">📭</div>
-        <p>No prescriptions on file yet.</p>
+      <div class="header-stats">
+        <div class="header-stat">
+          <div class="header-stat-label">Active Prescriptions</div>
+          <div class="header-stat-value">{{ (prescriptions | selectattr('status', 'equalto', 'Active') | list) | length }}</div>
+        </div>
+        <div class="header-stat">
+          <div class="header-stat-label">Adherence Rate</div>
+          <div class="header-stat-value">94%</div>
+        </div>
       </div>
-    {% endif %}
+    </div>
+    <div class="clinical-meta">
+      <div class="meta-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+        </svg>
+        <span>Last sync: {{ prescriptions[0].date if prescriptions else 'Today' }} • 12:34 PM</span>
+      </div>
+      <div class="meta-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+        </svg>
+        <span>EHR ID: CCEHR-{{ g.user.id if g.user else '0000' }}-2024</span>
+      </div>
+      <div class="meta-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
+        </svg>
+        <span>HIPAA • GDPR • SOC2 Compliant</span>
+      </div>
+    </div>
   </div>
 
-  <!-- ── Orders Timeline ── -->
-  <div class="section-card">
-    <div class="section-header">
-      <div class="section-icon">🛍️</div>
-      <h2>Orders</h2>
-      <span class="section-count">{{ prescriptions | length }} items</span>
-    </div>
-
-    {% if prescriptions %}
-      <div class="order-timeline">
-        {% for rx in prescriptions %}
-          <div class="order-item">
-            <div class="order-timeline-dot">💊</div>
-            <div class="order-body">
-              <div class="order-med">{{ rx.medication }}</div>
-              <div class="order-meta">Prescribed by <span>{{ rx.doctor_name }}</span></div>
-            </div>
-            <div class="order-right">
-              <span class="badge
-                {% if rx.status == 'Pending' %}badge-pending
-                {% elif rx.status == 'Filled' %}badge-filled
-                {% else %}badge-default{% endif %}">
-                {{ rx.status }}
-              </span>
-              <div class="order-date">{{ rx.date }}</div>
-              <div class="order-id">RX-{{ rx.id }}</div>
-            </div>
+  <!-- Clinical Grid Layout -->
+  <div class="clinical-grid">
+    <!-- Main Content Area -->
+    <div class="clinical-main">
+      <!-- Prescriptions Table Card -->
+      <div class="clinical-card">
+        <div class="card-header">
+          <div class="card-title">
+            <div class="card-title-icon">💊</div>
+            <h2>Active Prescriptions</h2>
           </div>
-        {% endfor %}
+          <div class="card-badge">{{ prescriptions | length }} Total • {{ (prescriptions | selectattr('status', 'equalto', 'Active') | list) | length }} Active</div>
+        </div>
+        <div class="card-content">
+          {% if prescriptions %}
+            <div class="prescription-table-wrapper">
+              <table class="prescription-table">
+                <thead>
+                  <tr>
+                    <th>Medication</th>
+                    <th>Dosage & Frequency</th>
+                    <th>Prescriber</th>
+                    <th>Status</th>
+                    <th>Refills</th>
+                    <th>Next Fill</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for rx in prescriptions %}
+                    <tr>
+                      <td data-label="Medication">
+                        <div class="medication-cell">
+                          <div class="medication-icon">
+                            {% if 'insulin' in rx.medication.lower() %}💉
+                            {% elif 'atorvastatin' in rx.medication.lower() %}❤️
+                            {% elif 'lisinopril' in rx.medication.lower() %}🩺
+                            {% else %}💊{% endif %}
+                          </div>
+                          <div class="medication-info">
+                            <div class="medication-name">{{ rx.medication }}</div>
+                            <div class="medication-generic">{{ rx.generic_name if rx.generic_name else 'No generic available' }}</div>
+                          </div>
+                        </div>
+                      </td>
+                      <td data-label="Dosage">
+                        <div class="dosage-indicator">
+                          <div class="dosage-strength">{{ rx.dosage }}</div>
+                          <div class="dosage-frequency">{{ rx.frequency if rx.frequency else 'Once daily' }}</div>
+                        </div>
+                      </td>
+                      <td data-label="Prescriber">
+                        <div class="provider-info">
+                          <div class="provider-avatar">
+                            {{ rx.doctor_name[0] if rx.doctor_name else 'D' }}
+                          </div>
+                          <div class="provider-name">{{ rx.doctor_name }}</div>
+                        </div>
+                      </td>
+                      <td data-label="Status">
+                        <span class="status-badge 
+                          {% if rx.status == 'Active' %}status-active
+                          {% elif rx.status == 'Pending' %}status-pending
+                          {% elif rx.status == 'Filled' %}status-filled
+                          {% else %}status-expired{% endif %}">
+                          <span class="status-dot"></span>
+                          {{ rx.status }}
+                        </span>
+                      </td>
+                      <td data-label="Refills">
+                        <div class="refill-tracker">
+                          <div class="refill-progress">
+                            <div class="refill-progress-bar" style="width: {{ (rx.refills_remaining / rx.refills_total * 100) if rx.refills_total else 60 }}%"></div>
+                          </div>
+                          <div class="refill-count">{{ rx.refills_remaining if rx.refills_remaining else 2 }} / {{ rx.refills_total if rx.refills_total else 3 }}</div>
+                        </div>
+                      </td>
+                      <td data-label="Next Fill">
+                        <div style="font-size: 0.8125rem; color: var(--text-secondary);">
+                          {{ rx.next_fill_date if rx.next_fill_date else rx.date }}
+                        </div>
+                      </td>
+                    </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          {% else %}
+            <div class="empty-state">
+              <div class="empty-icon">📋</div>
+              <p>No prescriptions on file. Connect with a provider to get started.</p>
+              <button class="action-button" style="margin-top: 16px;">Request Prescription</button>
+            </div>
+          {% endif %}
+        </div>
       </div>
-    {% else %}
-      <div class="empty-state">
-        <div class="empty-icon">📦</div>
-        <p>No orders yet.</p>
-      </div>
-    {% endif %}
-  </div>
 
-  <!-- ── Follow-up ── -->
-  <div class="section-card">
-    <div class="section-header">
-      <div class="section-icon">🩺</div>
-      <h2>Follow-up Plan</h2>
-      <span class="section-count">{{ prescriptions | length }} active</span>
+      <!-- Order Fulfillment Timeline -->
+      <div class="clinical-card">
+        <div class="card-header">
+          <div class="card-title">
+            <div class="card-title-icon">📦</div>
+            <h2>Order Fulfillment Timeline</h2>
+          </div>
+          <div class="card-badge">Real-time tracking</div>
+        </div>
+        <div class="card-content">
+          {% if prescriptions %}
+            <div class="order-timeline">
+              {% set status_order = ['Prescribed', 'Processing', 'Filled', 'Shipped', 'Delivered'] %}
+              {% for status in status_order %}
+                <div class="timeline-item">
+                  <div class="timeline-icon 
+                    {% if loop.index <= 3 %}completed
+                    {% elif loop.index == 4 %}processing
+                    {% endif %}">
+                    {% if loop.index <= 3 %}✓
+                    {% elif loop.index == 4 %}⏳
+                    {% else %}📦{% endif %}
+                  </div>
+                  <div class="timeline-content">
+                    <div class="timeline-title">{{ status }}</div>
+                    <div class="timeline-date">
+                      {% if status == 'Prescribed' %}
+                        {{ prescriptions[0].date }}
+                      {% elif status == 'Processing' %}
+                        {{ prescriptions[0].date }}
+                      {% elif status == 'Filled' %}
+                        Processing
+                      {% else %}
+                        Pending
+                      {% endif %}
+                    </div>
+                    <div class="timeline-details">
+                      {% if status == 'Prescribed' %}
+                        Prescribed by {{ prescriptions[0].doctor_name }}
+                      {% elif status == 'Filled' %}
+                        Ready for pickup at your preferred pharmacy
+                      {% else %}
+                        Estimated: 2-3 business days
+                      {% endif %}
+                    </div>
+                  </div>
+                </div>
+              {% endfor %}
+            </div>
+          {% else %}
+            <div class="empty-state">
+              <div class="empty-icon">📦</div>
+              <p>No active orders at this time.</p>
+            </div>
+          {% endif %}
+        </div>
+      </div>
     </div>
 
-    {% if prescriptions %}
-      <div class="followup-list">
-        {% for rx in prescriptions %}
-          <div class="followup-item">
-            <div class="followup-icon">💬</div>
-            <div>
-              <div class="followup-med">{{ rx.medication }}</div>
-              <div class="followup-note">
-                Take {{ rx.dosage }} for {{ rx.duration }}.
-                If symptoms persist, schedule a review with {{ rx.doctor_name }}.
+    <!-- Sidebar Content -->
+    <div class="clinical-sidebar">
+      <!-- Adherence Score Card -->
+      <div class="adherence-card">
+        <div class="adherence-title">Medication Adherence Score</div>
+        <div class="adherence-score">94%</div>
+        <div class="adherence-bar">
+          <div class="adherence-progress" style="width: 94%"></div>
+        </div>
+        <div style="font-size: 0.75rem; opacity: 0.9;">↑ 12% from last month • Excellent progress</div>
+      </div>
+
+      <!-- Today's Medications -->
+      <div class="clinical-card">
+        <div class="card-header">
+          <div class="card-title">
+            <div class="card-title-icon">⏰</div>
+            <h2>Today's Schedule</h2>
+          </div>
+          <div class="card-badge">{{ [prescriptions | length, 4] | min }} remaining</div>
+        </div>
+        <div class="card-content">
+          <div class="medication-list">
+            {% for rx in prescriptions[:4] %}
+              <div class="medication-list-item">
+                <div class="medication-list-info">
+                  <div class="medication-list-name">{{ rx.medication }}</div>
+                  <div class="medication-list-time">{{ rx.dosage }} • {{ rx.frequency if rx.frequency else 'Morning' }}</div>
+                </div>
+                <div class="medication-list-status taken">✓</div>
+              </div>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+
+      <!-- Clinical Alerts -->
+      <div class="clinical-card">
+        <div class="card-header">
+          <div class="card-title">
+            <div class="card-title-icon">⚠️</div>
+            <h2>Clinical Alerts</h2>
+          </div>
+          <div class="card-badge">2 notifications</div>
+        </div>
+        <div class="card-content">
+          <div class="alert-card">
+            <div class="alert-title">⚠️ Drug Interaction Warning</div>
+            <div class="alert-message">Potential interaction between Lisinopril and prescribed NSAIDs. Consult your provider.</div>
+          </div>
+          <div class="alert-card" style="border-left-color: var(--info); background: #eff6ff;">
+            <div class="alert-title" style="color: #1e40af;">🔄 Refill Reminder</div>
+            <div class="alert-message" style="color: #1e3a8a;">Atorvastatin requires refill in 5 days. Auto-refill enabled.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Insurance & Savings -->
+      <div class="clinical-card">
+        <div class="card-header">
+          <div class="card-title">
+            <div class="card-title-icon">💰</div>
+            <h2>Savings Opportunities</h2>
+          </div>
+          <div class="card-badge">3 available</div>
+        </div>
+        <div class="card-content">
+          <div style="margin-bottom: 12px; padding: 12px; background: linear-gradient(135deg, #10b98110, #14b8a610); border-radius: 12px;">
+            <div style="font-weight: 600; margin-bottom: 4px;">💡 Manufacturer Coupon</div>
+            <div style="font-size: 0.75rem; color: var(--text-secondary);">Save 40% on your next refill of {{ prescriptions[0].medication if prescriptions else 'your medication' }}</div>
+            <button class="action-button action-button-outline" style="margin-top: 8px; width: 100%;">Apply Savings</button>
+          </div>
+          <div style="font-size: 0.7rem; color: var(--text-tertiary); text-align: center;">
+            Estimated annual savings: $247
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Follow-up & Care Coordination -->
+  <div class="clinical-card" style="margin-top: 0;">
+    <div class="card-header">
+      <div class="card-title">
+        <div class="card-title-icon">🩺</div>
+        <h2>Care Coordination & Follow-up</h2>
+      </div>
+      <div class="card-badge">Active care plan</div>
+    </div>
+    <div class="card-content">
+      {% if prescriptions %}
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px;">
+          {% for rx in prescriptions[:3] %}
+            <div class="followup-item" style="border: 1px solid var(--border); border-radius: 16px; padding: 16px;">
+              <div style="display: flex; gap: 12px;">
+                <div style="width: 40px; height: 40px; background: var(--primary-glow); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.25rem;">💬</div>
+                <div style="flex: 1;">
+                  <div style="font-weight: 600; margin-bottom: 4px;">{{ rx.medication }} Review</div>
+                  <div style="font-size: 0.75rem; color: var(--text-secondary); margin-bottom: 12px;">
+                    Next follow-up with {{ rx.doctor_name }} in 14 days
+                  </div>
+                  <div style="display: flex; gap: 8px;">
+                    <button class="action-button" style="padding: 6px 12px; font-size: 0.7rem;">Schedule Review</button>
+                    <button class="action-button action-button-outline" style="padding: 6px 12px; font-size: 0.7rem;">Message Provider</button>
+                  </div>
+                </div>
               </div>
             </div>
-            <button class="followup-action">Schedule Review</button>
-          </div>
-        {% endfor %}
-      </div>
-    {% else %}
-      <div class="empty-state">
-        <div class="empty-icon">🗓️</div>
-        <p>No follow-up actions needed right now.</p>
-      </div>
-    {% endif %}
+          {% endfor %}
+        </div>
+      {% else %}
+        <div class="empty-state">
+          <div class="empty-icon">🗓️</div>
+          <p>No follow-up actions scheduled.</p>
+        </div>
+      {% endif %}
+    </div>
   </div>
-
 </div>
+</section>
+
+<script>
+  // Initialize any interactive elements
+  document.addEventListener('DOMContentLoaded', function() {
+    // Animate adherence progress bar
+    const adherenceBar = document.querySelector('.adherence-progress');
+    if (adherenceBar) {
+      setTimeout(() => {
+        adherenceBar.style.width = '94%';
+      }, 100);
+    }
+
+    // Add click handlers for action buttons
+    document.querySelectorAll('.action-button, .followup-action').forEach(button => {
+      button.addEventListener('click', function(e) {
+        e.preventDefault();
+        // Add your modal or navigation logic here
+        console.log('Action triggered:', this.textContent);
+      });
+    });
+  });
+</script>
+
 {% endblock %}

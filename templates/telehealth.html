@@ -1,0 +1,164 @@
+<!-- telehealth.html -->
+{% extends "base.html" %}
+{% block title %}Telehealth Visit | CareConnect EHR{% endblock %}
+
+{% block content %}
+<style>
+  .video-container {
+    display: grid;
+    grid-template-columns: 1fr 320px;
+    gap: 24px;
+    height: calc(100vh - 180px);
+  }
+
+  .video-main {
+    background: #1a1a1a;
+    border-radius: 24px;
+    overflow: hidden;
+    position: relative;
+  }
+
+  #localVideo {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  #remoteVideo {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .video-controls {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 16px;
+    background: rgba(0,0,0,0.8);
+    padding: 12px 24px;
+    border-radius: 60px;
+    backdrop-filter: blur(10px);
+  }
+
+  .control-btn {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: white;
+    border: none;
+    cursor: pointer;
+    font-size: 1.25rem;
+    transition: all 0.2s;
+  }
+
+  .control-btn:hover {
+    transform: scale(1.1);
+  }
+
+  .control-btn.end-call {
+    background: var(--danger);
+    color: white;
+  }
+
+  .chat-sidebar {
+    background: var(--surface);
+    border-radius: 24px;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .waiting-room {
+    text-align: center;
+    padding: 60px 20px;
+  }
+</style>
+
+<div class="ehr-container">
+  <div class="video-container">
+    <div class="video-main">
+      <video id="localVideo" autoplay muted playsinline></video>
+      <video id="remoteVideo" autoplay playsinline></video>
+      <div class="video-controls">
+        <button class="control-btn" onclick="toggleMic()">🎤</button>
+        <button class="control-btn" onclick="toggleCamera()">📹</button>
+        <button class="control-btn" onclick="shareScreen()">🖥️</button>
+        <button class="control-btn end-call" onclick="endCall()">📞</button>
+      </div>
+    </div>
+    <div class="chat-sidebar">
+      <div class="card-header">
+        <div class="card-title">
+          <div class="card-title-icon">💬</div>
+          <h2>Visit Chat</h2>
+        </div>
+      </div>
+      <div class="chat-messages" id="videoChatMessages" style="flex: 1; overflow-y: auto; padding: 16px;">
+        <!-- Chat messages -->
+      </div>
+      <div class="chat-input-area">
+        <input type="text" class="chat-input" id="videoChatInput" placeholder="Type a message...">
+        <button class="action-button" onclick="sendVideoChat()">Send</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  let localStream = null;
+  let peerConnection = null;
+  let roomId = '{{ room_id }}';
+
+  const configuration = {
+    iceServers: [
+      { urls: 'stun:stun.l.google.com:19302' }
+    ]
+  };
+
+  async function startCall() {
+    localStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+    document.getElementById('localVideo').srcObject = localStream;
+    
+    peerConnection = new RTCPeerConnection(configuration);
+    
+    localStream.getTracks().forEach(track => {
+      peerConnection.addTrack(track, localStream);
+    });
+    
+    peerConnection.ontrack = (event) => {
+      document.getElementById('remoteVideo').srcObject = event.streams[0];
+    };
+    
+    peerConnection.onicecandidate = (event) => {
+      if (event.candidate) {
+        socket.emit('ice-candidate', { candidate: event.candidate, room: roomId });
+      }
+    };
+    
+    const offer = await peerConnection.createOffer();
+    await peerConnection.setLocalDescription(offer);
+    socket.emit('join-room', { room: roomId, offer: offer });
+  }
+
+  function toggleMic() {
+    const audioTrack = localStream.getAudioTracks()[0];
+    audioTrack.enabled = !audioTrack.enabled;
+  }
+
+  function toggleCamera() {
+    const videoTrack = localStream.getVideoTracks()[0];
+    videoTrack.enabled = !videoTrack.enabled;
+  }
+
+  async function shareScreen() {
+    const screenStream = await navigator.mediaDevices.getDisplayMedia({ video: true });
+    const videoTrack = screenStream.getVideoTracks()[0];
+    const sender = peerConnection.getSenders().find(s => s.track.kind === 'video');
+    sender.replaceTrack(videoTrack);
+  }
+
+  startCall();
+</script>
+{% endblock %}
