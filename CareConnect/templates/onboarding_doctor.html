@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block title %}Doctor onboarding | CareConnect{% endblock %}
+
+{% block content %}
+<div class="max-w-lg mx-auto">
+  <div class="bg-white rounded-2xl border border-gray-200 shadow-sm p-8">
+    <p class="text-sm font-semibold text-emerald-700 uppercase tracking-wide mb-2">Licensed provider</p>
+    <h1 class="text-2xl font-bold text-gray-900 mb-2">Provider verification</h1>
+    <p class="text-gray-600 text-sm mb-8">Enter your professional details. In production this step would connect to your medical council or NPI registry.</p>
+
+    <form method="post" class="space-y-5">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1">Medical license number <span class="text-red-500">*</span></label>
+        <input type="text" name="medical_license" required placeholder="e.g. MD-123456" class="w-full rounded-xl border border-gray-200 px-4 py-2.5 focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
+      </div>
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1">Primary specialty <span class="text-red-500">*</span></label>
+        <input type="text" name="specialty" required placeholder="e.g. Family medicine, Cardiology" class="w-full rounded-xl border border-gray-200 px-4 py-2.5 focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
+      </div>
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1">Hospital / clinic type <span class="text-gray-400">(optional)</span></label>
+        <select name="facility_type_id" class="w-full rounded-xl border border-gray-200 px-4 py-2.5 bg-white focus:ring-2 focus:ring-indigo-500">
+          <option value="">Select a facility type</option>
+          {% for ft in facility_types %}
+            <option value="{{ ft.id }}">{{ ft.name }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1">Council / board (optional)</label>
+        <input type="text" name="council" placeholder="Issuing authority" class="w-full rounded-xl border border-gray-200 px-4 py-2.5 focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
+      </div>
+      <button type="submit" class="w-full py-3 rounded-xl bg-indigo-600 text-white font-semibold hover:bg-indigo-700 transition shadow-md">
+        Continue to doctor dashboard
+      </button>
+    </form>
+  </div>
+</div>
+{% endblock %}

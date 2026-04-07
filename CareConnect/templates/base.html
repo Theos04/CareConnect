@@ -43,7 +43,41 @@
         <span>CareConnect</span>
       </a>
 
-      {% include 'mega_menu.html' %}
+      <div class="hidden lg:flex items-center space-x-8">
+        {% if not g.user %}
+        <a href="/" class="{% if request.endpoint == 'landing' %}text-indigo-600{% else %}text-gray-500 hover:text-indigo-600{% endif %} transition-colors font-semibold text-sm uppercase tracking-wider">Concept</a>
+        {% endif %}
+
+        {% if g.user %}
+          {% if g.user.role != 'Pending' %}
+          <a href="{{ url_for('marketplace') }}" class="text-gray-500 hover:text-indigo-600 transition-colors font-semibold text-sm uppercase tracking-wider">Marketplace</a>
+          <a href="{{ url_for('doctors') }}" class="text-gray-500 hover:text-indigo-600 transition-colors font-semibold text-sm uppercase tracking-wider">Doctors</a>
+          {% endif %}
+          
+          <div class="h-4 w-px bg-gray-200"></div>
+
+          {% if g.user.role == 'Pending' %}
+            <a href="{{ url_for('oauth_choose_role') }}" class="text-amber-600 font-bold text-sm uppercase tracking-wider">Onboarding</a>
+          {% else %}
+            <a href="{{ home_href }}" class="text-[10px] font-black uppercase tracking-[0.2em] text-gray-400 bg-gray-100 px-2 py-1 rounded hover:bg-gray-200 hover:text-gray-600 transition-colors">{{ g.user.role }}</a>
+          {% endif %}
+
+          <a href="{{ url_for('logout') }}" class="btn-premium btn-primary text-sm">
+            Logout
+          </a>
+        {% else %}
+          <a href="{{ url_for('patients_info') }}" class="text-gray-500 hover:text-indigo-600 transition-colors font-semibold text-sm uppercase tracking-wider">Patients</a>
+          <a href="{{ url_for('providers_info') }}" class="text-gray-500 hover:text-indigo-600 transition-colors font-semibold text-sm uppercase tracking-wider">Providers</a>
+          
+          <div class="flex items-center space-x-4 ml-4">
+            <a href="{{ url_for('login') }}" class="text-gray-900 font-bold text-sm uppercase tracking-wider hover:opacity-70 transition-opacity">Login</a>
+            <a href="/getting-started" class="btn-premium btn-primary text-sm">
+              Get Started
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
+            </a>
+          </div>
+        {% endif %}
+      </div>
     </nav>
   </header>
 

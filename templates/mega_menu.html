@@ -1,0 +1,309 @@
+<style>
+/* Mega Menu Engine */
+.nav-container { position: static; }
+.mega-menu-trigger { cursor: pointer; height: 100%; display: flex; align-items: center; padding: 1.5rem 0; }
+.mega-menu-panel {
+  display: flex;
+  opacity: 0;
+  visibility: hidden;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: rgba(255, 255, 255, 0.98);
+  backdrop-filter: blur(20px);
+  border-top: 1px solid rgba(0,0,0,0.05);
+  box-shadow: 0 20px 40px -10px rgba(0,0,0,0.1);
+  padding: 2.5rem;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  transform: translateY(10px);
+  z-index: 100;
+  border-bottom-left-radius: 1.5rem;
+  border-bottom-right-radius: 1.5rem;
+  max-height: 75vh;
+  overflow-y: auto;
+}
+.group:hover .mega-menu-panel {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+/* Custom Scrollbar for Mega Menu */
+.mega-menu-panel::-webkit-scrollbar { width: 6px; }
+.mega-menu-panel::-webkit-scrollbar-track { background: transparent; }
+.mega-menu-panel::-webkit-scrollbar-thumb { background: #e5e7eb; border-radius: 10px; }
+.mega-menu-panel::-webkit-scrollbar-thumb:hover { background: #d1d5db; }
+
+.mega-col-title {
+  font-size: 0.75rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #4B5563;
+  margin-bottom: 0.75rem;
+  position: relative;
+  display: inline-block;
+}
+.mega-col-title::after {
+  content: ''; display: block; width: 24px; height: 2px; background: #6366f1; margin-top: 4px; border-radius: 2px;
+}
+
+.mega-link {
+  display: block;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: #6B7280;
+  padding: 0.35rem 0;
+  transition: all 0.2s;
+}
+.mega-link:hover {
+  color: #4F46E5;
+  transform: translateX(3px);
+}
+.grid-col { break-inside: avoid; margin-bottom: 2rem; }
+</style>
+
+<div class="hidden lg:flex items-center space-x-8 nav-container text-sm font-semibold tracking-wide text-gray-700">
+
+  <!-- PATIENTS -->
+  <div class="group h-full mega-menu-trigger">
+    <span class="hover:text-indigo-600 transition-colors">For Patients</span>
+    
+    <div class="mega-menu-panel">
+      <div class="columns-1 md:columns-2 lg:columns-4 gap-8 w-full max-w-7xl mx-auto">
+        
+        <div class="grid-col">
+          <div class="mega-col-title">Find Care</div>
+          <a href="{{ url_for('feature_stub', feature_slug='find-doctors') }}" class="mega-link">Find Doctors</a>
+          <a href="{{ url_for('feature_stub', feature_slug='video-call-consultations') }}" class="mega-link">Video Call Consultations</a>
+          <a href="{{ url_for('feature_stub', feature_slug='browse-by-specialty') }}" class="mega-link">Browse by Specialty</a>
+          <a href="{{ url_for('feature_stub', feature_slug='insurance-providers') }}" class="mega-link">Insurance Providers</a>
+          <div class="mt-4 mega-col-title">Consultation Fees</div>
+          <a href="{{ url_for('feature_stub', feature_slug='₹100-₹500') }}" class="mega-link">₹100 - ₹500</a>
+          <a href="{{ url_for('feature_stub', feature_slug='₹500-₹1000') }}" class="mega-link">₹500 - ₹1000</a>
+          <a href="{{ url_for('feature_stub', feature_slug='₹1000-₹2000') }}" class="mega-link">₹1000 - ₹2000</a>
+          <a href="{{ url_for('feature_stub', feature_slug='premium-₹2000') }}" class="mega-link">Premium (₹2000+)</a>
+        </div>
+
+        <div class="grid-col">
+          <div class="mega-col-title">Hospitals & Clinics</div>
+          <a href="{{ url_for('feature_stub', feature_slug='private-facilities') }}" class="mega-link">Private Facilities</a>
+          <a href="{{ url_for('feature_stub', feature_slug='government-hospitals') }}" class="mega-link">Government Hospitals</a>
+          <a href="{{ url_for('feature_stub', feature_slug='multi-specialty') }}" class="mega-link">Multi-specialty</a>
+          <a href="{{ url_for('feature_stub', feature_slug='single-specialty') }}" class="mega-link">Single-specialty</a>
+          <div class="mt-4 mega-col-title">Recognitions</div>
+          <a href="{{ url_for('feature_stub', feature_slug='international-awards') }}" class="mega-link">International Awards</a>
+          <a href="{{ url_for('feature_stub', feature_slug='national-state-awards') }}" class="mega-link">National / State Awards</a>
+        </div>
+
+        <div class="grid-col">
+          <div class="mega-col-title">Mental Health</div>
+          <a href="{{ url_for('feature_stub', feature_slug='psychiatry-psychology') }}" class="mega-link">Psychiatry & Psychology</a>
+          <a href="{{ url_for('feature_stub', feature_slug='counseling-therapy') }}" class="mega-link">Counseling & Therapy</a>
+          <a href="{{ url_for('feature_stub', feature_slug='meditation-guides') }}" class="mega-link">Meditation Guides</a>
+          <div class="mt-4 mega-col-title">Age Groups</div>
+          <a href="{{ url_for('feature_stub', feature_slug='children-adolescents') }}" class="mega-link">Children & Adolescents</a>
+          <a href="{{ url_for('feature_stub', feature_slug='adults') }}" class="mega-link">Adults</a>
+          <a href="{{ url_for('feature_stub', feature_slug='seniors') }}" class="mega-link">Seniors</a>
+        </div>
+
+        <div class="grid-col">
+          <div class="mega-col-title">Specialty Programs</div>
+          <a href="{{ url_for('feature_stub', feature_slug='abha-card-creation') }}" class="mega-link text-indigo-500 font-bold">ABHA Card Creation</a>
+          <a href="{{ url_for('feature_stub', feature_slug='trackdna-genetics') }}" class="mega-link text-indigo-500 font-bold">TrackDNA™ Genetics</a>
+          <a href="{{ url_for('feature_stub', feature_slug='personalized-medicine') }}" class="mega-link">Personalized Medicine</a>
+          <a href="{{ url_for('feature_stub', feature_slug='family-health-history') }}" class="mega-link">Family Health History</a>
+          <div class="mt-4 mega-col-title">Old Age & End of Life</div>
+          <a href="{{ url_for('feature_stub', feature_slug='geriatric-home-care') }}" class="mega-link">Geriatric & Home Care</a>
+          <a href="{{ url_for('feature_stub', feature_slug='assisted-living') }}" class="mega-link">Assisted Living</a>
+          <a href="{{ url_for('feature_stub', feature_slug='palliative-hospice') }}" class="mega-link">Palliative & Hospice</a>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- DOCTORS -->
+  <div class="group h-full mega-menu-trigger">
+    <span class="hover:text-indigo-600 transition-colors">For Doctors</span>
+    <div class="mega-menu-panel">
+      <div class="columns-1 md:columns-2 lg:columns-4 gap-8 w-full max-w-7xl mx-auto">
+        <div class="grid-col">
+          <div class="mega-col-title">Clinical Practice</div>
+          <a href="{{ url_for('feature_stub', feature_slug='electronic-health-records-ehr') }}" class="mega-link">Electronic Health Records (EHR)</a>
+          <a href="{{ url_for('feature_stub', feature_slug='patient-recorder') }}" class="mega-link">Patient Recorder</a>
+          <a href="{{ url_for('feature_stub', feature_slug='telemedicine-tools') }}" class="mega-link">Telemedicine Tools</a>
+          <a href="{{ url_for('feature_stub', feature_slug='prescription-management') }}" class="mega-link">Prescription Management</a>
+          <a href="{{ url_for('feature_stub', feature_slug='clinical-decision-support') }}" class="mega-link">Clinical Decision Support</a>
+          <a href="{{ url_for('feature_stub', feature_slug='lab-reports-diagnostics') }}" class="mega-link">Lab Reports & Diagnostics</a>
+        </div>
+        <div class="grid-col">
+          <div class="mega-col-title">Operations & Growth</div>
+          <a href="{{ url_for('feature_stub', feature_slug='clinic-management') }}" class="mega-link">Clinic Management</a>
+          <a href="{{ url_for('feature_stub', feature_slug='billing-invoicing-claims') }}" class="mega-link">Billing, Invoicing & Claims</a>
+          <a href="{{ url_for('feature_stub', feature_slug='appointment-scheduling') }}" class="mega-link">Appointment Scheduling</a>
+          <a href="{{ url_for('feature_stub', feature_slug='staff-inventory-tracking') }}" class="mega-link">Staff & Inventory Tracking</a>
+          <a href="{{ url_for('feature_stub', feature_slug='data-analytics-performance') }}" class="mega-link">Data Analytics & Performance</a>
+          <a href="{{ url_for('feature_stub', feature_slug='clinic-marketing-reviews') }}" class="mega-link">Clinic Marketing & Reviews</a>
+        </div>
+        <div class="grid-col">
+          <div class="mega-col-title">Network & Education</div>
+          <a href="{{ url_for('feature_stub', feature_slug='doctor's-community-forum') }}" class="mega-link">Doctor's Community Forum</a>
+          <a href="{{ url_for('feature_stub', feature_slug='webinars-cme') }}" class="mega-link">Webinars & CME</a>
+          <a href="{{ url_for('feature_stub', feature_slug='mentorship-coaching') }}" class="mega-link">Mentorship & Coaching</a>
+          <a href="{{ url_for('feature_stub', feature_slug='medical-journals-publishing') }}" class="mega-link">Medical Journals & Publishing</a>
+          <a href="{{ url_for('feature_stub', feature_slug='peer-review-collaboration') }}" class="mega-link">Peer Review Collaboration</a>
+        </div>
+        <div class="grid-col">
+          <div class="mega-col-title">Future Tech</div>
+          <a href="{{ url_for('feature_stub', feature_slug='ai-clinical-matchmaking') }}" class="mega-link text-indigo-500 font-bold">AI Clinical Matchmaking</a>
+          <a href="{{ url_for('feature_stub', feature_slug='genomics-ai-integration') }}" class="mega-link">Genomics & AI Integration</a>
+          <a href="{{ url_for('feature_stub', feature_slug='vr-ar-surgical-models') }}" class="mega-link">VR/AR Surgical Models</a>
+          <a href="{{ url_for('feature_stub', feature_slug='remote-patient-monitoring') }}" class="mega-link">Remote Patient Monitoring</a>
+          <a href="{{ url_for('feature_stub', feature_slug='physician-wellness-retreats') }}" class="mega-link">Physician Wellness Retreats</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- HOSPITALS -->
+  <div class="group h-full mega-menu-trigger">
+    <span class="hover:text-indigo-600 transition-colors">For Hospitals</span>
+    <div class="mega-menu-panel">
+      <div class="columns-1 md:columns-2 lg:columns-4 gap-8 w-full max-w-7xl mx-auto">
+        <div class="grid-col">
+          <div class="mega-col-title">Administration</div>
+          <a href="{{ url_for('feature_stub', feature_slug='government-facilitation') }}" class="mega-link">Government Facilitation</a>
+          <a href="{{ url_for('feature_stub', feature_slug='hr-staff-credentialing') }}" class="mega-link">HR & Staff Credentialing</a>
+          <a href="{{ url_for('feature_stub', feature_slug='procurement-supply-chain') }}" class="mega-link">Procurement & Supply Chain</a>
+          <a href="{{ url_for('feature_stub', feature_slug='legal-support-risk-mgmt') }}" class="mega-link">Legal Support & Risk Mgmt</a>
+          <a href="{{ url_for('feature_stub', feature_slug='quality-assurance-compliance') }}" class="mega-link">Quality Assurance & Compliance</a>
+        </div>
+        <div class="grid-col">
+          <div class="mega-col-title">Patient Experience</div>
+          <a href="{{ url_for('feature_stub', feature_slug='virtual-care-services') }}" class="mega-link">Virtual Care Services</a>
+          <a href="{{ url_for('feature_stub', feature_slug='real-time-patient-flow') }}" class="mega-link">Real-time Patient Flow</a>
+          <a href="{{ url_for('feature_stub', feature_slug='language-translation') }}" class="mega-link">Language Translation</a>
+          <a href="{{ url_for('feature_stub', feature_slug='medical-tourism-services') }}" class="mega-link">Medical Tourism Services</a>
+          <a href="{{ url_for('feature_stub', feature_slug='smart-hospital-signage') }}" class="mega-link">Smart Hospital Signage</a>
+        </div>
+        <div class="grid-col">
+          <div class="mega-col-title">Infrastructure & Tech</div>
+          <a href="{{ url_for('feature_stub', feature_slug='cybersecurity-data-protection') }}" class="mega-link">Cybersecurity & Data Protection</a>
+          <a href="{{ url_for('feature_stub', feature_slug='healthcare-it-interoperability') }}" class="mega-link">Healthcare IT & Interoperability</a>
+          <a href="{{ url_for('feature_stub', feature_slug='medical-waste-environment') }}" class="mega-link">Medical Waste & Environment</a>
+          <a href="{{ url_for('feature_stub', feature_slug='5g-edge-computing') }}" class="mega-link text-indigo-500 font-bold">5G & Edge Computing</a>
+          <a href="{{ url_for('feature_stub', feature_slug='digital-twin-technology') }}" class="mega-link">Digital Twin Technology</a>
+        </div>
+        <div class="grid-col">
+          <div class="mega-col-title">Innovation</div>
+          <a href="{{ url_for('feature_stub', feature_slug='ai-clinical-decision-support') }}" class="mega-link text-indigo-500 font-bold">AI Clinical Decision Support</a>
+          <a href="{{ url_for('feature_stub', feature_slug='3d-bioprinting-services') }}" class="mega-link">3D Bioprinting Services</a>
+          <a href="{{ url_for('feature_stub', feature_slug='autonomous-logistics-robots') }}" class="mega-link">Autonomous Logistics Robots</a>
+          <a href="{{ url_for('feature_stub', feature_slug='quantum-computing-research') }}" class="mega-link">Quantum Computing Research</a>
+          <a href="{{ url_for('feature_stub', feature_slug='startup-incubators') }}" class="mega-link">Startup Incubators</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- COMMUNITY -->
+  <div class="group h-full mega-menu-trigger">
+    <span class="hover:text-indigo-600 transition-colors">Community</span>
+    <div class="mega-menu-panel">
+      <div class="columns-1 md:columns-2 lg:columns-3 gap-8 w-full max-w-5xl mx-auto">
+        <div class="grid-col">
+          <div class="mega-col-title">Health Outreach</div>
+          <a href="{{ url_for('feature_stub', feature_slug='vaccination-drives') }}" class="mega-link">Vaccination Drives</a>
+          <a href="{{ url_for('feature_stub', feature_slug='free-health-checkups') }}" class="mega-link">Free Health Checkups</a>
+          <a href="{{ url_for('feature_stub', feature_slug='blood-donation-camps') }}" class="mega-link">Blood Donation Camps</a>
+          <a href="{{ url_for('feature_stub', feature_slug='chronic-disease-management') }}" class="mega-link">Chronic Disease Management</a>
+          <a href="{{ url_for('feature_stub', feature_slug='disaster-response-network') }}" class="mega-link">Disaster Response Network</a>
+        </div>
+        <div class="grid-col">
+          <div class="mega-col-title">Wellness & Education</div>
+          <a href="{{ url_for('feature_stub', feature_slug='nutrition-workshops') }}" class="mega-link">Nutrition Workshops</a>
+          <a href="{{ url_for('feature_stub', feature_slug='mental-health-support-groups') }}" class="mega-link">Mental Health Support Groups</a>
+          <a href="{{ url_for('feature_stub', feature_slug='community-fitness-programs') }}" class="mega-link">Community Fitness Programs</a>
+          <a href="{{ url_for('feature_stub', feature_slug='health-literacy-library') }}" class="mega-link">Health Literacy & Library</a>
+          <a href="{{ url_for('feature_stub', feature_slug='climate-change-impacts') }}" class="mega-link">Climate Change Impacts</a>
+        </div>
+        <div class="grid-col">
+          <div class="mega-col-title">Partnerships</div>
+          <a href="{{ url_for('feature_stub', feature_slug='corporate-wellness') }}" class="mega-link">Corporate Wellness</a>
+          <a href="{{ url_for('feature_stub', feature_slug='school-university-programs') }}" class="mega-link">School/University Programs</a>
+          <a href="{{ url_for('feature_stub', feature_slug='local-government-synergy') }}" class="mega-link">Local Government Synergy</a>
+          <a href="{{ url_for('feature_stub', feature_slug='volunteer-training') }}" class="mega-link">Volunteer Training</a>
+          <a href="{{ url_for('feature_stub', feature_slug='food-insecurity-programs') }}" class="mega-link">Food Insecurity Programs</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- AUTHENTICATION -->
+  {% if g.user %}
+    <a href="{{ url_for('logout') }}" class="btn-premium btn-primary text-sm whitespace-nowrap">Logout</a>
+  {% else %}
+    <div class="flex items-center space-x-4">
+      <a href="{{ url_for('login') }}" class="text-gray-900 font-bold uppercase tracking-wider hover:opacity-70 transition-opacity">Login</a>
+      <a href="/getting-started" class="btn-premium btn-primary text-sm whitespace-nowrap">
+        Get Started
+        <svg class="w-4 h-4 inline-block ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
+        </svg>
+      </a>
+    </div>
+  {% endif %}
+</div>
+
+<!-- Mobile Hamburger Button -->
+<div class="lg:hidden flex items-center ml-auto">
+  <button id="mobile-menu-btn" class="text-gray-700 hover:text-indigo-600 focus:outline-none p-2">
+    <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 6h16M4 12h16M4 18h16"></path>
+    </svg>
+  </button>
+</div>
+
+<!-- Mobile Menu Overlay -->
+<div id="mobile-menu-overlay" class="fixed inset-0 bg-white z-[200] transform translate-y-full transition-transform duration-300 lg:hidden overflow-y-auto">
+   <div class="flex flex-col p-8 space-y-6">
+      <button id="mobile-close-btn" class="self-end text-gray-400 hover:text-red-500 bg-gray-100 rounded-full p-2">
+         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+      </button>
+      
+      <div class="space-y-6 pt-4">
+        <a href="#" class="block text-2xl font-bold text-gray-800 hover:text-indigo-600 tracking-tight">For Patients</a>
+        <a href="#" class="block text-2xl font-bold text-gray-800 hover:text-indigo-600 tracking-tight">For Doctors</a>
+        <a href="#" class="block text-2xl font-bold text-gray-800 hover:text-indigo-600 tracking-tight">For Hospitals</a>
+        <a href="#" class="block text-2xl font-bold text-gray-800 hover:text-indigo-600 tracking-tight">Community</a>
+      </div>
+      
+      <div class="h-px bg-gray-200 my-4"></div>
+      
+      <div class="flex flex-col space-y-4">
+        {% if g.user %}
+          <a href="{{ url_for('logout') }}" class="text-center w-full bg-red-50 text-red-600 font-bold py-3 rounded-xl border border-red-100">Logout</a>
+        {% else %}
+          <a href="{{ url_for('login') }}" class="block text-center w-full bg-indigo-50 text-indigo-700 font-bold py-3 rounded-xl border border-indigo-100">Login</a>
+          <a href="/getting-started" class="block text-center w-full bg-indigo-600 text-white font-bold py-3 rounded-xl shadow-lg shadow-indigo-200">Get Started</a>
+        {% endif %}
+      </div>
+   </div>
+</div>
+
+<script>
+  document.getElementById('mobile-menu-btn').addEventListener('click', function() {
+      // Show mobile menu
+      const overlay = document.getElementById('mobile-menu-overlay');
+      overlay.classList.remove('translate-y-full');
+      document.body.style.overflow = 'hidden'; // prevent background scrolling
+  });
+  document.getElementById('mobile-close-btn').addEventListener('click', function() {
+      // Hide mobile menu
+      const overlay = document.getElementById('mobile-menu-overlay');
+      overlay.classList.add('translate-y-full');
+      document.body.style.overflow = '';
+  });
+</script>

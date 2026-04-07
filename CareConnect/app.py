@@ -398,12 +398,6 @@ def ensure_onboarding_complete():
 def landing():
     return render_template('landing.html')
 
-@app.route('/feature/<path:feature_slug>')
-def feature_stub(feature_slug):
-    """Dynamic stub for undeveloped modules in the mega menu."""
-    title = feature_slug.replace('-', ' ').title()
-    return render_template('feature_stub.html', title=title)
-
 @app.route('/health')
 def health_check():
     """Service health monitoring."""
@@ -1135,6 +1129,7 @@ def api_delete_lab_order(order_id):
     db.session.commit()
     log_action('LabOrder.delete', f'{order.order_ref} deleted')
     return jsonify({'deleted': order_id})
+
 
 # ----------------------------------------------------------------------
 # PATIENT PAGES
