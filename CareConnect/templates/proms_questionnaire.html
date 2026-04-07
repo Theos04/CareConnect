@@ -1,0 +1,169 @@
+proms_questionnaire.html
+
+<!-- proms_questionnaire.html -->
+{% extends "base.html" %}
+{% block title %}Health Assessment | CareConnect EHR{% endblock %}
+
+{% block content %}
+<style>
+  .questionnaire-container {
+    max-width: 800px;
+    margin: 0 auto;
+  }
+
+  .question-card {
+    background: var(--surface);
+    border-radius: 20px;
+    padding: 24px;
+    margin-bottom: 20px;
+  }
+
+  .question-text {
+    font-weight: 600;
+    margin-bottom: 16px;
+    color: var(--text-primary);
+  }
+
+  .rating-scale {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  .rating-option {
+    flex: 1;
+    text-align: center;
+    padding: 12px;
+    background: var(--background);
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .rating-option.selected {
+    background: var(--primary);
+    color: white;
+  }
+
+  .trend-chart {
+    height: 300px;
+    margin: 24px 0;
+  }
+</style>
+
+<div class="ehr-container">
+  <div class="clinical-header">
+    <div class="header-top">
+      <div class="patient-greeting">
+        <h1>Patient Health Assessment</h1>
+        <p>Track your health outcomes over time</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="questionnaire-container">
+    <div class="clinical-card">
+      <div class="card-header">
+        <div class="card-title">
+          <div class="card-title-icon">📊</div>
+          <h2>PROMIS-10 Global Health Survey</h2>
+        </div>
+      </div>
+      <div class="card-content">
+        <form id="promsForm">
+          <div id="questions">
+            <!-- Questions loaded dynamically -->
+          </div>
+          <button type="submit" class="action-button" style="width: 100%; margin-top: 24px;">
+            Submit Assessment →
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Historical Trends -->
+    <div class="clinical-card">
+      <div class="card-header">
+        <div class="card-title">
+          <div class="card-title-icon">📈</div>
+          <h2>Your Health Trends</h2>
+        </div>
+      </div>
+      <div class="card-content">
+        <canvas id="healthTrends" class="trend-chart"></canvas>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const questions = [
+    { id: 1, text: "In general, would you say your health is:", type: "rating", min: 1, max: 5 },
+    { id: 2, text: "In general, would you say your quality of life is:", type: "rating", min: 1, max: 5 },
+    { id: 3, text: "To what extent are you able to carry out your everyday physical activities?", type: "rating", min: 1, max: 5 },
+    { id: 4, text: "In the past 7 days, how often have you been bothered by emotional problems?", type: "rating", min: 1, max: 5 }
+  ];
+
+  function renderQuestions() {
+    const container = document.getElementById('questions');
+    container.innerHTML = questions.map(q => `
+      <div class="question-card">
+        <div class="question-text">${q.text}</div>
+        <div class="rating-scale" data-question-id="${q.id}">
+          ${[1,2,3,4,5].map(num => `
+            <div class="rating-option" onclick="selectRating(${q.id}, ${num})">
+              ${num === 1 ? 'Poor' : num === 3 ? 'Fair' : num === 5 ? 'Excellent' : ''}
+              <div style="font-size: 0.7rem; margin-top: 4px;">${num}</div>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+    `).join('');
+  }
+
+  let responses = {};
+
+  function selectRating(questionId, value) {
+    responses[questionId] = value;
+    // Update UI to show selected
+    document.querySelectorAll(`.rating-scale[data-question-id="${questionId}"] .rating-option`)
+      .forEach((el, idx) => {
+        if (idx + 1 === value) el.classList.add('selected');
+        else el.classList.remove('selected');
+      });
+  }
+
+  document.getElementById('promsForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    await fetch('/api/proms/submit', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ responses, date: new Date() })
+    });
+    showNotification('Assessment submitted successfully!', 'success');
+    loadTrends();
+  });
+
+  async function loadTrends() {
+    const response = await fetch('/api/proms/history');
+    const data = await response.json();
+    // Render chart with Chart.js
+    const ctx = document.getElementById('healthTrends').getContext('2d');
+    new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: data.dates,
+        datasets: [{
+          label: 'Overall Health Score',
+          data: data.scores,
+          borderColor: 'var(--primary)',
+          tension: 0.4
+        }]
+      }
+    });
+  }
+
+  renderQuestions();
+  loadTrends();
+</script>
+{% endblock %}

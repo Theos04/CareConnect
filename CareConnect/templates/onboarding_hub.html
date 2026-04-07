@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block title %}Choose your path | CareConnect{% endblock %}
+
+{% block content %}
+<div class="max-w-5xl mx-auto px-2">
+  <div class="text-center mb-12">
+    <h1 class="text-3xl md:text-4xl font-extrabold text-gray-900 mb-3">How will you use CareConnect?</h1>
+    <p class="text-gray-600 max-w-2xl mx-auto">Pick your role to sign up with the right dashboard, onboarding, and tools.</p>
+  </div>
+
+  <div class="grid md:grid-cols-3 gap-6">
+    <a href="{{ url_for('getting_started') }}?tab=signup&amp;role=patient" class="group bg-white rounded-2xl border border-gray-200 p-8 shadow-sm hover:shadow-lg hover:border-indigo-200 transition-all">
+      <div class="w-14 h-14 rounded-2xl bg-indigo-100 text-indigo-600 flex items-center justify-center text-2xl mb-4 group-hover:scale-105 transition-transform">&#128100;</div>
+      <h2 class="text-xl font-bold text-gray-900 mb-2">Patient</h2>
+      <p class="text-sm text-gray-600 mb-4">Prescriptions, care hub, marketplace, and insurance tools in one place.</p>
+      <span class="text-indigo-600 font-semibold text-sm">Continue as patient &rarr;</span>
+    </a>
+
+    <a href="{{ url_for('getting_started') }}?tab=signup&amp;role=doctor" class="group bg-white rounded-2xl border border-gray-200 p-8 shadow-sm hover:shadow-lg hover:border-indigo-200 transition-all">
+      <div class="w-14 h-14 rounded-2xl bg-emerald-100 text-emerald-700 flex items-center justify-center text-2xl mb-4 group-hover:scale-105 transition-transform">&#9877;&#65039;</div>
+      <h2 class="text-xl font-bold text-gray-900 mb-2">Doctor</h2>
+      <p class="text-sm text-gray-600 mb-4">Clinical workspace, prescriptions, queues, and patient coordination.</p>
+      <span class="text-indigo-600 font-semibold text-sm">Continue as doctor &rarr;</span>
+    </a>
+
+    <a href="{{ url_for('getting_started') }}?tab=signup&amp;role=pathology" class="group bg-white rounded-2xl border border-gray-200 p-8 shadow-sm hover:shadow-lg hover:border-indigo-200 transition-all">
+      <div class="w-14 h-14 rounded-2xl bg-violet-100 text-violet-700 flex items-center justify-center text-2xl mb-4 group-hover:scale-105 transition-transform">&#128300;</div>
+      <h2 class="text-xl font-bold text-gray-900 mb-2">Pathology lab</h2>
+      <p class="text-sm text-gray-600 mb-4">Requisitions, sample tracking, and reports for diagnostic workflows.</p>
+      <span class="text-indigo-600 font-semibold text-sm">Continue as lab &rarr;</span>
+    </a>
+  </div>
+
+  <p class="text-center text-sm text-gray-500 mt-10">
+    Already have an account?
+    <a href="{{ url_for('login') }}" class="text-indigo-600 font-semibold hover:underline">Log in</a>
+  </p>
+</div>
+{% endblock %}

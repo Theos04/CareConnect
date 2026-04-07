@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block title %}Create Profile | CareConnect{% endblock %}
+
+{% block content %}
+<div class="max-w-md mx-auto">
+  <h2 class="text-3xl font-semibold text-gray-900 mb-2">Create your profile</h2>
+  <p class="text-gray-600 text-sm mb-6">Choose your role — you will complete role-specific onboarding after sign-up.</p>
+  <form action="{{ url_for('create_profile') }}" method="post" class="space-y-4">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <input type="text" name="name" placeholder="Full name" required class="w-full border border-gray-200 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-indigo-500">
+    <input type="email" name="email" placeholder="Email" required class="w-full border border-gray-200 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-indigo-500">
+    <input type="password" name="password" placeholder="Password" required class="w-full border border-gray-200 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-indigo-500">
+    <label class="block text-sm font-medium text-gray-700">I am a</label>
+    <select name="role" required class="w-full border border-gray-200 rounded-xl px-4 py-2.5 bg-white focus:ring-2 focus:ring-indigo-500">
+      <option value="Patient">Patient</option>
+      <option value="Doctor">Doctor</option>
+      <option value="Pathology Lab">Pathology lab</option>
+      <option value="Clinic / Hospital">Hospital / clinic (pharmacy)</option>
+    </select>
+    <button type="submit" class="w-full bg-indigo-600 text-white px-4 py-3 rounded-xl font-semibold hover:bg-indigo-700 transition">Create profile</button>
+  </form>
+  <p class="text-sm text-gray-500 mt-6 text-center">
+    <a href="{{ url_for('onboarding_hub') }}" class="text-indigo-600 font-medium hover:underline">Not sure which role?</a>
+  </p>
+</div>
+{% endblock %}

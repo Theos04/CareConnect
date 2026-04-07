@@ -1,0 +1,1262 @@
+{% extends "base.html" %}
+{% block title %}Create Profile | CareConnect{% endblock %}
+
+{% block content %}
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/CustomEase.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/Observer.min.js"></script>
+
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500&family=Nunito+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --navy:   #1a2d4a;
+      --teal:   #1b8a7e;
+      --teal-lt:#e6f5f4;
+      --gold:   #c8923a;
+      --red:    #e05555;
+      --cream:  #faf8f5;
+      --white:  #ffffff;
+      --body:   #4a5568;
+      --muted:  #8a96a5;
+      --border: #e8ecf0;
+      --shadow: rgba(26,45,74,0.08);
+    }
+    *{margin:0;padding:0;box-sizing:border-box}
+    html{scroll-behavior:auto}
+    body{font-family:'Nunito Sans',sans-serif;background:var(--white);color:var(--body);overflow-x:hidden}
+    h1,h2,h3{font-family:'Playfair Display',Georgia,serif;color:var(--navy)}
+    p{line-height:1.8}
+
+    /* ─── PROGRESS ─── */
+    #progress{position:fixed;top:0;left:0;right:0;height:3px;background:var(--teal);transform:scaleX(0);transform-origin:left;z-index:9999}
+
+    /* ─── LOADER ─── */
+    #loader{position:fixed;inset:0;background:var(--navy);z-index:99999;display:flex;flex-direction:column;align-items:center;justify-content:center}
+    .loader-cross{font-size:3rem;color:var(--teal);opacity:0;transform:scale(.4) rotate(-20deg)}
+    .loader-name{font-family:'Playfair Display',serif;font-size:2.2rem;font-weight:700;color:white;margin-top:16px;opacity:0}
+    .loader-tagline{font-size:.72rem;letter-spacing:3px;text-transform:uppercase;color:rgba(255,255,255,.35);margin-top:10px;opacity:0}
+    .loader-bar-wrap{margin-top:44px;width:200px;height:2px;background:rgba(255,255,255,.08);border-radius:2px;overflow:hidden;opacity:0}
+    .loader-bar-fill{height:100%;width:0%;background:linear-gradient(90deg,var(--teal),#2ab5a7);border-radius:2px}
+    .loader-pct{margin-top:10px;font-size:.7rem;font-weight:700;color:rgba(255,255,255,.3);letter-spacing:1px;opacity:0}
+
+    /* ─── LIVE TOAST (floating) ─── */
+    #toast-area{position:fixed;bottom:28px;left:28px;z-index:5000;display:flex;flex-direction:column;gap:10px;pointer-events:none}
+    .toast{display:flex;align-items:center;gap:12px;background:white;border:1px solid var(--border);border-radius:12px;padding:12px 18px;box-shadow:0 8px 32px var(--shadow);opacity:0;transform:translateX(-20px);pointer-events:auto;min-width:260px}
+    .toast-dot{width:8px;height:8px;background:var(--teal);border-radius:50%;flex-shrink:0;animation:pulse 1.5s infinite}
+    @keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(27,138,126,.4)}50%{box-shadow:0 0 0 6px rgba(27,138,126,0)}}
+    .toast-text{font-size:.8rem;color:var(--body);line-height:1.4}
+    .toast-text strong{color:var(--navy);font-weight:700;display:block}
+
+    /* ─── NAV ─── */
+    nav{position:fixed;top:0;left:0;right:0;padding:0 60px;height:72px;display:flex;align-items:center;justify-content:space-between;background:rgba(255,255,255,.96);backdrop-filter:blur(12px);border-bottom:1px solid transparent;z-index:1000;transition:border-color .4s,box-shadow .4s}
+    nav.scrolled{border-color:var(--border);box-shadow:0 4px 24px var(--shadow)}
+    .nav-logo{display:flex;align-items:center;gap:10px;font-family:'Playfair Display',serif;font-weight:700;font-size:1.3rem;color:var(--navy);text-decoration:none}
+    .nav-logo-icon{width:34px;height:34px;background:var(--teal);border-radius:8px;display:flex;align-items:center;justify-content:center;color:white;font-size:1rem}
+    .nav-links{display:flex;gap:36px;list-style:none}
+    .nav-links a{font-size:.875rem;font-weight:600;color:var(--body);text-decoration:none;transition:color .2s}
+    .nav-links a:hover{color:var(--teal)}
+    .nav-cta{display:flex;align-items:center;gap:12px}
+    .btn-outline{padding:9px 22px;border:1.5px solid var(--navy);border-radius:6px;background:transparent;color:var(--navy);font-family:'Nunito Sans',sans-serif;font-weight:700;font-size:.84rem;cursor:pointer;transition:.2s}
+    .btn-outline:hover{background:var(--navy);color:white}
+    .btn-primary{padding:10px 24px;background:var(--teal);border:none;border-radius:6px;color:white;font-family:'Nunito Sans',sans-serif;font-weight:700;font-size:.84rem;cursor:pointer;transition:.25s}
+    .btn-primary:hover{background:#156f64;transform:translateY(-1px);box-shadow:0 6px 20px rgba(27,138,126,.25)}
+
+    /* ─── HERO ─── */
+    .hero{min-height:100vh;background:var(--cream);display:flex;align-items:center;padding:100px 60px 60px;position:relative;overflow:hidden}
+    .hero::before{content:'';position:absolute;right:-100px;top:-100px;width:700px;height:700px;border-radius:50%;background:radial-gradient(circle,rgba(27,138,126,.07) 0%,transparent 70%);pointer-events:none}
+    .hero::after{content:'';position:absolute;right:60px;bottom:-120px;width:450px;height:450px;border-radius:50%;background:radial-gradient(circle,rgba(200,146,58,.06) 0%,transparent 70%);pointer-events:none}
+    .hero-inner{max-width:1220px;margin:auto;width:100%;display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center;position:relative;z-index:2}
+    .hero-pill{display:inline-flex;align-items:center;gap:8px;background:var(--teal-lt);border:1px solid rgba(27,138,126,.2);color:var(--teal);font-size:.76rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:6px 14px;border-radius:30px;margin-bottom:22px;opacity:0}
+    .hero-pill span{width:6px;height:6px;background:var(--teal);border-radius:50%}
+    .hero-text h1{font-size:clamp(2.4rem,4vw,3.5rem);line-height:1.15;margin-bottom:22px;color:var(--navy);opacity:0}
+    .hero-text h1 em{font-style:italic;color:var(--teal)}
+    .hero-text p{font-size:1.02rem;font-weight:300;color:var(--body);max-width:460px;margin-bottom:38px;opacity:0}
+    .hero-actions{display:flex;align-items:center;gap:16px;flex-wrap:wrap;opacity:0}
+    .hero-actions .btn-primary{padding:14px 32px;font-size:.93rem}
+    .link-btn{font-size:.9rem;font-weight:600;color:var(--body);display:flex;align-items:center;gap:6px;background:none;border:none;cursor:pointer;transition:color .2s}
+    .link-btn:hover{color:var(--teal)}
+    .hero-trust{display:flex;align-items:center;gap:18px;margin-top:40px;padding-top:30px;border-top:1px solid var(--border);opacity:0}
+    .trust-avatars{display:flex}
+    .trust-avatars img{width:38px;height:38px;border-radius:50%;border:2px solid white;margin-right:-10px;object-fit:cover}
+    .trust-stars{color:#f59e0b;font-size:.82rem;letter-spacing:1px}
+    .trust-text strong{display:block;font-size:.87rem;font-weight:700;color:var(--navy)}
+    .trust-text span{font-size:.76rem;color:var(--muted)}
+    .hero-visual{position:relative;opacity:0}
+    .hero-img-main{width:100%;border-radius:20px;object-fit:cover;height:520px;display:block;box-shadow:0 30px 70px rgba(26,45,74,.14)}
+    .hero-float{position:absolute;background:white;border-radius:14px;box-shadow:0 12px 40px rgba(26,45,74,.12);padding:16px 22px}
+    .hero-float-1{bottom:36px;left:-44px}
+    .hero-float-2{top:36px;right:-28px}
+    .float-label{font-size:.7rem;text-transform:uppercase;letter-spacing:1px;color:var(--muted);font-weight:700}
+    .float-value{font-family:'Playfair Display',serif;font-size:1.55rem;font-weight:700;color:var(--navy);line-height:1.2}
+    .float-sub{font-size:.74rem;color:var(--muted)}
+    .float-icon{font-size:1.4rem;margin-bottom:5px}
+    .hero-verified{position:absolute;top:50%;right:-22px;transform:translateY(-50%);background:var(--teal);border-radius:50%;width:60px;height:60px;display:flex;align-items:center;justify-content:center;color:white;font-size:1.5rem;box-shadow:0 8px 24px rgba(27,138,126,.35)}
+
+    /* ─── LOGOS ─── */
+    .logos-strip{padding:36px 60px;background:white;border-bottom:1px solid var(--border)}
+    .logos-inner{max-width:1220px;margin:auto;display:flex;align-items:center;gap:50px;flex-wrap:wrap}
+    .logos-label{font-size:.73rem;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);white-space:nowrap}
+    .logos-list{display:flex;align-items:center;gap:40px;flex:1;flex-wrap:wrap}
+    .logo-item{font-family:'Playfair Display',serif;font-weight:600;font-size:.95rem;color:#c5ced8;white-space:nowrap;transition:color .3s}
+    .logo-item:hover{color:var(--muted)}
+
+    /* ─── URGENCY TICKER ─── */
+    .urgency-bar{background:var(--navy);padding:14px 60px;overflow:hidden;position:relative}
+    .urgency-inner{max-width:1220px;margin:auto;display:flex;align-items:center;gap:20px}
+    .urgency-dot{width:8px;height:8px;background:#ef4444;border-radius:50%;flex-shrink:0;animation:pulse-red 1.2s infinite}
+    @keyframes pulse-red{0%,100%{box-shadow:0 0 0 0 rgba(239,68,68,.5)}50%{box-shadow:0 0 0 6px rgba(239,68,68,0)}}
+    .urgency-label{font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:2px;color:rgba(255,255,255,.4);white-space:nowrap}
+    .urgency-text{font-size:.85rem;color:rgba(255,255,255,.8);font-weight:600}
+    .urgency-count{font-family:'Playfair Display',serif;font-size:1.1rem;font-weight:700;color:#ef4444;margin:0 2px}
+
+    /* ─── SHARED SECTION ─── */
+    section{padding:110px 60px}
+    .container{max-width:1220px;margin:auto}
+    .section-eyebrow{font-size:.74rem;font-weight:700;text-transform:uppercase;letter-spacing:2px;color:var(--teal);display:flex;align-items:center;gap:10px;margin-bottom:14px}
+    .section-eyebrow::before{content:'';width:26px;height:2px;background:var(--teal);border-radius:2px}
+    .section-title{font-size:clamp(1.9rem,3vw,2.7rem);line-height:1.2;margin-bottom:16px}
+    .section-sub{font-size:.98rem;color:var(--muted);max-width:500px;line-height:1.8;margin-bottom:56px}
+
+    /* ─── PAIN POINTS ─── */
+    .pain{background:white}
+    .pain-layout{display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:start}
+    .pain-left{position:sticky;top:100px}
+    .pain-items{display:flex;flex-direction:column;gap:4px}
+    .pain-item{display:flex;gap:22px;padding:26px 22px;border-radius:12px;border:1px solid transparent;transition:.3s;cursor:default;opacity:0;transform:translateX(20px)}
+    .pain-item:hover{background:var(--cream);border-color:var(--border)}
+    .pain-num{font-family:'Playfair Display',serif;font-size:1.4rem;font-weight:700;color:var(--border);line-height:1;min-width:30px;transition:color .3s}
+    .pain-item:hover .pain-num{color:var(--teal)}
+    .pain-item h3{font-size:1.02rem;margin-bottom:6px;color:var(--navy)}
+    .pain-item p{font-size:.875rem;color:var(--muted);line-height:1.7}
+
+    /* ─── COST OF WAITING ─── */
+    .cost-section{background:var(--navy);padding:100px 60px;position:relative;overflow:hidden}
+    .cost-section::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 60% 80% at 50% 100%,rgba(27,138,126,.08) 0%,transparent 70%);pointer-events:none}
+    .cost-inner{max-width:1220px;margin:auto;display:grid;grid-template-columns:1fr 1fr;gap:100px;align-items:center;position:relative;z-index:1}
+    .cost-left .section-eyebrow{color:rgba(255,255,255,.35)}
+    .cost-left .section-eyebrow::before{background:rgba(255,255,255,.2)}
+    .cost-left h2{color:white;font-size:clamp(2rem,3.2vw,2.8rem);line-height:1.2;margin-bottom:20px}
+    .cost-left p{color:rgba(255,255,255,.5);font-size:.98rem;line-height:1.8;max-width:420px}
+    .cost-clock{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:20px;padding:44px 40px;text-align:center}
+    .cost-clock-label{font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:2px;color:rgba(255,255,255,.35);margin-bottom:20px}
+    .cost-display{font-family:'Playfair Display',serif;font-size:clamp(3rem,6vw,5rem);font-weight:700;color:white;line-height:1;margin-bottom:10px;letter-spacing:-2px}
+    .cost-display span{color:#ef4444}
+    .cost-unit{font-size:.8rem;color:rgba(255,255,255,.35);text-transform:uppercase;letter-spacing:2px;margin-bottom:36px}
+    .cost-breakdown{display:flex;flex-direction:column;gap:12px;text-align:left}
+    .cost-row{display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid rgba(255,255,255,.06)}
+    .cost-row:last-child{border:none}
+    .cost-row-label{font-size:.82rem;color:rgba(255,255,255,.45)}
+    .cost-row-val{font-family:'Playfair Display',serif;font-size:1.1rem;font-weight:700;color:white}
+
+    /* ─── STATISTICS ─── */
+    .statistics{background:var(--navy);position:relative;overflow:hidden}
+    .stats-pattern{position:absolute;inset:0;opacity:.035;background-image:repeating-linear-gradient(0deg,transparent,transparent 39px,rgba(255,255,255,1) 39px,rgba(255,255,255,1) 40px),repeating-linear-gradient(90deg,transparent,transparent 39px,rgba(255,255,255,1) 39px,rgba(255,255,255,1) 40px)}
+    .statistics .section-eyebrow{color:rgba(255,255,255,.35)}
+    .statistics .section-eyebrow::before{background:rgba(255,255,255,.18)}
+    .statistics .section-title{color:white}
+    .statistics .section-sub{color:rgba(255,255,255,.45)}
+    .stats-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;background:rgba(255,255,255,.05);border-radius:16px;overflow:hidden}
+    .stat-card{background:rgba(255,255,255,.04);padding:52px 44px;opacity:0;transition:background .3s;cursor:default}
+    .stat-card:hover{background:rgba(255,255,255,.07)}
+    .stat-accent{width:36px;height:3px;background:var(--teal);border-radius:2px;margin-bottom:28px}
+    .stat-card:nth-child(2) .stat-accent{background:var(--gold)}
+    .stat-card:nth-child(3) .stat-accent{background:#7cb9b5}
+    .stat-num{font-family:'Playfair Display',serif;font-size:3.5rem;font-weight:700;color:white;line-height:1;margin-bottom:12px}
+    .stat-desc{font-size:.875rem;color:rgba(255,255,255,.48);line-height:1.75}
+
+    /* ─── STORY / HOW IT WORKS ─── */
+    .story-section{background:var(--cream);padding:0 60px;position:relative}
+    .story-sticky-wrap{position:relative}
+    .story-pin{position:sticky;top:0;height:100vh;display:flex;align-items:center;overflow:hidden}
+    .story-screen{max-width:1220px;margin:auto;width:100%;display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center}
+    /* panels side */
+    .story-panels{position:relative}
+    .story-panel{position:absolute;top:50%;left:0;right:0;transform:translateY(-50%);opacity:0;pointer-events:none}
+    .story-panel.active{opacity:1;pointer-events:auto}
+    .story-step-num{font-family:'Playfair Display',serif;font-size:5rem;font-weight:700;color:rgba(27,138,126,.12);line-height:1;margin-bottom:-10px}
+    .story-panel h2{font-size:clamp(1.8rem,2.8vw,2.5rem);line-height:1.2;margin-bottom:16px}
+    .story-panel p{font-size:.97rem;color:var(--body);line-height:1.8;margin-bottom:28px;max-width:420px}
+    .story-check{display:flex;align-items:center;gap:10px;font-size:.875rem;font-weight:600;color:var(--teal);margin-bottom:10px}
+    .story-check::before{content:'✓';width:22px;height:22px;background:var(--teal-lt);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.7rem;font-weight:700;flex-shrink:0}
+    /* mock profile side */
+    .story-mock{position:relative}
+    .mock-phone{width:280px;margin:auto;background:white;border-radius:28px;box-shadow:0 30px 80px rgba(26,45,74,.15);overflow:hidden;border:8px solid white;outline:1px solid var(--border)}
+    .mock-bar{background:var(--navy);height:36px;display:flex;align-items:center;justify-content:center;gap:6px}
+    .mock-bar-dot{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.2)}
+    .mock-body{padding:20px}
+    .mock-avatar-wrap{display:flex;align-items:center;gap:12px;margin-bottom:16px}
+    .mock-avatar{width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,var(--teal-lt),rgba(27,138,126,.2));overflow:hidden;flex-shrink:0}
+    .mock-avatar img{width:100%;height:100%;object-fit:cover}
+    .mock-name-block{}
+    .mock-name{font-family:'Playfair Display',serif;font-size:.95rem;font-weight:700;color:var(--navy)}
+    .mock-spec{font-size:.72rem;color:var(--muted);margin-top:2px}
+    .mock-badge-row{display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap}
+    .mock-badge{font-size:.65rem;font-weight:700;padding:3px 8px;border-radius:10px;background:var(--teal-lt);color:var(--teal);white-space:nowrap}
+    .mock-section-label{font-size:.6rem;text-transform:uppercase;letter-spacing:1.5px;font-weight:700;color:var(--muted);margin-bottom:6px}
+    .mock-bar-row{height:6px;background:var(--border);border-radius:3px;margin-bottom:6px;overflow:hidden}
+    .mock-bar-fill{height:100%;background:linear-gradient(90deg,var(--teal),#2ab5a7);border-radius:3px;width:0%;transition:width 1s ease}
+    .mock-btn{width:100%;background:var(--teal);color:white;border:none;border-radius:8px;padding:10px;font-family:'Nunito Sans',sans-serif;font-weight:700;font-size:.82rem;margin-top:14px;cursor:pointer}
+    .mock-insurance{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
+    .mock-ins-chip{font-size:.6rem;padding:3px 8px;border:1px solid var(--border);border-radius:20px;color:var(--muted)}
+    /* Step progress dots */
+    .story-steps-track{display:flex;gap:14px;margin-bottom:24px}
+    .step-dot{width:8px;height:8px;border-radius:50%;background:var(--border);transition:.4s}
+    .step-dot.active{background:var(--teal);width:24px;border-radius:4px}
+    /* Spacers to create scroll distance */
+    .story-spacer{height:100vh;pointer-events:none}
+
+    /* ─── BEFORE / AFTER ─── */
+    .compare-section{background:white;padding:110px 60px}
+    .compare-grid{display:grid;grid-template-columns:1fr 1fr;gap:30px;margin-top:16px}
+    .compare-col{border-radius:16px;overflow:hidden;border:1px solid var(--border);opacity:0;transform:translateY(24px)}
+    .compare-col.before .compare-header{background:var(--cream)}
+    .compare-col.after .compare-header{background:linear-gradient(135deg,var(--teal),#156f64)}
+    .compare-header{padding:28px 32px;display:flex;align-items:center;justify-content:space-between}
+    .compare-header h3{font-size:1.1rem;color:var(--navy)}
+    .compare-col.after .compare-header h3{color:white}
+    .compare-tag{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;padding:4px 10px;border-radius:20px}
+    .compare-col.before .compare-tag{background:rgba(239,68,68,.08);color:#ef4444;border:1px solid rgba(239,68,68,.15)}
+    .compare-col.after .compare-tag{background:rgba(255,255,255,.2);color:white;border:1px solid rgba(255,255,255,.3)}
+    .compare-body{padding:24px 32px;display:flex;flex-direction:column;gap:12px}
+    .compare-row{display:flex;align-items:flex-start;gap:12px;padding:10px 0;border-bottom:1px solid var(--border)}
+    .compare-row:last-child{border:none}
+    .compare-icon{font-size:1rem;flex-shrink:0;margin-top:2px}
+    .compare-row p{font-size:.875rem;color:var(--body);line-height:1.6}
+    .compare-row strong{color:var(--navy)}
+
+    /* ─── ROI CALCULATOR ─── */
+    .roi-section{background:var(--cream);padding:110px 60px}
+    .roi-inner{display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center}
+    .roi-form{background:white;border:1px solid var(--border);border-radius:20px;padding:44px 40px}
+    .roi-form h3{font-size:1.3rem;margin-bottom:8px}
+    .roi-form .roi-sub{font-size:.875rem;color:var(--muted);margin-bottom:32px}
+    .roi-field{margin-bottom:22px}
+    .roi-label{font-size:.78rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--muted);display:block;margin-bottom:8px}
+    .roi-select,.roi-input{width:100%;padding:12px 16px;border:1.5px solid var(--border);border-radius:8px;font-family:'Nunito Sans',sans-serif;font-size:.9rem;color:var(--navy);background:white;transition:border-color .2s;outline:none;cursor:pointer;appearance:none}
+    .roi-select:focus,.roi-input:focus{border-color:var(--teal)}
+    .roi-range{width:100%;accent-color:var(--teal);cursor:pointer;height:4px}
+    .roi-range-val{display:flex;justify-content:space-between;font-size:.75rem;color:var(--muted);margin-top:6px}
+    .roi-result{background:linear-gradient(135deg,var(--navy),#0f1e33);border-radius:16px;padding:36px 32px;text-align:center}
+    .roi-result-label{font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:2px;color:rgba(255,255,255,.4);margin-bottom:12px}
+    .roi-result-number{font-family:'Playfair Display',serif;font-size:3.8rem;font-weight:700;color:white;line-height:1;margin-bottom:4px}
+    .roi-result-period{font-size:.82rem;color:rgba(255,255,255,.4);margin-bottom:32px}
+    .roi-breakdown{display:flex;flex-direction:column;gap:10px;text-align:left;margin-bottom:28px}
+    .roi-row{display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid rgba(255,255,255,.06)}
+    .roi-row:last-child{border:none}
+    .roi-row-l{font-size:.82rem;color:rgba(255,255,255,.45)}
+    .roi-row-r{font-size:.88rem;font-weight:700;color:white}
+    .roi-cta{width:100%;padding:14px;background:var(--teal);border:none;border-radius:8px;color:white;font-family:'Nunito Sans',sans-serif;font-weight:700;font-size:.9rem;cursor:pointer;transition:.25s}
+    .roi-cta:hover{background:#156f64;transform:translateY(-1px);box-shadow:0 6px 20px rgba(27,138,126,.3)}
+
+    /* ─── FEATURES MARQUEE ─── */
+    .features{background:var(--cream)}
+    .marquee-outer{overflow:hidden;mask-image:linear-gradient(90deg,transparent 0%,black 6%,black 94%,transparent 100%);-webkit-mask-image:linear-gradient(90deg,transparent 0%,black 6%,black 94%,transparent 100%);margin:0 -60px;padding:12px 0 28px}
+    .marquee-track{display:flex;gap:22px;width:max-content}
+    .feat-card{width:300px;flex-shrink:0;background:white;border:1px solid var(--border);border-radius:16px;padding:38px 32px;transition:border-color .3s,box-shadow .3s,transform .3s}
+    .feat-card:hover{border-color:rgba(27,138,126,.25);box-shadow:0 12px 40px var(--shadow);transform:translateY(-4px)}
+    .feat-icon-wrap{width:50px;height:50px;background:var(--teal-lt);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.35rem;margin-bottom:22px}
+    .feat-card h3{font-size:1.02rem;margin-bottom:10px;color:var(--navy)}
+    .feat-card p{font-size:.86rem;color:var(--muted);line-height:1.75}
+    .feat-link{display:inline-flex;align-items:center;gap:5px;margin-top:18px;font-size:.8rem;font-weight:700;color:var(--teal);background:none;border:none;cursor:pointer;transition:gap .2s}
+    .feat-link:hover{gap:8px}
+
+    /* ─── TESTIMONIALS MARQUEE ─── */
+    .testimonial{background:white}
+    .testi-card{width:360px;flex-shrink:0;background:var(--cream);border:1px solid var(--border);border-radius:16px;padding:34px 28px;transition:border-color .3s,box-shadow .3s}
+    .testi-card:hover{border-color:rgba(27,138,126,.2);box-shadow:0 8px 30px var(--shadow)}
+    .testi-stars{color:#f59e0b;font-size:.8rem;letter-spacing:2px;margin-bottom:14px}
+    .testi-quote{font-family:'Playfair Display',serif;font-size:2.8rem;color:var(--teal);line-height:.4;margin-bottom:18px;display:block}
+    .testi-text{font-size:.9rem;color:var(--body);line-height:1.8;margin-bottom:26px;font-style:italic}
+    .testi-author{display:flex;align-items:center;gap:12px}
+    .testi-avatar{width:44px;height:44px;border-radius:50%;object-fit:cover;border:2px solid var(--border)}
+    .testi-name{font-weight:700;font-size:.86rem;color:var(--navy)}
+    .testi-role{font-size:.76rem;color:var(--muted)}
+
+    /* ─── COMPARISON TABLE ─── */
+    .comparison-section{background:var(--navy);padding:110px 60px;position:relative;overflow:hidden}
+    .comparison-section::before{content:'';position:absolute;inset:0;opacity:.035;background-image:repeating-linear-gradient(0deg,transparent,transparent 39px,rgba(255,255,255,1) 39px,rgba(255,255,255,1) 40px),repeating-linear-gradient(90deg,transparent,transparent 39px,rgba(255,255,255,1) 39px,rgba(255,255,255,1) 40px)}
+    .comparison-section .section-eyebrow{color:rgba(255,255,255,.35)}
+    .comparison-section .section-eyebrow::before{background:rgba(255,255,255,.18)}
+    .comparison-section .section-title{color:white}
+    .comparison-section .section-sub{color:rgba(255,255,255,.45)}
+    .comp-table{width:100%;border-collapse:collapse;margin-top:20px;opacity:0}
+    .comp-table th{padding:18px 24px;font-family:'Playfair Display',serif;font-size:.88rem;font-weight:600;text-align:center;position:relative}
+    .comp-table th:first-child{text-align:left;color:rgba(255,255,255,.4);font-family:'Nunito Sans',sans-serif;font-size:.75rem;text-transform:uppercase;letter-spacing:1.5px}
+    .comp-table th.col-healthdir{background:var(--teal);border-radius:14px 14px 0 0;color:white;padding-bottom:22px}
+    .comp-table th.col-other{color:rgba(255,255,255,.4)}
+    .healthdir-badge{display:block;font-size:.65rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;background:rgba(255,255,255,.15);border-radius:20px;padding:3px 10px;margin:0 auto 8px;width:fit-content}
+    .comp-table td{padding:16px 24px;font-size:.875rem;color:rgba(255,255,255,.55);border-bottom:1px solid rgba(255,255,255,.05);text-align:center}
+    .comp-table td:first-child{text-align:left;color:rgba(255,255,255,.65);font-weight:600}
+    .comp-table td.col-healthdir{background:rgba(27,138,126,.08);color:white;font-weight:700}
+    .comp-table tr:last-child td{border-bottom:none}
+    .comp-table tr:last-child td.col-healthdir{border-radius:0 0 14px 14px}
+    .check-yes{color:var(--teal);font-size:1.1rem}
+    .check-no{color:rgba(255,255,255,.2);font-size:1.1rem}
+    .check-partial{color:var(--gold);font-size:.8rem;font-weight:700}
+
+    /* ─── FAQ ─── */
+    .faq{background:var(--cream)}
+    .faq-inner{display:grid;grid-template-columns:1fr 1.4fr;gap:100px;align-items:start}
+    .faq-left{position:sticky;top:100px}
+    .faq-callout{margin-top:36px;background:var(--navy);border-radius:16px;padding:32px 28px;color:white}
+    .faq-callout h3{font-size:1.15rem;color:white;margin-bottom:10px}
+    .faq-callout p{font-size:.84rem;color:rgba(255,255,255,.5);line-height:1.7;margin-bottom:18px}
+    .faq-list{display:flex;flex-direction:column}
+    .faq-item{border-bottom:1px solid var(--border);opacity:0;transform:translateY(14px)}
+    .faq-question{display:flex;justify-content:space-between;align-items:center;padding:24px 4px;cursor:pointer;font-weight:700;font-size:.93rem;color:var(--navy);user-select:none;transition:color .2s}
+    .faq-question:hover{color:var(--teal)}
+    .faq-icon{width:28px;height:28px;flex-shrink:0;border-radius:50%;border:1.5px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:.95rem;color:var(--muted);transition:.3s}
+    .faq-question.open .faq-icon{background:var(--teal);border-color:var(--teal);color:white;transform:rotate(45deg)}
+    .faq-answer{max-height:0;overflow:hidden}
+    .faq-answer-inner{padding-bottom:22px;font-size:.88rem;color:var(--body);line-height:1.8}
+
+    /* ─── CTA ─── */
+    .cta-section{background:var(--teal);padding:120px 60px;text-align:center;position:relative;overflow:hidden}
+    .cta-section::before{content:'';position:absolute;width:700px;height:700px;border-radius:50%;background:rgba(255,255,255,.05);top:-350px;left:50%;transform:translateX(-50%)}
+    .cta-section h2{color:white;font-size:clamp(2.1rem,4vw,3.2rem);margin-bottom:16px;position:relative;z-index:1}
+    .cta-section>p{color:rgba(255,255,255,.72);font-size:1.02rem;margin-bottom:44px;position:relative;z-index:1}
+    .cta-btns{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;position:relative;z-index:1}
+    .btn-white{padding:14px 32px;background:white;border:none;border-radius:6px;color:var(--teal);font-family:'Nunito Sans',sans-serif;font-weight:700;font-size:.93rem;cursor:pointer;transition:.25s}
+    .btn-white:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(0,0,0,.15)}
+    .btn-teal-outline{padding:14px 32px;background:transparent;border:2px solid rgba(255,255,255,.5);border-radius:6px;color:white;font-family:'Nunito Sans',sans-serif;font-weight:700;font-size:.93rem;cursor:pointer;transition:.25s}
+    .btn-teal-outline:hover{border-color:white;background:rgba(255,255,255,.1)}
+    .cta-badges{display:flex;align-items:center;justify-content:center;gap:28px;margin-top:44px;flex-wrap:wrap;position:relative;z-index:1}
+    .cta-badge{display:flex;align-items:center;gap:7px;font-size:.8rem;color:rgba(255,255,255,.68);font-weight:600}
+
+    /* ─── FOOTER ─── */
+    footer{background:var(--navy);padding:60px;display:grid;grid-template-columns:1.5fr 1fr 1fr 1fr;gap:60px}
+    .footer-brand p{font-size:.84rem;color:rgba(255,255,255,.38);line-height:1.75;max-width:250px;margin-top:14px}
+    .footer-logo-wrap{font-family:'Playfair Display',serif;font-weight:700;font-size:1.25rem;color:white;display:flex;align-items:center;gap:10px}
+    .footer-logo-icon{width:32px;height:32px;background:var(--teal);border-radius:7px;display:flex;align-items:center;justify-content:center;color:white;font-size:.9rem}
+    .footer-col h4{font-family:'Playfair Display',serif;font-size:.84rem;color:white;margin-bottom:18px;font-weight:600}
+    .footer-col ul{list-style:none}
+    .footer-col ul li{margin-bottom:10px}
+    .footer-col ul a{font-size:.82rem;color:rgba(255,255,255,.38);text-decoration:none;transition:color .2s}
+    .footer-col ul a:hover{color:rgba(255,255,255,.75)}
+    .footer-bottom{border-top:1px solid rgba(255,255,255,.07);padding:22px 60px;display:flex;justify-content:space-between;align-items:center;background:var(--navy)}
+    .footer-bottom p{font-size:.76rem;color:rgba(255,255,255,.28)}
+
+    /* ─── RESPONSIVE ─── */
+    @media(max-width:1024px){
+      nav{padding:0 24px}
+      .nav-links{display:none}
+      section{padding:80px 24px}
+      .hero{padding:100px 24px 60px}
+      .hero-inner{grid-template-columns:1fr;gap:0}
+      .hero-visual{display:none}
+      .pain-layout{grid-template-columns:1fr;gap:40px}
+      .pain-left{position:static}
+      .cost-inner{grid-template-columns:1fr;gap:50px}
+      .stats-grid{grid-template-columns:1fr}
+      .story-section{padding:0 24px}
+      .story-screen{grid-template-columns:1fr;gap:40px}
+      .compare-grid{grid-template-columns:1fr}
+      .roi-inner{grid-template-columns:1fr;gap:40px}
+      .faq-inner{grid-template-columns:1fr;gap:40px}
+      .faq-left{position:static}
+      footer{grid-template-columns:1fr 1fr;gap:40px;padding:40px 24px}
+      .logos-strip{padding:28px 24px}
+      .urgency-bar{padding:14px 24px}
+      .cta-section{padding:80px 24px}
+      .footer-bottom{padding:18px 24px;flex-direction:column;gap:8px;text-align:center}
+      .comparison-section{padding:80px 24px}
+      .comp-table{font-size:.8rem}
+      .comp-table th,.comp-table td{padding:12px 14px}
+    }
+  </style>
+</head>
+<body>
+
+<!-- LOADER -->
+<div id="loader">
+  <div class="loader-cross">✚</div>
+  <div class="loader-name">HealthDir</div>
+  <div class="loader-tagline">Trusted by 3,000+ Clinicians</div>
+  <div class="loader-bar-wrap"><div class="loader-bar-fill" id="loader-fill"></div></div>
+  <div class="loader-pct" id="loader-pct">0%</div>
+</div>
+
+<!-- LIVE TOAST AREA -->
+<div id="toast-area"></div>
+
+<!-- PROGRESS BAR -->
+<div id="progress"></div>
+
+<!-- NAV -->
+<nav id="nav">
+  <a class="nav-logo" href="#"><div class="nav-logo-icon">✚</div>HealthDir</a>
+  <ul class="nav-links">
+    <li><a href="#pain">Why HealthDir</a></li>
+    <li><a href="#story">How It Works</a></li>
+    <li><a href="#features">Features</a></li>
+    <li><a href="#faq">FAQ</a></li>
+  </ul>
+  <div class="nav-cta">
+    <button class="btn-outline">Sign In</button>
+    <button class="btn-primary">Start Free Trial</button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="hero">
+  <div class="hero-inner">
+    <div class="hero-text">
+      <div class="hero-pill"><span></span>Trusted by 3,000+ Clinicians</div>
+      <h1>Your Patients Are<br>Searching. Are You<br><em>Easy to Find?</em></h1>
+      <p>Build a professional, HIPAA-ready digital presence that earns patient trust in minutes — not months. No developers, no complexity, no compromise.</p>
+      <div class="hero-actions">
+        <button class="btn-primary">Build My Page Free</button>
+        <button class="link-btn">See how it works →</button>
+      </div>
+      <div class="hero-trust">
+        <div class="trust-avatars">
+          <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="">
+          <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="">
+          <img src="https://randomuser.me/api/portraits/women/68.jpg" alt="">
+          <img src="https://randomuser.me/api/portraits/men/75.jpg" alt="">
+        </div>
+        <div>
+          <div class="trust-stars">★★★★★</div>
+          <div class="trust-text">
+            <strong>4.9 out of 5</strong>
+            <span>from 840+ verified physician reviews</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="hero-visual">
+      <img class="hero-img-main" src="https://images.unsplash.com/photo-1622253692010-333f2da6031d?w=700&q=80" alt="Doctor">
+      <div class="hero-float hero-float-1"><div class="float-icon">📅</div><div class="float-label">This Week</div><div class="float-value">+34</div><div class="float-sub">New appointment requests</div></div>
+      <div class="hero-float hero-float-2"><div class="float-icon">⭐</div><div class="float-label">Profile Views</div><div class="float-value">1,240</div><div class="float-sub">Patients viewed your page</div></div>
+      <div class="hero-verified">✓</div>
+    </div>
+  </div>
+</section>
+
+<!-- LOGOS -->
+<div class="logos-strip">
+  <div class="logos-inner">
+    <span class="logos-label">Featured in</span>
+    <div class="logos-list">
+      <span class="logo-item">Modern Medicine</span>
+      <span class="logo-item">JAMA Network</span>
+      <span class="logo-item">Healthline Pro</span>
+      <span class="logo-item">MedCity News</span>
+      <span class="logo-item">Physician Weekly</span>
+    </div>
+  </div>
+</div>
+
+<!-- URGENCY BAR -->
+<div class="urgency-bar" id="urgency-bar">
+  <div class="urgency-inner">
+    <div class="urgency-dot"></div>
+    <span class="urgency-label">Live</span>
+    <span class="urgency-text"><span class="urgency-count" id="urgency-num">2,847</span> patients searched for a specialist in your area in the last 24 hours — <strong style="color:white">how many found you?</strong></span>
+  </div>
+</div>
+
+<!-- PAIN POINTS -->
+<section class="pain" id="pain">
+  <div class="container">
+    <div class="pain-layout">
+      <div class="pain-left">
+        <div class="section-eyebrow" id="pain-eyebrow">The Problem</div>
+        <h2 class="section-title" id="pain-title">What's Costing You Patients Every Day</h2>
+        <p class="section-sub">In an era where 72% of patients look up a doctor online before ever calling, your digital presence is your first consultation.</p>
+      </div>
+      <div class="pain-items">
+        <div class="pain-item"><div class="pain-num">01</div><div><h3>Outdated or Missing Website</h3><p>Patients form opinions in under 3 seconds. An outdated site signals a lack of credibility before you've said a word.</p></div></div>
+        <div class="pain-item"><div class="pain-num">02</div><div><h3>Development Takes Too Long</h3><p>Waiting weeks for a web agency means lost bookings, frustrated staff, and budget overruns. Clinics need to move at the speed of care.</p></div></div>
+        <div class="pain-item"><div class="pain-num">03</div><div><h3>Generic Sites Don't Convert</h3><p>A template built for restaurants won't earn patient trust. Healthcare requires credential displays, insurance lists, and clear care pathways.</p></div></div>
+        <div class="pain-item"><div class="pain-num">04</div><div><h3>Poor Mobile Experience</h3><p>Over 75% of patients search for doctors on mobile. If your page isn't seamless on a phone, you're invisible to the majority.</p></div></div>
+        <div class="pain-item"><div class="pain-num">05</div><div><h3>Compliance & Security Risk</h3><p>HIPAA violations from insecure intake forms can cost upwards of $50,000 per incident — and destroy reputation permanently.</p></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- COST OF WAITING -->
+<section class="cost-section" id="cost">
+  <div class="cost-inner">
+    <div class="cost-left">
+      <div class="section-eyebrow">The Real Price of Waiting</div>
+      <h2 id="cost-title">Every Day Without a Profile Is Revenue Left Behind</h2>
+      <p style="margin-top:16px">The average physician with a complete HealthDir profile books 11 additional appointments per month. At typical rates, that's real, compounding revenue — and it starts from day one.</p>
+    </div>
+    <div class="cost-clock" id="cost-clock">
+      <div class="cost-clock-label">Est. lost revenue since you landed on this page</div>
+      <div class="cost-display">$<span id="cost-counter">0</span></div>
+      <div class="cost-unit">and counting</div>
+      <div class="cost-breakdown">
+        <div class="cost-row"><span class="cost-row-label">Avg. appointments/month missed</span><span class="cost-row-val">11</span></div>
+        <div class="cost-row"><span class="cost-row-label">Avg. patient visit value</span><span class="cost-row-val">$280</span></div>
+        <div class="cost-row"><span class="cost-row-label">Lost per month</span><span class="cost-row-val">$3,080</span></div>
+        <div class="cost-row"><span class="cost-row-label">Lost per year</span><span class="cost-row-val" style="color:#ef4444">$36,960</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STATISTICS -->
+<section class="statistics" id="stats">
+  <div class="stats-pattern"></div>
+  <div class="container" style="position:relative;z-index:1">
+    <div class="section-eyebrow">By the Numbers</div>
+    <h2 class="section-title" id="stats-title" style="color:white">Why Digital Presence<br>Is Now Clinical Strategy</h2>
+    <p class="section-sub" style="margin-bottom:50px">The data is unambiguous. Patients have moved online. Has your practice?</p>
+    <div class="stats-grid">
+      <div class="stat-card"><div class="stat-accent"></div><div class="stat-num" data-target="72" data-suffix="%">0%</div><div class="stat-desc">of patients research a physician online before booking their first appointment</div></div>
+      <div class="stat-card"><div class="stat-accent"></div><div class="stat-num" data-target="89" data-suffix="%">0%</div><div class="stat-desc">prefer practices with a professional, up-to-date digital presence over those without</div></div>
+      <div class="stat-card"><div class="stat-accent"></div><div class="stat-num" data-target="3" data-suffix="x">0x</div><div class="stat-desc">higher appointment conversion rate for clinics with optimised, mobile-friendly profiles</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS — SCROLL STORY -->
+<div class="story-section" id="story">
+  <div class="story-sticky-wrap" id="story-wrap">
+    <div class="story-pin" id="story-pin">
+      <div class="story-screen container">
+        <!-- Left text panels -->
+        <div class="story-panels" id="story-panels" style="height:400px">
+          <!-- Panel 1 -->
+          <div class="story-panel active" id="sp1">
+            <div class="story-steps-track">
+              <div class="step-dot active"></div>
+              <div class="step-dot"></div>
+              <div class="step-dot"></div>
+            </div>
+            <div class="story-step-num">01</div>
+            <h2>Enter Your NPI Number</h2>
+            <p>We pull your board-verified credentials, specialties, hospital affiliations, and education automatically from the national registry. Nothing to type.</p>
+            <div class="story-check">Auto-populated in under 3 seconds</div>
+            <div class="story-check">Board certification verified instantly</div>
+            <div class="story-check">Zero manual data entry required</div>
+          </div>
+          <!-- Panel 2 -->
+          <div class="story-panel" id="sp2">
+            <div class="story-steps-track">
+              <div class="step-dot"></div>
+              <div class="step-dot active"></div>
+              <div class="step-dot"></div>
+            </div>
+            <div class="story-step-num">02</div>
+            <h2>Personalise Your Profile</h2>
+            <p>Add a professional photo, your accepted insurance plans, office hours, languages spoken, and a personal statement. Our AI suggests content to fill gaps.</p>
+            <div class="story-check">Insurance plan display with one click</div>
+            <div class="story-check">AI-written bio you can edit freely</div>
+            <div class="story-check">Multilingual support in 14 languages</div>
+          </div>
+          <!-- Panel 3 -->
+          <div class="story-panel" id="sp3">
+            <div class="story-steps-track">
+              <div class="step-dot"></div>
+              <div class="step-dot"></div>
+              <div class="step-dot active"></div>
+            </div>
+            <div class="story-step-num">03</div>
+            <h2>Publish & Watch Patients Arrive</h2>
+            <p>Go live in one click. Your profile is indexed by Google within hours. The built-in appointment widget starts converting visitors to bookings immediately.</p>
+            <div class="story-check">Live in under 10 minutes, guaranteed</div>
+            <div class="story-check">Google-indexed within 24 hours</div>
+            <div class="story-check">Average 11 new bookings in month one</div>
+          </div>
+        </div>
+        <!-- Right: animated mock phone -->
+        <div class="story-mock">
+          <div class="mock-phone" id="mock-phone">
+            <div class="mock-bar">
+              <div class="mock-bar-dot"></div>
+              <div class="mock-bar-dot"></div>
+              <div class="mock-bar-dot"></div>
+            </div>
+            <div class="mock-body">
+              <!-- Step 1: NPI entry state -->
+              <div id="mock-step1">
+                <div style="text-align:center;padding:20px 0">
+                  <div style="font-size:2rem;margin-bottom:12px">🔍</div>
+                  <div style="font-family:'Playfair Display',serif;font-size:.95rem;font-weight:700;color:var(--navy);margin-bottom:6px">Enter your NPI</div>
+                  <div style="font-size:.72rem;color:var(--muted);margin-bottom:18px">We'll do the rest automatically</div>
+                  <div style="background:var(--border);border-radius:8px;height:36px;display:flex;align-items:center;padding:0 12px;font-size:.78rem;color:var(--muted)">NPI: 1234567890 ✓</div>
+                  <div style="margin-top:12px;background:var(--teal);border-radius:8px;padding:10px;color:white;font-size:.78rem;font-weight:700">Fetching credentials…</div>
+                  <div style="margin-top:16px;text-align:left">
+                    <div class="mock-section-label">Verified Data Found</div>
+                    <div style="display:flex;gap:6px;flex-direction:column">
+                      <div style="font-size:.72rem;color:var(--body);display:flex;align-items:center;gap:6px"><span style="color:var(--teal)">✓</span> Board Certification</div>
+                      <div style="font-size:.72rem;color:var(--body);display:flex;align-items:center;gap:6px"><span style="color:var(--teal)">✓</span> Hospital Affiliations</div>
+                      <div style="font-size:.72rem;color:var(--body);display:flex;align-items:center;gap:6px"><span style="color:var(--teal)">✓</span> Medical School</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!-- Step 2: profile building state -->
+              <div id="mock-step2" style="display:none">
+                <div class="mock-avatar-wrap">
+                  <div class="mock-avatar"><img src="https://randomuser.me/api/portraits/men/46.jpg" alt=""></div>
+                  <div class="mock-name-block">
+                    <div class="mock-name">Dr. Michael Chen</div>
+                    <div class="mock-spec">Cardiology · New York, NY</div>
+                  </div>
+                </div>
+                <div class="mock-badge-row">
+                  <div class="mock-badge">Board Certified</div>
+                  <div class="mock-badge">FACC</div>
+                  <div class="mock-badge">NYU Affil.</div>
+                </div>
+                <div class="mock-section-label">Insurance Accepted</div>
+                <div class="mock-insurance">
+                  <div class="mock-ins-chip">Aetna</div>
+                  <div class="mock-ins-chip">BlueCross</div>
+                  <div class="mock-ins-chip">UHC</div>
+                  <div class="mock-ins-chip">Cigna</div>
+                </div>
+                <div class="mock-section-label">Profile Completeness</div>
+                <div class="mock-bar-row"><div class="mock-bar-fill" id="mock-profile-bar"></div></div>
+                <div style="font-size:.7rem;color:var(--teal);text-align:right;margin-top:2px;font-weight:700">87% complete</div>
+              </div>
+              <!-- Step 3: live profile -->
+              <div id="mock-step3" style="display:none">
+                <div class="mock-avatar-wrap">
+                  <div class="mock-avatar"><img src="https://randomuser.me/api/portraits/men/46.jpg" alt=""></div>
+                  <div class="mock-name-block">
+                    <div class="mock-name">Dr. Michael Chen</div>
+                    <div class="mock-spec">Cardiology · New York, NY</div>
+                  </div>
+                </div>
+                <div style="background:#f0fdf4;border:1px solid #86efac;border-radius:8px;padding:8px 12px;margin-bottom:14px;display:flex;align-items:center;gap:8px">
+                  <span style="color:#16a34a;font-size:.8rem">●</span>
+                  <span style="font-size:.72rem;font-weight:700;color:#15803d">Profile Live · Indexed by Google</span>
+                </div>
+                <div class="mock-section-label">This Month</div>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px">
+                  <div style="background:var(--teal-lt);border-radius:8px;padding:10px;text-align:center">
+                    <div style="font-family:'Playfair Display',serif;font-size:1.4rem;font-weight:700;color:var(--teal)">247</div>
+                    <div style="font-size:.62rem;color:var(--muted);font-weight:600">Profile Views</div>
+                  </div>
+                  <div style="background:#fff7ed;border-radius:8px;padding:10px;text-align:center">
+                    <div style="font-family:'Playfair Display',serif;font-size:1.4rem;font-weight:700;color:var(--gold)">11</div>
+                    <div style="font-size:.62rem;color:var(--muted);font-weight:600">New Bookings</div>
+                  </div>
+                </div>
+                <button class="mock-btn">Book an Appointment →</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- spacers create scroll distance for 3 panels -->
+    <div class="story-spacer"></div>
+    <div class="story-spacer"></div>
+    <div class="story-spacer"></div>
+  </div>
+</div>
+
+<!-- BEFORE / AFTER -->
+<section class="compare-section" id="compare">
+  <div class="container">
+    <div class="section-eyebrow">The Difference Is Clear</div>
+    <h2 class="section-title" id="compare-title">HealthDir vs. Doing Nothing</h2>
+    <p class="section-sub">See exactly what changes when you invest 10 minutes in your digital presence.</p>
+    <div class="compare-grid">
+      <div class="compare-col before">
+        <div class="compare-header"><h3>Without HealthDir</h3><span class="compare-tag">Current State</span></div>
+        <div class="compare-body">
+          <div class="compare-row"><span class="compare-icon">❌</span><p><strong>No online visibility</strong> — patients searching your name find nothing, or worse, a competitor</p></div>
+          <div class="compare-row"><span class="compare-icon">❌</span><p><strong>Phone-dependent bookings</strong> — front desk overwhelmed, patients abandon on hold</p></div>
+          <div class="compare-row"><span class="compare-icon">❌</span><p><strong>No credential display</strong> — patients can't verify your qualifications before booking</p></div>
+          <div class="compare-row"><span class="compare-icon">❌</span><p><strong>Insurance uncertainty</strong> — patients call to ask, most don't bother and book elsewhere</p></div>
+          <div class="compare-row"><span class="compare-icon">❌</span><p><strong>Compliance exposure</strong> — using general email for patient contact risks HIPAA violations</p></div>
+          <div class="compare-row"><span class="compare-icon">❌</span><p><strong>$36,960/year in lost revenue</strong> — conservatively, based on 11 missed bookings per month</p></div>
+        </div>
+      </div>
+      <div class="compare-col after">
+        <div class="compare-header"><h3>With HealthDir</h3><span class="compare-tag">Live in 10 Minutes</span></div>
+        <div class="compare-body">
+          <div class="compare-row"><span class="compare-icon">✅</span><p><strong>Google-indexed in 24 hours</strong> — appear in searches like "cardiologist near me" immediately</p></div>
+          <div class="compare-row"><span class="compare-icon">✅</span><p><strong>24/7 self-booking widget</strong> — patients book while you sleep, with automated reminders</p></div>
+          <div class="compare-row"><span class="compare-icon">✅</span><p><strong>NPI-verified credentials</strong> — board certifications and affiliations displayed with authority</p></div>
+          <div class="compare-row"><span class="compare-icon">✅</span><p><strong>Complete insurance listing</strong> — patients self-qualify before calling, reducing admin load by 30%</p></div>
+          <div class="compare-row"><span class="compare-icon">✅</span><p><strong>Full HIPAA compliance</strong> — SOC 2 audited, encrypted communications, BAA included</p></div>
+          <div class="compare-row"><span class="compare-icon">✅</span><p><strong>+$36,960/year conservatively</strong> — from 11 additional monthly bookings at avg. $280/visit</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ROI CALCULATOR -->
+<section class="roi-section" id="roi">
+  <div class="container">
+    <div class="roi-inner">
+      <div class="roi-left">
+        <div class="section-eyebrow">Revenue Calculator</div>
+        <h2 class="section-title" id="roi-title">See What HealthDir<br>Is Worth to Your Practice</h2>
+        <p class="section-sub" style="margin-bottom:0">Adjust the inputs to match your practice. Our model is built on real outcomes from 3,000+ clinicians — conservative by design.</p>
+        <div class="roi-form" style="margin-top:40px" id="roi-form">
+          <div class="roi-field">
+            <label class="roi-label">Specialty</label>
+            <select class="roi-select" id="roi-specialty">
+              <option value="280">General Practice ($280/visit avg)</option>
+              <option value="420">Cardiology ($420/visit avg)</option>
+              <option value="380">Dermatology ($380/visit avg)</option>
+              <option value="350">Orthopaedics ($350/visit avg)</option>
+              <option value="310">Paediatrics ($310/visit avg)</option>
+              <option value="520">Surgery ($520/visit avg)</option>
+              <option value="290">Psychiatry ($290/visit avg)</option>
+            </select>
+          </div>
+          <div class="roi-field">
+            <label class="roi-label">Current Monthly Patients: <span id="roi-patient-val">80</span></label>
+            <input type="range" class="roi-range" id="roi-patients" min="20" max="300" value="80" step="10">
+            <div class="roi-range-val"><span>20</span><span>300</span></div>
+          </div>
+          <div class="roi-field">
+            <label class="roi-label">Practice Type</label>
+            <select class="roi-select" id="roi-type">
+              <option value="1">Solo Practitioner</option>
+              <option value="2">Small Group (2–5 physicians)</option>
+              <option value="4">Large Group (6+ physicians)</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      <div class="roi-result" id="roi-result">
+        <div class="roi-result-label">Estimated Annual Revenue Uplift</div>
+        <div class="roi-result-number" id="roi-annual">$36,960</div>
+        <div class="roi-result-period">per year · conservative estimate</div>
+        <div class="roi-breakdown">
+          <div class="roi-row"><span class="roi-row-l">New patients/month from HealthDir</span><span class="roi-row-r" id="roi-new-pts">11</span></div>
+          <div class="roi-row"><span class="roi-row-l">Avg. visit value (your specialty)</span><span class="roi-row-r" id="roi-visit-val">$280</span></div>
+          <div class="roi-row"><span class="roi-row-l">Monthly revenue uplift</span><span class="roi-row-r" id="roi-monthly">$3,080</span></div>
+          <div class="roi-row"><span class="roi-row-l">HealthDir annual cost</span><span class="roi-row-r" style="color:rgba(255,255,255,.4)" id="roi-cost">$588</div>
+          <div class="roi-row" style="border-top:1px solid rgba(255,255,255,.12);padding-top:14px;margin-top:4px"><span class="roi-row-l" style="color:white;font-weight:700">Net annual return</span><span class="roi-row-r" style="color:#2ab5a7;font-size:1.1rem" id="roi-net">$36,372</span></div>
+        </div>
+        <button class="roi-cta">Claim My Revenue Now →</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES MARQUEE -->
+<section class="features" id="features">
+  <div class="container">
+    <div class="section-eyebrow">Platform Features</div>
+    <h2 class="section-title" id="feat-title">Everything a Physician's<br>Profile Should Have</h2>
+    <p class="section-sub">Purpose-built for medical professionals — not adapted from a generic website tool.</p>
+  </div>
+  <div class="marquee-outer">
+    <div class="marquee-track" id="feat-track">
+      <div class="feat-card"><div class="feat-icon-wrap">🎓</div><h3>Verified Credentials</h3><p>Board certs, fellowship training, and hospital affiliations displayed with NPI-backed verification.</p><button class="feat-link">Learn more →</button></div>
+      <div class="feat-card"><div class="feat-icon-wrap">📅</div><h3>Appointment Booking</h3><p>One-tap booking integrated with your existing system. Automated reminders reduce no-shows by 40%.</p><button class="feat-link">Learn more →</button></div>
+      <div class="feat-card"><div class="feat-icon-wrap">🔐</div><h3>HIPAA-Ready</h3><p>AES-256 encryption, SOC 2 Type II audited, with instant BAA documentation on every plan.</p><button class="feat-link">Learn more →</button></div>
+      <div class="feat-card"><div class="feat-icon-wrap">🏥</div><h3>Insurance Display</h3><p>Searchable insurance plan listings so patients self-qualify — reducing front-desk calls by 30%.</p><button class="feat-link">Learn more →</button></div>
+      <div class="feat-card"><div class="feat-icon-wrap">📱</div><h3>Mobile-First</h3><p>Pixel-perfect on every device. 75%+ of patients search on smartphones — we make sure they find you.</p><button class="feat-link">Learn more →</button></div>
+      <div class="feat-card"><div class="feat-icon-wrap">🌐</div><h3>Multilingual</h3><p>Auto-detect and serve patients in 14 languages. Expand reach without adding staff.</p><button class="feat-link">Learn more →</button></div>
+      <div class="feat-card"><div class="feat-icon-wrap">📊</div><h3>Analytics</h3><p>Track profile views, booking conversions, and referral sources in a clean, physician-friendly dashboard.</p><button class="feat-link">Learn more →</button></div>
+      <!-- dupes -->
+      <div class="feat-card" aria-hidden="true"><div class="feat-icon-wrap">🎓</div><h3>Verified Credentials</h3><p>Board certs, fellowship training, and hospital affiliations displayed with NPI-backed verification.</p><button class="feat-link">Learn more →</button></div>
+      <div class="feat-card" aria-hidden="true"><div class="feat-icon-wrap">📅</div><h3>Appointment Booking</h3><p>One-tap booking integrated with your existing system. Automated reminders reduce no-shows by 40%.</p><button class="feat-link">Learn more →</button></div>
+      <div class="feat-card" aria-hidden="true"><div class="feat-icon-wrap">🔐</div><h3>HIPAA-Ready</h3><p>AES-256 encryption, SOC 2 Type II audited, with instant BAA documentation on every plan.</p><button class="feat-link">Learn more →</button></div>
+      <div class="feat-card" aria-hidden="true"><div class="feat-icon-wrap">🏥</div><h3>Insurance Display</h3><p>Searchable insurance plan listings so patients self-qualify — reducing front-desk calls by 30%.</p><button class="feat-link">Learn more →</button></div>
+      <div class="feat-card" aria-hidden="true"><div class="feat-icon-wrap">📱</div><h3>Mobile-First</h3><p>Pixel-perfect on every device. 75%+ of patients search on smartphones — we make sure they find you.</p><button class="feat-link">Learn more →</button></div>
+      <div class="feat-card" aria-hidden="true"><div class="feat-icon-wrap">🌐</div><h3>Multilingual</h3><p>Auto-detect and serve patients in 14 languages. Expand reach without adding staff.</p><button class="feat-link">Learn more →</button></div>
+      <div class="feat-card" aria-hidden="true"><div class="feat-icon-wrap">📊</div><h3>Analytics</h3><p>Track profile views, booking conversions, and referral sources in a clean, physician-friendly dashboard.</p><button class="feat-link">Learn more →</button></div>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS MARQUEE -->
+<section class="testimonial" id="testimonials">
+  <div class="container">
+    <div class="section-eyebrow">Physician Testimonials</div>
+    <h2 class="section-title" id="testi-title">Trusted by Doctors<br>Across Every Specialty</h2>
+  </div>
+  <div class="marquee-outer" style="margin-top:48px">
+    <div class="marquee-track" id="testi-track">
+      <div class="testi-card"><div class="testi-stars">★★★★★</div><span class="testi-quote">"</span><p class="testi-text">Within two weeks of launching, appointment requests increased over 60%. The credential display builds trust immediately — patients arrive already confident in my qualifications.</p><div class="testi-author"><img class="testi-avatar" src="https://randomuser.me/api/portraits/women/44.jpg" alt=""><div><div class="testi-name">Dr. Sarah Patel, MD</div><div class="testi-role">Internal Medicine · Chicago, IL</div></div></div></div>
+      <div class="testi-card"><div class="testi-stars">★★★★★</div><span class="testi-quote">"</span><p class="testi-text">As a solo practitioner I couldn't justify a $15,000 website. HealthDir gave me something better in under 10 minutes. My patients constantly comment on how professional it looks.</p><div class="testi-author"><img class="testi-avatar" src="https://randomuser.me/api/portraits/men/32.jpg" alt=""><div><div class="testi-name">Dr. James Okoye, FACS</div><div class="testi-role">General Surgery · Houston, TX</div></div></div></div>
+      <div class="testi-card"><div class="testi-stars">★★★★★</div><span class="testi-quote">"</span><p class="testi-text">The HIPAA compliance piece gave our administrator peace of mind immediately. The insurance display alone has reduced front desk calls by nearly a third. Exceptional product.</p><div class="testi-author"><img class="testi-avatar" src="https://randomuser.me/api/portraits/women/68.jpg" alt=""><div><div class="testi-name">Dr. Linda Chen, MD, PhD</div><div class="testi-role">Neurology · Boston, MA</div></div></div></div>
+      <div class="testi-card"><div class="testi-stars">★★★★★</div><span class="testi-quote">"</span><p class="testi-text">I was skeptical, but the NPI auto-populate saved our admin team hours of work. The profile looked more polished than what our previous agency produced for five times the price.</p><div class="testi-author"><img class="testi-avatar" src="https://randomuser.me/api/portraits/men/54.jpg" alt=""><div><div class="testi-name">Dr. Marcus Rivera, DO</div><div class="testi-role">Family Medicine · Austin, TX</div></div></div></div>
+      <div class="testi-card"><div class="testi-stars">★★★★★</div><span class="testi-quote">"</span><p class="testi-text">Profile views tripled in the first month. The multilingual feature alone expanded our patient base significantly — we now serve communities we couldn't reach before.</p><div class="testi-author"><img class="testi-avatar" src="https://randomuser.me/api/portraits/women/29.jpg" alt=""><div><div class="testi-name">Dr. Amara Nwosu, MB BChir</div><div class="testi-role">Paediatrics · New York, NY</div></div></div></div>
+      <!-- dupes -->
+      <div class="testi-card" aria-hidden="true"><div class="testi-stars">★★★★★</div><span class="testi-quote">"</span><p class="testi-text">Within two weeks of launching, appointment requests increased over 60%. The credential display builds trust immediately — patients arrive already confident in my qualifications.</p><div class="testi-author"><img class="testi-avatar" src="https://randomuser.me/api/portraits/women/44.jpg" alt=""><div><div class="testi-name">Dr. Sarah Patel, MD</div><div class="testi-role">Internal Medicine · Chicago, IL</div></div></div></div>
+      <div class="testi-card" aria-hidden="true"><div class="testi-stars">★★★★★</div><span class="testi-quote">"</span><p class="testi-text">As a solo practitioner I couldn't justify a $15,000 website. HealthDir gave me something better in under 10 minutes. My patients constantly comment on how professional it looks.</p><div class="testi-author"><img class="testi-avatar" src="https://randomuser.me/api/portraits/men/32.jpg" alt=""><div><div class="testi-name">Dr. James Okoye, FACS</div><div class="testi-role">General Surgery · Houston, TX</div></div></div></div>
+      <div class="testi-card" aria-hidden="true"><div class="testi-stars">★★★★★</div><span class="testi-quote">"</span><p class="testi-text">The HIPAA compliance piece gave our administrator peace of mind immediately. The insurance display alone has reduced front desk calls by nearly a third. Exceptional product.</p><div class="testi-author"><img class="testi-avatar" src="https://randomuser.me/api/portraits/women/68.jpg" alt=""><div><div class="testi-name">Dr. Linda Chen, MD, PhD</div><div class="testi-role">Neurology · Boston, MA</div></div></div></div>
+      <div class="testi-card" aria-hidden="true"><div class="testi-stars">★★★★★</div><span class="testi-quote">"</span><p class="testi-text">I was skeptical, but the NPI auto-populate saved our admin team hours of work. The profile looked more polished than what our previous agency produced for five times the price.</p><div class="testi-author"><img class="testi-avatar" src="https://randomuser.me/api/portraits/men/54.jpg" alt=""><div><div class="testi-name">Dr. Marcus Rivera, DO</div><div class="testi-role">Family Medicine · Austin, TX</div></div></div></div>
+      <div class="testi-card" aria-hidden="true"><div class="testi-stars">★★★★★</div><span class="testi-quote">"</span><p class="testi-text">Profile views tripled in the first month. The multilingual feature alone expanded our patient base significantly — we now serve communities we couldn't reach before.</p><div class="testi-author"><img class="testi-avatar" src="https://randomuser.me/api/portraits/women/29.jpg" alt=""><div><div class="testi-name">Dr. Amara Nwosu, MB BChir</div><div class="testi-role">Paediatrics · New York, NY</div></div></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- COMPARISON TABLE -->
+<section class="comparison-section" id="comparison">
+  <div class="container" style="position:relative;z-index:1">
+    <div class="section-eyebrow">How We Compare</div>
+    <h2 class="section-title" id="comp-title" style="color:white">HealthDir vs. The Alternatives</h2>
+    <p class="section-sub" style="color:rgba(255,255,255,.45)">A direct, honest look at what you get — and what you sacrifice — with each option.</p>
+    <div style="overflow-x:auto">
+      <table class="comp-table" id="comp-table">
+        <thead>
+          <tr>
+            <th></th>
+            <th class="col-healthdir"><span class="healthdir-badge">Recommended</span>HealthDir</th>
+            <th class="col-other">Web Agency</th>
+            <th class="col-other">DIY Website</th>
+            <th class="col-other">No Presence</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Time to go live</td><td class="col-healthdir">Under 10 min</td><td>6–12 weeks</td><td>Days–weeks</td><td>—</td></tr>
+          <tr><td>Upfront cost</td><td class="col-healthdir">$0 to start</td><td>$8k–$25k</td><td>$200–$2k</td><td>$0</td></tr>
+          <tr><td>HIPAA compliance</td><td class="col-healthdir"><span class="check-yes">✓</span></td><td><span class="check-partial">Extra cost</span></td><td><span class="check-no">✗</span></td><td><span class="check-no">✗</span></td></tr>
+          <tr><td>NPI credential verification</td><td class="col-healthdir"><span class="check-yes">✓</span></td><td><span class="check-no">✗</span></td><td><span class="check-no">✗</span></td><td><span class="check-no">✗</span></td></tr>
+          <tr><td>Appointment booking widget</td><td class="col-healthdir"><span class="check-yes">✓</span></td><td><span class="check-partial">Extra cost</span></td><td><span class="check-partial">Third party</span></td><td><span class="check-no">✗</span></td></tr>
+          <tr><td>Insurance plan display</td><td class="col-healthdir"><span class="check-yes">✓</span></td><td><span class="check-partial">Manual</span></td><td><span class="check-partial">Manual</span></td><td><span class="check-no">✗</span></td></tr>
+          <tr><td>Google indexing</td><td class="col-healthdir">Within 24hr</td><td>Months</td><td>Weeks</td><td><span class="check-no">✗</span></td></tr>
+          <tr><td>Ongoing maintenance</td><td class="col-healthdir">Automatic</td><td>Billable hours</td><td>Self-managed</td><td>—</td></tr>
+          <tr><td>Patient analytics</td><td class="col-healthdir"><span class="check-yes">✓</span></td><td><span class="check-partial">Add-on</span></td><td><span class="check-partial">Limited</span></td><td><span class="check-no">✗</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="faq" id="faq">
+  <div class="container">
+    <div class="faq-inner">
+      <div class="faq-left">
+        <div class="section-eyebrow">Have Questions?</div>
+        <h2 class="section-title">Frequently Asked by Physicians</h2>
+        <p class="section-sub" style="margin-bottom:0">Everything you need to know before getting started. Can't find the answer? Our clinical success team is standing by.</p>
+        <div class="faq-callout">
+          <h3>Talk to a Specialist</h3>
+          <p>Schedule a 20-minute walkthrough with a healthcare technology consultant — no sales pressure, no commitment.</p>
+          <button class="btn-primary">Book a Demo</button>
+        </div>
+      </div>
+      <div class="faq-list" id="faq-list">
+        <div class="faq-item"><div class="faq-question">Is patient data fully secure and HIPAA-compliant?<div class="faq-icon">+</div></div><div class="faq-answer"><div class="faq-answer-inner">Yes. All data is encrypted at rest (AES-256) and in transit (TLS 1.3). We are SOC 2 Type II audited annually, and our Business Associate Agreement is available instantly for any plan.</div></div></div>
+        <div class="faq-item"><div class="faq-question">How long does setup actually take?<div class="faq-icon">+</div></div><div class="faq-answer"><div class="faq-answer-inner">Most physicians are live within 5–8 minutes. Our AI reads your NPI data to pre-populate credentials, specialties, and hospital affiliations. You review, add a photo, and publish.</div></div></div>
+        <div class="faq-item"><div class="faq-question">Can I update my information independently?<div class="faq-icon">+</div></div><div class="faq-answer"><div class="faq-answer-inner">Absolutely. You have 24/7 access to a simple admin dashboard to change hours, services, insurance plans, and team members. Changes go live in under 60 seconds.</div></div></div>
+        <div class="faq-item"><div class="faq-question">What does it cost? Is there a free trial?<div class="faq-icon">+</div></div><div class="faq-answer"><div class="faq-answer-inner">Full-featured 14-day free trial — no credit card required. Plans start at $49/month for solo practitioners and $149/month for group practices. No setup fees, no long-term contracts.</div></div></div>
+        <div class="faq-item"><div class="faq-question">Does it integrate with my EHR or scheduling system?<div class="faq-icon">+</div></div><div class="faq-answer"><div class="faq-answer-inner">Yes — we integrate natively with Epic, Athenahealth, Kareo, DrChrono, and 40+ systems. For systems not on our list, our team builds the connection at no additional charge.</div></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section" id="cta">
+  <h2 id="cta-h2">Join 3,000+ Clinicians<br>Building Patient Trust Online</h2>
+  <p>Start your free 14-day trial. No credit card. No commitment. Cancel any time.</p>
+  <div class="cta-btns">
+    <button class="btn-white">Build My Profile Free</button>
+    <button class="btn-teal-outline">Schedule a Demo</button>
+  </div>
+  <div class="cta-badges">
+    <div class="cta-badge">🔐 HIPAA Compliant</div>
+    <div class="cta-badge">✓ SOC 2 Type II</div>
+    <div class="cta-badge">⚡ Live in 10 Minutes</div>
+    <div class="cta-badge">💳 No Credit Card</div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-brand">
+    <div class="footer-logo-wrap"><div class="footer-logo-icon">✚</div>HealthDir</div>
+    <p>Professional digital presence for physicians and clinical practices — trusted, compliant, and built for healthcare.</p>
+  </div>
+  <div class="footer-col"><h4>Platform</h4><ul><li><a href="#">Features</a></li><li><a href="#">Integrations</a></li><li><a href="#">Security & HIPAA</a></li><li><a href="#">Pricing</a></li></ul></div>
+  <div class="footer-col"><h4>For Physicians</h4><ul><li><a href="#">Solo Practitioners</a></li><li><a href="#">Group Practices</a></li><li><a href="#">Hospital Systems</a></li><li><a href="#">Telehealth Providers</a></li></ul></div>
+  <div class="footer-col"><h4>Company</h4><ul><li><a href="#">About</a></li><li><a href="#">Advisory Board</a></li><li><a href="#">Press</a></li><li><a href="#">Contact</a></li></ul></div>
+</footer>
+<div class="footer-bottom">
+  <p>© 2026 HealthDir Inc. All rights reserved.</p>
+  <p>Privacy · Terms · HIPAA Notice · Accessibility</p>
+</div>
+
+<!-- ═══════════════════════ SCRIPTS ═══════════════════════ -->
+<script>
+(function(){
+  gsap.registerPlugin(ScrollTrigger, CustomEase, Observer);
+  CustomEase.create("lift",   "M0,0 C0.15,0.5 0.1,1 1,1");
+  CustomEase.create("pop",    "M0,0 C0.34,1.45 0.64,1 1,1");
+
+  /* ── Word splitter ── */
+  function splitWords(el){
+    const words = el.textContent.trim().split(/\s+/);
+    el.innerHTML = words.map(w=>
+      `<span style="display:inline-block;overflow:hidden;margin-right:.28em;vertical-align:bottom;">
+        <span class="w" style="display:inline-block;">${w}</span>
+      </span>`
+    ).join('');
+    return el.querySelectorAll('.w');
+  }
+
+  /* ══════════════════════════════════
+     LOADER
+  ══════════════════════════════════ */
+  const loaderFill = document.getElementById('loader-fill');
+  const loaderPct  = document.getElementById('loader-pct');
+
+  const loaderIn = gsap.timeline();
+  loaderIn
+    .to('.loader-cross',   { opacity:1, scale:1, rotate:0, duration:.8, ease:'pop' }, .1)
+    .to('.loader-name',    { opacity:1, y:0,     duration:.6, ease:'power3.out' }, .5)
+    .to('.loader-tagline', { opacity:1,          duration:.5, ease:'power2.out' }, .85)
+    .to('.loader-bar-wrap,.loader-pct', { opacity:1, duration:.4 }, 1.0);
+
+  const pct={v:0};
+  gsap.to(pct,{
+    v:100, duration:2.4, ease:'power1.inOut',
+    onUpdate:()=>{
+      const v=Math.ceil(pct.v);
+      loaderFill.style.width=v+'%';
+      loaderPct.textContent=v+'%';
+    },
+    onComplete:()=>{
+      gsap.to('#loader',{
+        yPercent:-100, duration:.9, ease:'power3.inOut', delay:.2,
+        onComplete:()=>{
+          document.getElementById('loader').style.display='none';
+          startPage();
+        }
+      });
+    }
+  });
+
+  /* ══════════════════════════════════
+     MARQUEE ENGINE
+  ══════════════════════════════════ */
+  function initMarquee(trackId, speed, reverse){
+    const track=document.getElementById(trackId);
+    if(!track) return;
+    const halfW = track.scrollWidth/2;
+    const dir   = reverse ? halfW : -halfW;
+    const startX= reverse ? -halfW : 0;
+    gsap.set(track,{x:startX});
+    const tw = gsap.to(track,{
+      x:`+=${dir}`, duration:speed, ease:'none', repeat:-1,
+      modifiers:{ x: gsap.utils.unitize(v=>parseFloat(v)%halfW) }
+    });
+    const outer=track.closest('.marquee-outer');
+    if(outer){
+      outer.addEventListener('mouseenter',()=>gsap.to(tw,{timeScale:0,duration:.5}));
+      outer.addEventListener('mouseleave',()=>gsap.to(tw,{timeScale:1,duration:.4}));
+    }
+    return tw;
+  }
+
+  /* ══════════════════════════════════
+     LIVE TOAST NOTIFICATIONS
+  ══════════════════════════════════ */
+  const toasts=[
+    { name:'Dr. Priya Mehta',  spec:'Cardiologist',    loc:'Mumbai',       time:'just now' },
+    { name:'Dr. James Okoye',  spec:'General Surgeon',  loc:'Houston, TX',  time:'2 min ago' },
+    { name:'Dr. Wei Zhang',    spec:'Dermatologist',    loc:'Singapore',    time:'4 min ago' },
+    { name:'Dr. Anna Kowalski',spec:'Neurologist',      loc:'Warsaw',       time:'6 min ago' },
+    { name:'Dr. Luis Romero',  spec:'Paediatrician',   loc:'Mexico City',  time:'9 min ago' },
+    { name:'Dr. Claire Dubois',spec:'Psychiatrist',    loc:'Lyon, France', time:'11 min ago'},
+  ];
+  let toastIdx=0;
+  function showToast(){
+    const d=toasts[toastIdx%toasts.length]; toastIdx++;
+    const el=document.createElement('div');
+    el.className='toast';
+    el.innerHTML=`<div class="toast-dot"></div><div class="toast-text"><strong>${d.name} joined HealthDir</strong>${d.spec} · ${d.loc} · ${d.time}</div>`;
+    document.getElementById('toast-area').appendChild(el);
+    gsap.to(el,{opacity:1,x:0,duration:.5,ease:'power3.out'});
+    gsap.to(el,{opacity:0,x:-10,duration:.4,ease:'power2.in',delay:4.5,
+      onComplete:()=>el.remove()
+    });
+  }
+  // Start toasts after loader
+  function startToasts(){
+    setTimeout(showToast, 3000);
+    setTimeout(()=>{ showToast(); setInterval(showToast, 8000); }, 9000);
+  }
+
+  /* ══════════════════════════════════
+     COST OF WAITING COUNTER
+  ══════════════════════════════════ */
+  function startCostCounter(){
+    // $36,960/yr = ~$0.00117/sec = ~$0.07/min
+    // Dramatic: tick up fast while they read
+    const ratePerSec = 36960 / (365*24*3600);
+    let startTime = null;
+    const el = document.getElementById('cost-counter');
+    function tick(ts){
+      if(!startTime) startTime=ts;
+      const elapsed = (ts-startTime)/1000;
+      const val = elapsed*ratePerSec;
+      el.textContent = val.toFixed(2);
+      requestAnimationFrame(tick);
+    }
+    requestAnimationFrame(tick);
+  }
+
+  ScrollTrigger.create({
+    trigger:'#cost', start:'top 80%', once:true,
+    onEnter: startCostCounter
+  });
+
+  /* ══════════════════════════════════
+     URGENCY NUMBER FLICKER
+  ══════════════════════════════════ */
+  function animateUrgencyNum(){
+    let base=2847;
+    setInterval(()=>{
+      base+=Math.floor(Math.random()*3)-1;
+      if(base<2800) base=2800;
+      const el=document.getElementById('urgency-num');
+      if(el) el.textContent=base.toLocaleString();
+    },3000);
+  }
+
+  /* ══════════════════════════════════
+     HOW IT WORKS SCROLL STORY
+  ══════════════════════════════════ */
+  function initScrollStory(){
+    const wrap=document.getElementById('story-wrap');
+    const panels=[
+      document.getElementById('sp1'),
+      document.getElementById('sp2'),
+      document.getElementById('sp3'),
+    ];
+    const mocks=[
+      document.getElementById('mock-step1'),
+      document.getElementById('mock-step2'),
+      document.getElementById('mock-step3'),
+    ];
+    let current=0;
+
+    function goTo(idx){
+      if(idx===current) return;
+      const prev=panels[current]; const next=panels[idx];
+      const pm=mocks[current];    const nm=mocks[idx];
+
+      gsap.to(prev,{opacity:0,y:-20,duration:.45,ease:'power2.in',onComplete:()=>{ prev.style.pointerEvents='none'; }});
+      gsap.fromTo(next,{opacity:0,y:20},{opacity:1,y:0,duration:.55,ease:'power3.out',onComplete:()=>{ next.style.pointerEvents='auto'; }});
+
+      // mock phone swap
+      gsap.to(pm,{opacity:0,scale:.97,duration:.35,ease:'power2.in',onComplete:()=>{
+        pm.style.display='none'; nm.style.display='block';
+        gsap.fromTo(nm,{opacity:0,scale:1.02},{opacity:1,scale:1,duration:.5,ease:'power3.out'});
+        // Trigger profile bar animation
+        if(idx===1){ setTimeout(()=>{ const b=document.getElementById('mock-profile-bar'); if(b) b.style.width='87%'; },300); }
+      }});
+      current=idx;
+    }
+
+    // Phone bounce on section enter
+    gsap.from('#mock-phone',{
+      y:40,opacity:0,duration:.8,ease:'power3.out',
+      scrollTrigger:{trigger:'#story',start:'top 70%'}
+    });
+
+    // ScrollTrigger for each panel
+    const totalH = wrap.scrollHeight - window.innerHeight;
+    ScrollTrigger.create({
+      trigger: wrap,
+      start: 'top top',
+      end: 'bottom bottom',
+      scrub: false,
+      onUpdate: self=>{
+        const p=self.progress;
+        if(p<0.33 && current!==0) goTo(0);
+        else if(p>=0.33 && p<0.66 && current!==1) goTo(1);
+        else if(p>=0.66 && current!==2) goTo(2);
+      }
+    });
+  }
+
+  /* ══════════════════════════════════
+     ROI CALCULATOR
+  ══════════════════════════════════ */
+  function initROI(){
+    const sel   = document.getElementById('roi-specialty');
+    const range = document.getElementById('roi-patients');
+    const type  = document.getElementById('roi-type');
+    const pval  = document.getElementById('roi-patient-val');
+
+    function calc(){
+      const visitVal   = parseInt(sel.value);
+      const currPts    = parseInt(range.value);
+      const multiplier = parseInt(type.value);
+      // ~14% lift on current patients from visibility gain
+      const newPtsBase = Math.round(currPts * 0.14 * multiplier);
+      const newPts     = Math.max(5, Math.min(newPtsBase, 120));
+      const monthly    = newPts * visitVal;
+      const annual     = monthly * 12;
+      const planCost   = multiplier===1 ? 588 : multiplier===2 ? 1788 : 3588;
+      const net        = annual - planCost;
+
+      animROINum(document.getElementById('roi-annual'),  annual,  '$');
+      animROINum(document.getElementById('roi-monthly'), monthly, '$');
+      document.getElementById('roi-new-pts').textContent  = newPts;
+      document.getElementById('roi-visit-val').textContent = '$'+visitVal.toLocaleString();
+      document.getElementById('roi-cost').textContent      = '$'+planCost.toLocaleString();
+      animROINum(document.getElementById('roi-net'), net, '$');
+    }
+
+    function animROINum(el, target, prefix){
+      const obj={v:parseInt(el.textContent.replace(/[^0-9]/g,''))||0};
+      gsap.to(obj,{v:target,duration:.7,ease:'power2.out',
+        onUpdate:()=>{ el.textContent=prefix+Math.ceil(obj.v).toLocaleString(); }
+      });
+    }
+
+    range.addEventListener('input',()=>{ pval.textContent=range.value; calc(); });
+    sel.addEventListener('change',calc);
+    type.addEventListener('change',calc);
+
+    gsap.from('#roi-form',{
+      x:-30,opacity:0,duration:.7,ease:'power3.out',
+      scrollTrigger:{trigger:'#roi-form',start:'top 78%'}
+    });
+    gsap.from('#roi-result',{
+      x:30,opacity:0,duration:.7,ease:'power3.out',
+      scrollTrigger:{trigger:'#roi-result',start:'top 78%'}
+    });
+  }
+
+  /* ══════════════════════════════════
+     MAIN PAGE ANIMATIONS
+  ══════════════════════════════════ */
+  function startPage(){
+    startToasts();
+    animateUrgencyNum();
+    initScrollStory();
+    initROI();
+
+    // Progress bar
+    gsap.to('#progress',{scaleX:1,ease:'none',scrollTrigger:{trigger:'body',start:'top top',end:'bottom bottom',scrub:true}});
+
+    // Nav
+    ScrollTrigger.create({start:'top -60',onUpdate:s=>document.getElementById('nav').classList.toggle('scrolled',s.progress>0)});
+
+    /* ── HERO ── */
+    const htl = gsap.timeline({defaults:{ease:'lift'}});
+    htl.from('#nav',{y:-50,opacity:0,duration:.65});
+    htl.to('.hero-pill',{opacity:1,y:0,duration:.5,ease:'pop'},.3);
+    const h1w = splitWords(document.querySelector('.hero-text h1'));
+    htl.from(h1w,{y:'105%',opacity:0,stagger:.045,duration:.7,ease:'power3.out'},.5);
+    htl.to('.hero-text p',{opacity:1,y:0,duration:.5},1.0)
+       .to('.hero-actions',{opacity:1,y:0,duration:.45},1.18)
+       .to('.hero-trust',{opacity:1,y:0,duration:.45},1.35)
+       .to('.hero-visual',{opacity:1,x:0,duration:.85,ease:'power3.out'},.55)
+       .from('.hero-float-1',{x:-28,opacity:0,duration:.55,ease:'pop'},1.2)
+       .from('.hero-float-2',{x:28,opacity:0,duration:.55,ease:'pop'},1.35)
+       .from('.hero-verified',{scale:0,opacity:0,duration:.45,ease:'pop'},1.5);
+
+    gsap.to('.hero-float-1',{y:-8,duration:2.4,ease:'sine.inOut',yoyo:true,repeat:-1});
+    gsap.to('.hero-float-2',{y:8,duration:3.0,ease:'sine.inOut',yoyo:true,repeat:-1,delay:.6});
+    gsap.to('.hero-visual',{y:55,ease:'none',scrollTrigger:{trigger:'.hero',start:'top top',end:'bottom top',scrub:1}});
+    gsap.from('.logo-item',{y:14,opacity:0,stagger:.1,duration:.5,ease:'power2.out',scrollTrigger:{trigger:'.logos-strip',start:'top 92%'}});
+
+    /* ── URGENCY ── */
+    gsap.from('.urgency-bar',{opacity:0,height:0,duration:.5,ease:'power2.out',scrollTrigger:{trigger:'.urgency-bar',start:'top 95%'}});
+
+    /* ── PAIN POINTS ── */
+    const ptl=gsap.timeline({scrollTrigger:{trigger:'.pain',start:'top 65%'}});
+    ptl.from('#pain-eyebrow',{x:-18,opacity:0,duration:.45,ease:'power2.out'});
+    ptl.from(splitWords(document.getElementById('pain-title')),{y:'105%',opacity:0,stagger:.05,duration:.65,ease:'power3.out'},.2);
+    ptl.from('.pain-left .section-sub',{y:14,opacity:0,duration:.45},.65);
+    gsap.utils.toArray('.pain-item').forEach((item,i)=>{
+      gsap.to(item,{opacity:1,x:0,duration:.6,ease:'power3.out',delay:i*.07,scrollTrigger:{trigger:item,start:'top 84%'}});
+    });
+
+    /* ── COST OF WAITING ── */
+    const ctl=gsap.timeline({scrollTrigger:{trigger:'.cost-section',start:'top 65%'}});
+    ctl.from('.cost-left .section-eyebrow',{x:-18,opacity:0,duration:.45,ease:'power2.out'});
+    ctl.from(splitWords(document.getElementById('cost-title')),{y:'105%',opacity:0,stagger:.05,duration:.65,ease:'power3.out'},.2);
+    ctl.from('.cost-left p',{y:14,opacity:0,duration:.45},.6);
+    ctl.from('#cost-clock',{y:40,opacity:0,duration:.75,ease:'power3.out'},.35);
+    gsap.from('.cost-row',{x:20,opacity:0,stagger:.1,duration:.5,ease:'power2.out',scrollTrigger:{trigger:'#cost-clock',start:'top 75%'}});
+
+    /* ── STATISTICS ── */
+    const stl=gsap.timeline({scrollTrigger:{trigger:'.statistics',start:'top 65%'}});
+    stl.from(splitWords(document.getElementById('stats-title')),{y:'105%',opacity:0,stagger:.05,duration:.65,ease:'power3.out'});
+    stl.to('.stat-card',{opacity:1,y:0,stagger:.14,duration:.6,ease:'power3.out'},'-=.3');
+    document.querySelectorAll('.stat-num').forEach(el=>{
+      const t=parseInt(el.dataset.target), s=el.dataset.suffix, o={v:0};
+      stl.to(o,{v:t,duration:1.8,ease:'power2.out',onUpdate:()=>{ el.textContent=Math.ceil(o.v)+s; }},'-=1.5');
+    });
+
+    /* ── STORY section heading ── */
+    ScrollTrigger.create({
+      trigger:'#story',start:'top 70%',once:true,
+      onEnter:()=>{
+        const el=document.querySelector('.story-section .section-eyebrow');
+        if(el) gsap.from(el,{x:-18,opacity:0,duration:.45,ease:'power2.out'});
+      }
+    });
+
+    /* ── BEFORE/AFTER ── */
+    const cptl=gsap.timeline({scrollTrigger:{trigger:'.compare-section',start:'top 65%'}});
+    cptl.from(splitWords(document.getElementById('compare-title')),{y:'105%',opacity:0,stagger:.05,duration:.65,ease:'power3.out'});
+    cptl.to('.compare-col',{opacity:1,y:0,stagger:.15,duration:.65,ease:'power3.out'},'-=.3');
+
+    /* ── ROI TITLE ── */
+    gsap.from(splitWords(document.getElementById('roi-title')),{y:'105%',opacity:0,stagger:.05,duration:.65,ease:'power3.out',scrollTrigger:{trigger:'#roi-title',start:'top 80%'}});
+
+    /* ── FEATURES MARQUEE ── */
+    gsap.from(splitWords(document.getElementById('feat-title')),{y:'105%',opacity:0,stagger:.05,duration:.65,ease:'power3.out',scrollTrigger:{trigger:'.features',start:'top 72%'}});
+    ScrollTrigger.create({trigger:'.features',start:'top 80%',once:true,onEnter:()=>initMarquee('feat-track',38,false)});
+
+    /* ── TESTIMONIALS MARQUEE ── */
+    gsap.from(splitWords(document.getElementById('testi-title')),{y:'105%',opacity:0,stagger:.05,duration:.65,ease:'power3.out',scrollTrigger:{trigger:'.testimonial',start:'top 72%'}});
+    ScrollTrigger.create({trigger:'.testimonial',start:'top 80%',once:true,onEnter:()=>initMarquee('testi-track',55,true)});
+
+    /* ── COMPARISON TABLE ── */
+    gsap.from(splitWords(document.getElementById('comp-title')),{y:'105%',opacity:0,stagger:.05,duration:.65,ease:'power3.out',scrollTrigger:{trigger:'.comparison-section',start:'top 70%'}});
+    gsap.to('#comp-table',{opacity:1,duration:.8,ease:'power2.out',scrollTrigger:{trigger:'#comp-table',start:'top 75%'}});
+    gsap.from('#comp-table tr',{opacity:0,y:8,stagger:.07,duration:.5,ease:'power2.out',scrollTrigger:{trigger:'#comp-table',start:'top 75%'}});
+
+    /* ── FAQ ── */
+    gsap.utils.toArray('.faq-item').forEach((item,i)=>{
+      gsap.to(item,{opacity:1,y:0,duration:.5,ease:'power2.out',delay:i*.08,scrollTrigger:{trigger:'#faq-list',start:'top 76%'}});
+    });
+    document.querySelectorAll('.faq-question').forEach(q=>{
+      q.addEventListener('click',()=>{
+        const a=q.closest('.faq-item').querySelector('.faq-answer');
+        const inn=q.closest('.faq-item').querySelector('.faq-answer-inner');
+        const isOpen=q.classList.contains('open');
+        document.querySelectorAll('.faq-item').forEach(fi=>{
+          fi.querySelector('.faq-question').classList.remove('open');
+          gsap.to(fi.querySelector('.faq-answer'),{maxHeight:0,duration:.3,ease:'power2.in'});
+        });
+        if(!isOpen){
+          q.classList.add('open');
+          gsap.fromTo(a,{maxHeight:0},{maxHeight:inn.offsetHeight+10,duration:.38,ease:'power2.out'});
+        }
+      });
+    });
+
+    /* ── CTA ── */
+    const ctaTl=gsap.timeline({scrollTrigger:{trigger:'.cta-section',start:'top 72%'}});
+    ctaTl.from(splitWords(document.getElementById('cta-h2')),{y:'105%',opacity:0,stagger:.04,duration:.7,ease:'power3.out'})
+         .from('.cta-section>p',{y:12,opacity:0,duration:.42},'-=.2')
+         .from('.cta-btns>*',{y:12,opacity:0,stagger:.1,duration:.38,ease:'pop'},'-=.15')
+         .from('.cta-badge',{y:8,opacity:0,stagger:.07,duration:.32},'-=.1');
+
+    /* ── FOOTER ── */
+    gsap.from('footer>*',{y:18,opacity:0,stagger:.1,duration:.5,ease:'power2.out',scrollTrigger:{trigger:'footer',start:'top 92%'}});
+
+    /* ── EYEBROWS ── */
+    gsap.utils.toArray('.section-eyebrow').forEach(el=>{
+      gsap.from(el,{x:-16,opacity:0,duration:.45,ease:'power2.out',scrollTrigger:{trigger:el,start:'top 86%'}});
+    });
+
+    ScrollTrigger.refresh();
+  }
+})();
+</script>
+{% endblock %}

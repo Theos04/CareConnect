@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% import "_macros.html" as macros %}
+{% block title %}Pharmacy Dashboard | CareConnect{% endblock %}
+
+{% block content %}
+<div class="max-w-5xl mx-auto">
+  <h1 class="text-3xl font-bold text-gray-800 mb-2">Pharmacy Prescriptions</h1>
+  <p class="text-gray-600 mb-8">Manage incoming prescriptions to fill.</p>
+
+  <!-- KPIs using macro -->
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+    {{ macros.kpi_card('Total Prescriptions', prescriptions | length, 'text-indigo-600') }}
+    {{ macros.kpi_card('Pending', (prescriptions | selectattr('status', 'equalto', 'Pending') | list) | length, 'text-yellow-600') }}
+    {{ macros.kpi_card('Filled', (prescriptions | selectattr('status', 'equalto', 'Filled') | list) | length, 'text-green-600') }}
+  </div>
+
+  <!-- Prescription table using macro -->
+  {{ macros.prescription_table(prescriptions, g.user.role) }}
+
+  <!-- Example details using macro -->
+  {% if prescriptions %}
+    {{ macros.prescription_details(prescriptions[0]) }}
+  {% endif %}
+</div>
+{% endblock %}

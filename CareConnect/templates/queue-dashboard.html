@@ -1,0 +1,589 @@
+{% extends "base.html" %}
+{% block title %}Live Queue | CareConnect EHR{% endblock %}
+
+{% block content %}
+<link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+  * { box-sizing: border-box; }
+
+  :root {
+    --primary: #2563eb;
+    --primary-dark: #1d4ed8;
+    --surface: #ffffff;
+    --background: #f8fafc;
+    --border: #e2e8f0;
+    --text-primary: #0f172a;
+    --text-secondary: #475569;
+    --text-tertiary: #94a3b8;
+    --success: #10b981;
+    --warning: #f59e0b;
+    --danger: #ef4444;
+    --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+    --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+  }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--background);
+    color: var(--text-primary);
+  }
+
+  .queue-container {
+    max-width: 1600px;
+    margin: 0 auto;
+    padding: 24px 32px;
+    padding-top: 120px; /* Offset for fixed navbar */
+  }
+
+  .page-header {
+    margin-bottom: 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .page-header h1 {
+    font-family: 'Space Grotesk', monospace;
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--secondary);
+    letter-spacing: -0.02em;
+  }
+
+  .split-layout {
+    display: grid;
+    grid-template-columns: 400px 1fr;
+    gap: 24px;
+    align-items: start;
+  }
+
+  @media (max-width: 1024px) {
+    .split-layout {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  /* Left Pane: Queue List */
+  .queue-list {
+    background: var(--surface);
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow-md);
+    overflow: hidden;
+    height: calc(100vh - 200px);
+    display: flex;
+    flex-direction: column;
+  }
+
+  .queue-header {
+    background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+    color: white;
+    padding: 20px 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .queue-header h2 {
+    font-weight: 600;
+    font-size: 1.125rem;
+    font-family: 'Space Grotesk', monospace;
+  }
+  .queue-count {
+    background: rgba(255,255,255,0.2);
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 600;
+  }
+
+  .queue-items {
+    overflow-y: auto;
+    flex: 1;
+  }
+
+  .queue-card {
+    padding: 16px 24px;
+    border-bottom: 1px solid var(--border);
+    cursor: pointer;
+    transition: all 0.2s;
+    border-left: 3px solid transparent;
+  }
+  .queue-card:hover {
+    background: #f8fafc;
+    border-left-color: var(--primary-light);
+  }
+  .queue-card.active {
+    background: #eff6ff;
+    border-left-color: var(--primary);
+  }
+
+  .card-top {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 6px;
+  }
+  .card-time {
+    font-weight: 700;
+    color: var(--primary);
+    font-size: 0.875rem;
+  }
+  .card-type {
+    font-size: 0.7rem;
+    padding: 2px 8px;
+    background: #f1f5f9;
+    color: var(--text-secondary);
+    border-radius: 8px;
+    font-weight: 600;
+    text-transform: uppercase;
+  }
+  .card-patient {
+    font-weight: 600;
+    color: var(--text-primary);
+    font-size: 1rem;
+    margin-bottom: 4px;
+  }
+  .card-reason {
+    font-size: 0.8125rem;
+    color: var(--text-secondary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  /* Right Pane: Triage Detail View */
+  .triage-pane {
+    background: var(--surface);
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow-lg);
+    min-height: calc(100vh - 200px);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  .triage-placeholder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    color: var(--text-tertiary);
+    text-align: center;
+    padding: 40px;
+  }
+  .triage-placeholder svg {
+    width: 64px; height: 64px;
+    margin-bottom: 16px;
+    opacity: 0.5;
+  }
+  .triage-placeholder h2 {
+    font-size: 1.25rem; font-weight: 600; color: var(--text-secondary); margin-bottom: 8px;
+  }
+
+  .triage-content {
+    display: none; /* activated via JS */
+    flex: 1;
+    overflow-y: auto;
+  }
+  
+  .triage-header-block {
+    padding: 32px 40px;
+    border-bottom: 1px solid var(--border);
+    background: #fafafa;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+  }
+
+  .triage-patient-name {
+    font-size: 2rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    color: var(--text-primary);
+    margin-bottom: 8px;
+  }
+
+  .status-badge {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    background: #eff6ff; color: #1d4ed8;
+  }
+
+  .triage-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 32px;
+    padding: 32px 40px;
+  }
+
+  .info-section {
+    margin-bottom: 24px;
+  }
+  .info-title {
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-tertiary);
+    margin-bottom: 12px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  
+  .data-box {
+    background: #f8fafc;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 16px;
+  }
+
+  .data-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 0;
+    border-bottom: 1px dashed var(--border);
+  }
+  .data-row:last-child { border-bottom: none; }
+  .data-label { color: var(--text-secondary); font-size: 0.875rem; }
+  .data-val { font-weight: 600; color: var(--text-primary); font-size: 0.875rem; text-align: right; }
+
+  .status-cleared { color: var(--success); background: #ecfdf5; padding: 2px 8px; border-radius: 8px; }
+  .status-copay { color: var(--warning); background: #fffbeb; padding: 2px 8px; border-radius: 8px; }
+
+  /* Prescription Update Module */
+  .rx-module {
+    border: 2px solid var(--primary-light);
+    border-radius: 16px;
+    padding: 24px;
+    background: #ffffff;
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.05);
+    position: relative;
+    overflow: hidden;
+  }
+  .rx-module::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px; background: var(--primary);
+  }
+  
+  .rx-form-group {
+    margin-bottom: 16px;
+  }
+  .rx-form-group label {
+    display: block; font-size: 0.8125rem; font-weight: 600; color: var(--text-secondary); margin-bottom: 6px;
+  }
+  .rx-form-group select, .rx-form-group textarea {
+    width: 100%;
+    padding: 10px 12px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    font-family: inherit;
+    font-size: 0.875rem;
+    outline: none;
+    transition: all 0.2s;
+  }
+  .rx-form-group select:focus, .rx-form-group textarea:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px var(--primary-glow);
+  }
+  
+  .btn-submit {
+    width: 100%;
+    padding: 12px;
+    background: var(--primary);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .btn-submit:hover { background: var(--primary-dark); }
+  
+  .empty-rx {
+    text-align: center;
+    padding: 24px 0;
+    color: var(--text-tertiary);
+    font-size: 0.875rem;
+    background: #f8fafc;
+    border-radius: 12px;
+    border: 1px dashed var(--border);
+  }
+
+  /* Notifications */
+  #notification {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    background: #1e293b;
+    color: white;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-weight: 500;
+    font-size: 0.9rem;
+    box-shadow: var(--shadow-lg);
+    transform: translateY(100px);
+    opacity: 0;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 100;
+  }
+  #notification.show {
+    transform: translateY(0);
+    opacity: 1;
+  }
+
+</style>
+
+<div class="queue-container">
+  <div class="page-header">
+    <h1>Live Queue & Triage</h1>
+    <span class="status-badge" style="background: #ecfdf5; color: #059669; font-size: 0.8125rem;">Live Sync Active 🟢</span>
+  </div>
+
+  <div class="split-layout">
+    
+    <!-- Left Pane: Queue Array -->
+    <div class="queue-list">
+      <div class="queue-header">
+        <h2>Today's Roster</h2>
+        <span class="queue-count">{{ queue_data|length }} Patients</span>
+      </div>
+      
+      <div class="queue-items">
+        {% if queue_data %}
+          {% for item in queue_data %}
+          <!-- Keep JSON payload strictly in data attribute for parsing -->
+          <div class="queue-card" data-payload='{{ item|tojson|safe }}' onclick="loadPatient(this)">
+            <div class="card-top">
+              <span class="card-time">{{ item.appointment.time }}</span>
+              <span class="card-type">{{ item.appointment.type }}</span>
+            </div>
+            <div class="card-patient">{{ item.patient_name }}</div>
+            <div class="card-reason">{{ item.appointment.reason if item.appointment.reason else 'General Consultation' }}</div>
+          </div>
+          {% endfor %}
+        {% else %}
+          <div style="padding: 40px 24px; text-align: center; color: var(--text-tertiary);">
+            <div style="font-size: 3rem; margin-bottom: 16px;">☕</div>
+            <p>Your queue is clear.</p>
+          </div>
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- Right Pane: Triage / Chart View -->
+    <div class="triage-pane">
+      <div class="triage-placeholder" id="triagePlaceholder">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5M7.188 2.239l.777 2.897M5.136 7.965l-2.898-.777M13.95 4.05l-2.122 2.122m-5.657 5.656l-2.12 2.122"></path></svg>
+        <h2>Select a patient from the queue</h2>
+        <p>Review billing, insurance, and active prescriptions instantly.</p>
+      </div>
+
+      <div class="triage-content" id="triageContent">
+        <!-- Dynamic Header -->
+        <div class="triage-header-block">
+          <div>
+            <div class="triage-patient-name" id="viewName">Patient Name</div>
+            <div style="color: var(--text-secondary); font-size: 0.9rem;" id="viewReason">Reason for visit...</div>
+          </div>
+          <div style="text-align: right;">
+            <div class="status-badge" id="viewStatus">Scheduled</div>
+            <div style="font-weight: 700; color: var(--primary); margin-top: 8px; font-size: 1.125rem;" id="viewTime">00:00</div>
+          </div>
+        </div>
+
+        <div class="triage-grid">
+          <!-- Col 1: Billing & Insurance -->
+          <div>
+            <div class="info-section">
+              <div class="info-title">💳 Billing & Insurance Profile</div>
+              <div class="data-box">
+                <div class="data-row">
+                  <span class="data-label">Provider</span>
+                  <span class="data-val" id="viewInsProvider">BlueCross</span>
+                </div>
+                <div class="data-row">
+                  <span class="data-label">Policy ID</span>
+                  <span class="data-val" style="font-family: monospace;" id="viewPolicy">POL-XXXX</span>
+                </div>
+                <div class="data-row">
+                  <span class="data-label">Copay Amount</span>
+                  <span class="data-val" id="viewCopay">$25.00</span>
+                </div>
+                <div class="data-row">
+                  <span class="data-label">Status</span>
+                  <span class="data-val"><span id="viewBillStatus" class="status-cleared">Cleared</span></span>
+                </div>
+              </div>
+            </div>
+            
+            <div class="info-section">
+              <div class="info-title">📄 Appointment Metadata</div>
+              <div class="data-box">
+                <div class="data-row">
+                  <span class="data-label">Appt ID</span>
+                  <span class="data-val" style="font-family: monospace;" id="viewApptId">#0</span>
+                </div>
+                <div class="data-row">
+                  <span class="data-label">Method</span>
+                  <span class="data-val" style="text-transform: capitalize;" id="viewMethod">Virtual</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Col 2: Active Prescription Sync -->
+          <div>
+            <div class="info-section">
+              <div class="info-title">💊 Active Prescription Override</div>
+              
+              <div id="rxModuleContainer">
+                <!-- Javascript will inject the form or empty state here -->
+              </div>
+              
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div id="notification">Prescription updated successfully.</div>
+
+<script>
+  let currentRxId = null;
+
+  function loadPatient(element) {
+    // 1. Highlight selected card
+    document.querySelectorAll('.queue-card').forEach(el => el.classList.remove('active'));
+    element.classList.add('active');
+
+    // 2. Parse payload
+    const payload = JSON.parse(element.getAttribute('data-payload'));
+    
+    // 3. Switch view
+    document.getElementById('triagePlaceholder').style.display = 'none';
+    const content = document.getElementById('triageContent');
+    content.style.display = 'block';
+
+    // 4. Bind Header Data
+    document.getElementById('viewName').innerText = payload.patient_name;
+    document.getElementById('viewReason').innerText = payload.appointment.reason || 'General Consultation';
+    document.getElementById('viewStatus').innerText = payload.appointment.status;
+    document.getElementById('viewTime').innerText = payload.appointment.time;
+
+    // 5. Bind Billing/Insurance
+    document.getElementById('viewInsProvider').innerText = payload.insurance.provider;
+    document.getElementById('viewPolicy').innerText = payload.insurance.policy_id;
+    document.getElementById('viewCopay').innerText = '$' + payload.insurance.copay.toFixed(2);
+    
+    const billStatusEl = document.getElementById('viewBillStatus');
+    billStatusEl.innerText = payload.insurance.billing_status;
+    billStatusEl.className = payload.insurance.copay === 25 ? 'status-cleared' : 'status-copay';
+    
+    document.getElementById('viewApptId').innerText = '#' + payload.appointment.id;
+    document.getElementById('viewMethod').innerText = payload.appointment.type;
+
+    // 6. Bind Prescription Module
+    const rxContainer = document.getElementById('rxModuleContainer');
+    
+    if (payload.prescription) {
+      currentRxId = payload.prescription.id;
+      rxContainer.innerHTML = `
+        <div class="rx-module">
+          <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px;">
+            <div>
+              <div style="font-weight: 700; font-size: 1.125rem; color: var(--secondary);">${payload.prescription.medication}</div>
+              <div style="font-size: 0.8125rem; color: var(--text-tertiary); font-family: monospace;">RX-${payload.prescription.id}</div>
+            </div>
+            <div style="background: #f0fdf4; color: #15803d; font-size: 0.7rem; padding: 2px 8px; border-radius: 8px; font-weight: 600; text-transform: uppercase;">
+              ${payload.prescription.status}
+            </div>
+          </div>
+          <div style="font-size: 0.875rem; color: var(--text-secondary); margin-bottom: 20px; padding: 12px; background: #f8fafc; border-radius: 8px;">
+            <strong>Sig:</strong> ${payload.prescription.dosage} for ${payload.prescription.duration}
+          </div>
+          
+          <form id="rxUpdateForm" onsubmit="updatePrescription(event)">
+            <div class="rx-form-group">
+              <label>Update Status</label>
+              <select id="rxStatusInput">
+                <option value="Active" ${payload.prescription.status === 'Active' ? 'selected' : ''}>Active</option>
+                <option value="Completed" ${payload.prescription.status === 'Completed' ? 'selected' : ''}>Completed</option>
+                <option value="Cancelled" ${payload.prescription.status === 'Cancelled' ? 'selected' : ''}>Cancelled</option>
+              </select>
+            </div>
+            <div class="rx-form-group">
+              <label>Doctor's Addendum / Override Notes</label>
+              <textarea id="rxNotesInput" rows="3" placeholder="Adjust dosage, warnings, or renewals here...">${payload.prescription.notes || ''}</textarea>
+            </div>
+            <button type="submit" class="btn-submit">Sign & Update Prescription</button>
+          </form>
+        </div>
+      `;
+    } else {
+      currentRxId = null;
+      rxContainer.innerHTML = `
+        <div class="empty-rx">
+          <div style="font-size: 2rem; margin-bottom: 8px;">⚡</div>
+          <p>No active prescriptions found for this patient.</p>
+          <a href="/doctor-prescriptions" style="color: var(--primary); text-decoration: none; font-weight: 600; font-size: 0.8125rem; margin-top: 8px; display: inline-block;">+ Write New Prescription</a>
+        </div>
+      `;
+    }
+  }
+
+  async function updatePrescription(e) {
+    e.preventDefault();
+    if (!currentRxId) return;
+
+    const btn = e.target.querySelector('button');
+    const originalText = btn.innerText;
+    btn.innerText = 'Syncing...';
+    btn.disabled = true;
+
+    const data = {
+      status: document.getElementById('rxStatusInput').value,
+      notes: document.getElementById('rxNotesInput').value
+    };
+
+    try {
+      const res = await fetch('/api/prescriptions/' + currentRxId, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRFToken': '{{ csrf_token() }}'
+        },
+        body: JSON.stringify(data)
+      });
+      
+      const json = await res.json();
+      if (res.ok) {
+        showNotification('✅ Prescription updated in atomic DB sync!');
+      } else {
+        showNotification('❌ Error: ' + (json.error || 'Update failed'));
+      }
+    } catch (err) {
+      console.error(err);
+      showNotification('❌ Network Error');
+    } finally {
+      btn.innerText = originalText;
+      btn.disabled = false;
+    }
+  }
+
+  function showNotification(msg) {
+    const notify = document.getElementById('notification');
+    notify.innerText = msg;
+    notify.classList.add('show');
+    setTimeout(() => {
+      notify.classList.remove('show');
+    }, 4000);
+  }
+</script>
+{% endblock %}

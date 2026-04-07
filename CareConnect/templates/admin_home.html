@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block title %}Administration | CareConnect{% endblock %}
+
+{% block content %}
+<div class="max-w-5xl mx-auto">
+  <h1 class="text-3xl font-bold text-gray-900 mb-2">Administration</h1>
+  <p class="text-gray-600 mb-8">Signed in as {{ user.name }}. This is a demo admin shell — connect your identity provider and audit logs in production.</p>
+
+  <div class="grid md:grid-cols-3 gap-6">
+    <div class="bg-white rounded-xl border border-gray-200 p-6 shadow-sm">
+      <h2 class="font-semibold text-gray-800 mb-2">Users &amp; roles</h2>
+      <p class="text-sm text-gray-600">Review sign-ups, role changes, and verification status.</p>
+    </div>
+    <div class="bg-white rounded-xl border border-gray-200 p-6 shadow-sm">
+      <h2 class="font-semibold text-gray-800 mb-2">Providers &amp; labs</h2>
+      <p class="text-sm text-gray-600">Doctor and pathology lab onboarding approvals.</p>
+    </div>
+    <div class="bg-white rounded-xl border border-gray-200 p-6 shadow-sm">
+      <h2 class="font-semibold text-gray-800 mb-2">Platform</h2>
+      <p class="text-sm text-gray-600">Feature flags, integrations, and compliance exports.</p>
+    </div>
+  </div>
+</div>
+{% endblock %}
