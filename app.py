@@ -22,6 +22,9 @@ from flask_wtf import CSRFProtect
 from flask_marshmallow import Marshmallow
 from marshmallow import fields, validate
 from config import get_config
+from ottehr_api_bridge import get_ottehr_bridge
+from batch_sync import schedule_batch_sync
+from ottehr_routes import ottehr_bp
 
 load_dotenv()
 
@@ -1529,6 +1532,27 @@ def telehealth(room_id):
     return render_template('telehealth.html', user=g.user, room_id=room_id)
 
 
-# ──────────────────────────────────────────────────────────────────────────────
+# ────────────────────────────────────────────────────────────────────────────────
+# OTTEHR INTEGRATION
+# ────────────────────────────────────────────────────────────────────────────────
+
+try:
+    from ottehr_routes import ottehr_bp
+    from batch_sync import schedule_batch_sync
+    
+    # Register Ottehr API Blueprint
+    app.register_blueprint(ottehr_bp, url_prefix='/api/ottehr')
+    app.logger.info("✅ Ottehr API blueprint registered")
+    
+    # Start batch sync scheduler if enabled
+    if app.config.get('OTTEHR_ENABLED'):
+        with app.app_context():
+            schedule_batch_sync(app, interval_hours=1)
+            app.logger.info("✅ Ottehr batch sync scheduler started")
+except ImportError as e:
+    app.logger.warning(f"⚠️ Ottehr integration skipped: {str(e)}")
+
+
+# ────────────────────────────────────────────────────────────────────────────────
 if __name__ == '__main__':
     app.run(host="0.0.0.0", port=5000, debug=True)
